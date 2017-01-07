@@ -13,13 +13,12 @@ describe('grid.vue', () => {
       router: router,
       render: (h) => h(grid),
       data: {
-        contractors: [
-          {
-            name: 'Fred Bloggs',
-            slug: 'fred-bloggs',
-            img: 'http://path.com/to/img.jpg',
-          }
-        ]
+        contractors: []
+      },
+      methods: {
+        get_data: function () {
+          this.contractors.push({name: 'Fred Bloggs', slug: 'fred-bloggs', img: 'http://path.com/to/img.jpg'})
+        }
       }
     })
     expect(vm.$el.querySelector('h3').textContent).to.equal('Fred Bloggs')
