@@ -55,9 +55,10 @@ app.use(hotMiddleware)
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
+app.use('/mock_api', express.static('./mock_api'))
 
 devMiddleware.waitUntilValid(function () {
-  console.log('> Listening at ' + 'http://localhost:' + port + '\n')
+  console.log('> Listening at http://localhost:' + port + '\n')
 })
 
 module.exports = app.listen(port, function (err) {

@@ -14,6 +14,10 @@
 <script>
 export default {
   name: 'grid',
+  created: function () {
+    // called here so get_data can be passed an argument for extra pages
+    this.$root.get_data()
+  },
   data: function () {
     return {contractors: this.$root.contractors}
   }

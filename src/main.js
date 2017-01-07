@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import app from './app'
 import VueRouter from 'vue-router'
+import app from './app'
 import grid from './components/grid'
 import modal from './components/modal'
 
@@ -28,36 +28,24 @@ module.exports = new Vue({
   router: router,
   render: h => h(app),
   data: {
-    contractors: [
-      {
-        name: 'Adam',
-        slug: 'adam',
-        img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_1.jpg',
-      },
-      {
-        name: 'Billy',
-        slug: 'bob',
-        img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_2.jpg',
-      },
-      {
-        name: 'Charlie C',
-        slug: 'charlie',
-        img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/women_1.jpg',
-      },
-      {
-        name: 'Denis',
-        slug: 'dick',
-        img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_3.jpg',
-      },
-      {
-        name: 'Erica',
-        slug: 'erica',
-        img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/women_2.jpg',
-      },
-    ],
-    show_modal: false
+    contractors: []
   },
   components: {
     app
+  },
+  methods: {
+    // get_data is called by components, eg. grid
+    get_data: function () {
+      var xhr = new window.XMLHttpRequest()
+      xhr.open('GET', '/mock_api/contractors.json')
+      xhr.onload = () => {
+        let contractors = JSON.parse(xhr.responseText)
+        this.contractors.splice(0)
+        contractors.forEach(con => {
+          this.contractors.push(con)
+        })
+      }
+      xhr.send()
+    }
   }
 })
