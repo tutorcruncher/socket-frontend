@@ -1,10 +1,11 @@
 <template>
   <div id="tcs-grid">
     <div v-for="contractor in contractors" class="tcs-col">
-      <router-link :to="{name: 'modal', params: {code: contractor.code}}" class="tcs-box">
+      <router-link :to="{name: 'modal', params: {slug: contractor.slug}}" class="tcs-box">
         <img :src="contractor.img" :alt="contractor.name">
         <h3 class="tcs-name">{{ contractor.name }}</h3>
       </router-link>
+      <!-- foobar -->
     </div>
     <router-view></router-view>
   </div>

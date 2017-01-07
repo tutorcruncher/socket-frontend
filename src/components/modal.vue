@@ -43,7 +43,8 @@ export default {
     },
   },
   data: function () {
-    return {contractor: _.find(this.$root.contractors, {'code': this.$route.params.code})}
+    // TODO: if this is the only use of lodash it could be replaced by a manual find.
+    return {contractor: _.find(this.$root.contractors, {'slug': this.$route.params.slug})}
   }
 }
 </script>

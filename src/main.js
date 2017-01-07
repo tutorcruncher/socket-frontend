@@ -5,29 +5,24 @@ import grid from './components/grid'
 import modal from './components/modal'
 
 Vue.use(VueRouter)
-const routes = [
-  {
-    path: '/',
-    name: 'index',
-    component: grid,
-    children: [
-      {
-        path: '/:code',
-        name: 'modal',
-        component: modal,
-      }
-    ]
-  },
-]
 
-// 3. Create the router instance and pass the `routes` option
-// You can pass in additional options here, but let's
-// keep it simple for now.
 const router = new VueRouter({
-  routes // short for routes: routes
+  routes: [
+    {
+      path: '/',
+      name: 'index',
+      component: grid,
+      children: [
+        {
+          path: '/:slug',
+          name: 'modal',
+          component: modal,
+        }
+      ]
+    },
+  ]
 })
 
-/* eslint-disable no-new */
 module.exports = new Vue({
   el: '#app',
   router: router,
@@ -36,27 +31,27 @@ module.exports = new Vue({
     contractors: [
       {
         name: 'Adam',
-        code: 'adam',
+        slug: 'adam',
         img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_1.jpg',
       },
       {
         name: 'Billy',
-        code: 'bob',
+        slug: 'bob',
         img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_2.jpg',
       },
       {
         name: 'Charlie C',
-        code: 'charlie',
+        slug: 'charlie',
         img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/women_1.jpg',
       },
       {
         name: 'Denis',
-        code: 'dick',
+        slug: 'dick',
         img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_3.jpg',
       },
       {
         name: 'Erica',
-        code: 'erica',
+        slug: 'erica',
         img: 'https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/women_2.jpg',
       },
     ],
@@ -65,4 +60,4 @@ module.exports = new Vue({
   components: {
     app
   }
-})  // .$mount('#app')
+})

@@ -57,11 +57,15 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        loaders: ['expose-loader?vm', 'babel'],
+        loader: 'babel',
         include: [
           path.join(projectRoot, 'src')
         ],
         exclude: /node_modules/
+      },
+      {
+        test: /\/main\.js$/,
+        loaders: ['expose-loader?vm', 'babel']
       },
       {
         test: /\.json$/,
