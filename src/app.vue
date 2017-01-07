@@ -1,27 +1,25 @@
 <template>
-  <div id="app">
-    <grid :contractors="contractors"></grid>
+  <div id="tcs-app">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import grid from './components/grid'
-
 export default {
-  name: 'app',
+  name: 'tcs-app',
   data: function () {
-    return {'contractors': this.$root.contractors()}
-  },
-  components: {
-    grid
+    return {
+      contractors: this.$root.contractors,
+      show_modal: this.$root.show_modal,
+    }
   }
 }
 </script>
 
-<style scoped>
-@import url(https://fonts.googleapis.com/css?family=Roboto);
+<style lang="scss" scoped>
+@import url(https://fonts.googleapis.com/css?family=Raleway);
 
-#app {
-  font-family: 'Roboto', sans-serif;
+#tcs-app {
+  font-family: 'Raleway', sans-serif;
 }
 </style>

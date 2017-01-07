@@ -57,7 +57,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        loader: 'babel',
+        loaders: ['expose-loader?vm', 'babel'],
         include: [
           path.join(projectRoot, 'src')
         ],
@@ -82,6 +82,10 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
+      },
+      {
+        test: require.resolve('lodash'),
+        loader: 'expose?_'
       }
     ]
   },
