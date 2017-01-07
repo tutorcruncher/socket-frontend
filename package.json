@@ -4,6 +4,15 @@
   "description": "TutorCruncher socket",
   "author": "Samuel Colvin <s@muelcolvin.com>",
   "private": false,
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/tutorcruncher/socket-frontend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tutorcruncher/socket-frontend/issues",
+    "email": "support@tutorcruncher.com"
+  },
+  "license": "MIT",
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
@@ -78,6 +87,6 @@
   },
   "engines": {
     "node": ">= 6.0.0",
-    "npm": ">= 4.0.0"
+    "npm": ">= 3.0.0"
   }
 }
