@@ -5,7 +5,6 @@
         <img :src="contractor.img" :alt="contractor.name">
         <h3 class="tcs-name">{{ contractor.name }}</h3>
       </router-link>
-      <!-- foobar -->
     </div>
     <router-view></router-view>
   </div>

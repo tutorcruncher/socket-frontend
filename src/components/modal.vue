@@ -1,25 +1,48 @@
 <template>
   <transition name="tcs-modal">
     <div class="modal-mask" @click="close">
-      <div class="tcs-container" @click.stop>
-
-        <div class="tcs-header">
-          <h3>{{ contractor.name }}</h3>
-          <router-link :to="{name: 'index'}" class="close">
-            &#x274c;
-          </router-link>
-        </div>
-
-        <div class="tcs-body">
-          <div class="tcs-content">
-            <div class="tcs-aside">{{ contractor.tag }}</div>
-            <div class="tcs-bio">
-              {{ contractor.bio }}
-            </div>
+      <div v-if="contractor" class="tcs-container" @click.stop>
+        <div class="tcs-scroll">
+          <div class="tcs-header">
+            <h2>{{ contractor.name }}</h2>
+            <router-link :to="{name: 'index'}" class="close">
+              &#x274c;
+            </router-link>
           </div>
-          <div class="tcs-extra">
-            <img :src="contractor.img" :alt="contractor.name">
-            <button>Contact {{ contractor.name }}</button>
+
+          <div class="tcs-body">
+            <div class="tcs-content">
+              <div class="tcs-location">
+                <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1152 640q0-106-75-181t-181-75-181 75-75 181 75 181 181 75 181-75 75-181zm256 0q0 109-33
+                    179l-364 774q-16 33-47.5 52t-67.5 19-67.5-19-46.5-52l-365-774q-33-70-33-179 0-212 150-362t362-150
+                    362 150 150 362z"/>
+                </svg>
+                <span>{{ contractor.location }}</span>
+              </div>
+              <div class="tcs-aside">{{ contractor.tag_line }}</div>
+              <div v-for="text_attribute in contractor.text_attributes">
+                <h3>{{ text_attribute.name }}</h3>
+                {{ text_attribute.value }}
+              </div>
+
+              <table class="tcs-skills" v-if="contractor.skills">
+                <h3>Skills</h3>
+                <tr v-for="skill in contractor.skills">
+                  <th scope="row">{{ skill.subject }}</th>
+                  <td>
+                  <span v-for="qual_level in skill.qual_levels">
+                    {{ qual_level }}
+                  </span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="tcs-extra">
+              <img :src="contractor.img" :alt="contractor.name">
+              <!--<button>Contact {{ contractor.name }}</button>-->
+              <p>To request tutoring from {{ contractor.name }} please get in touch with us.<p>
+            </div>
           </div>
         </div>
 
@@ -38,9 +61,10 @@ export default {
       this.$router.push({name: 'index'})
     },
   },
-  data: function () {
-    // TODO: if this is the only use of lodash it could be replaced by a manual find.
-    return {contractor: _.find(this.$root.contractors, {'slug': this.$route.params.slug})}
+  computed: {
+    contractor: function () {
+      return _.find(this.$root.contractors, {'slug': this.$route.params.slug})
+    }
   }
 }
 </script>
@@ -60,19 +84,23 @@ $back-colour: 35;
 
 .tcs-container {
   max-width: 800px;
-  margin: 100px auto 0;
+  margin: 6vh auto 0;
   padding: 20px 20px 40px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
   transition: all .3s ease;
+  .tcs-scroll {
+    max-height: calc(94vh - 65px);
+    overflow-y: auto;
+  }
 }
 
 .tcs-header {
   margin-bottom: 10px;
   padding-bottom: 10px;
   border-bottom: 2px solid #ccc;
-  h3 {
+  h2 {
     margin-top: 0;
     margin-bottom: 0;
     display: inline;
@@ -92,25 +120,65 @@ $back-colour: 35;
   justify-content: space-between;
 }
 
+.tcs-location {
+  margin-bottom: 10px;
+  float: right;
+  $svg-size: 24px;
+  svg {
+    width: $svg-size;
+    height: $svg-size;
+    path {
+      fill: #1f2e50;
+    }
+  }
+  span {
+    display: inline-block;
+    padding-top: 4px;
+    vertical-align: top;
+    font-weight: 500;
+  }
+}
+
 .tcs-content {
   flex-grow: 1;
   padding-right: 10px;
+  color: #444;
   .tcs-aside {
     font-size: 1.4rem;
     margin-bottom: 10px;
     color: #1f2e50;
   }
-  .tcs-bio {
-    color: #444;
+  h3 {
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+  table.tcs-skills {
+    tr {
+      height: 25px;
+    }
+    th {
+      text-align: left;
+      padding-right: 10px;
+    }
+    span {
+      padding: 2px 4px;
+      margin: 0 3px;
+      color: white;
+      background: #1f2e50;
+      border-radius: 3px;
+    }
   }
 }
 
+$extra-width: 200px;
 $button-colour: #5cb85c;
 .tcs-extra {
   text-align: center;
   img {
-    width: 200px;
-    height: 200px;
+    width: $extra-width;
+    height: $extra-width;
     border-radius: 4px;
   }
   button {
@@ -126,6 +194,9 @@ $button-colour: #5cb85c;
       background-color: darken($button-colour, 20%);
       transition: all .3s ease;
     }
+  }
+  p {
+    max-width: $extra-width;
   }
 }
 

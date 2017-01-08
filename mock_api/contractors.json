@@ -2,36 +2,118 @@
   {
     "name": "Adam",
     "slug": "adam",
-    "tag": "Teaches maths and english",
+    "tag_line": "Teaches maths and english",
+    "location": "London",
     "img": "https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_1.jpg",
-    "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "text_attributes": [
+      {
+        "name": "Biography",
+        "value": "I remembered the case well, for it was one in which Holmes had taken an interest on account of the peculiar ferocity of the crime and the wanton brutality which had marked all the actions of the assassin."
+      },
+      {
+        "name": "Teaching Experience",
+        "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      }
+    ],
+    "skills": [
+      {
+        "subject": "Physics",
+        "category": "Science",
+        "qual_levels": ["Master's", "Bachelor's", "BSc", "A-level"]
+      },
+      {
+        "subject": "Chemistry",
+        "category": "Science",
+        "qual_levels": ["A-level", "GCSE"]
+      },
+      {
+        "subject": "Maths",
+        "category": "Mathematics",
+        "qual_levels": ["A-level", "GCSE"]
+      },
+      {
+        "subject": "Polish",
+        "category": "Languages",
+        "qual_levels": ["GCSE", "Key Stage 5"]
+      }
+    ]
   },
   {
     "name": "Billy",
     "slug": "bob",
-    "tag": "I love cheese",
+    "tag_line": "I love cheese",
+    "location": "London",
     "img": "https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_2.jpg",
-    "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "text_attributes": [
+      {
+        "name": "Biography",
+        "value": "I remembered the case well, for it was one in which Holmes had taken an interest on account of the peculiar ferocity of the crime and the wanton brutality which had marked all the actions of the assassin."
+      },
+      {
+        "name": "Teaching Experience",
+        "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      }
+    ],
+    "skills": [
+      {
+        "subject": "Physics",
+        "category": "Science",
+        "qual_levels": ["Master's", "Bachelor's", "BSc", "A-level"]
+      },
+      {
+        "subject": "Chemistry",
+        "category": "Science",
+        "qual_levels": ["A-level", "GCSE"]
+      },
+      {
+        "subject": "Maths",
+        "category": "Mathematics",
+        "qual_levels": ["A-level", "GCSE"]
+      },
+      {
+        "subject": "Polish",
+        "category": "Languages",
+        "qual_levels": ["GCSE", "Key Stage 5"]
+      }
+    ]
   },
   {
     "name": "Charlie C",
     "slug": "charlie-c",
-    "tag": "Loves to eat cats",
+    "tag_line": "Loves to eat cats",
+    "location": "South West London",
     "img": "https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/women_1.jpg",
-    "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-  },
-  {
-    "name": "Denis",
-    "slug": "dick",
-    "tag": "Happy teaching anything except PHP",
-    "img": "https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_3.jpg",
-    "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-  },
-  {
-    "name": "Erica",
-    "slug": "erica",
-    "tag": "Fun Physics and Chemistry tutor",
-    "img": "https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/women_2.jpg",
-    "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "text_attributes": [
+      {
+        "name": "Biography",
+        "value": "I remembered the case well, for it was one in which Holmes had taken an interest on account of the peculiar ferocity of the crime and the wanton brutality which had marked all the actions of the assassin."
+      },
+      {
+        "name": "Teaching Experience",
+        "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      }
+    ],
+    "skills": [
+      {
+        "subject": "Physics",
+        "category": "Science",
+        "qual_levels": ["Master's", "Bachelor's", "BSc", "A-level"]
+      },
+      {
+        "subject": "Chemistry",
+        "category": "Science",
+        "qual_levels": ["A-level", "GCSE"]
+      },
+      {
+        "subject": "Maths",
+        "category": "Mathematics",
+        "qual_levels": ["A-level", "GCSE"]
+      },
+      {
+        "subject": "Polish",
+        "category": "Languages",
+        "qual_levels": ["GCSE", "Key Stage 5"]
+      }
+    ]
   }
 ]

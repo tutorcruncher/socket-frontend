@@ -3,10 +3,10 @@ import VueRouter from 'vue-router'
 import grid from 'src/components/grid'
 
 describe('grid.vue', () => {
-  it('should render contractor details', () => {
+  it('should render contractors', () => {
     Vue.use(VueRouter)
     const router = new VueRouter({routes: [
-        {path: '/:slug', name: 'modal', component: {template: '<div>modal</div>'}},
+        {path: '/:slug', name: 'modal', component: {render: h => '-'}},
     ]})
     const vm = new Vue({
       el: document.createElement('div'),
@@ -17,12 +17,12 @@ describe('grid.vue', () => {
       },
       methods: {
         get_data: function () {
-          this.contractors.push({name: 'Fred Bloggs', slug: 'fred-bloggs', img: 'http://path.com/to/img.jpg'})
+          this.contractors.push({name: 'Fred Bloggs', slug: 'fred-bloggs', img: 'http://path/to/img.jpg'})
         }
       }
     })
     expect(vm.$el.querySelector('h3').textContent).to.equal('Fred Bloggs')
     expect(vm.$el.querySelector('a').attributes['href'].value).to.equal('#/fred-bloggs')
-    expect(vm.$el.querySelector('img').attributes['src'].value).to.equal('http://path.com/to/img.jpg')
+    expect(vm.$el.querySelector('img').attributes['src'].value).to.equal('http://path/to/img.jpg')
   })
 })
