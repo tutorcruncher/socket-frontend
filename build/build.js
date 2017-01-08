@@ -1,19 +1,14 @@
 // https://github.com/shelljs/shelljs
-require('./check-versions')()
 require('shelljs/global')
 env.NODE_ENV = 'production'
 
-var path = require('path')
 var config = require('../config')
 var webpack = require('webpack')
 var webpackConfig = require('./webpack.prod.conf')
 
 console.log('building for production...')
 
-var assetsPath = path.join(config.build.assetsRoot, config.build.assetsSubDirectory)
-rm('-rf', assetsPath)
-mkdir('-p', assetsPath)
-cp('-R', 'static/*', assetsPath)
+rm('-r', config.build.build_dir)
 
 webpack(webpackConfig, function (err, stats) {
   if (err) throw err
