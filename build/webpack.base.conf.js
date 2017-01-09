@@ -10,8 +10,8 @@ module.exports = {
     app: './src/main.js'
   },
   output: {
-    path: config.build.build_dir,
-    filename: 'socket.js'
+    path:  path.resolve(config.build.build_dir, process.env.npm_package_version),
+    filename: 'socket.js',
   },
   resolve: {
     extensions: ['', '.js', '.vue', '.json'],
