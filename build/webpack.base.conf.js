@@ -10,7 +10,7 @@ module.exports = {
     app: './src/main.js'
   },
   output: {
-    path:  path.resolve(config.build.build_dir, process.env.npm_package_version),
+    path:  path.resolve(config.build.build_dir),
     filename: 'socket.js',
   },
   resolve: {
