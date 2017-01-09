@@ -4,6 +4,13 @@ import app from './app'
 import grid from './components/grid'
 import modal from './components/modal'
 
+// TODO: set once we've got a DSN
+// import Raven from 'raven-js'
+// import RavenVue from 'raven-js/plugins/vue'
+// if (process.env.NODE_ENV === 'production') {
+//   Raven.config('https://?@sentry.io/?').addPlugin(RavenVue, Vue).install()
+// }
+
 Vue.use(VueRouter)
 
 const ConfiguredVueRouter = config => new VueRouter({

@@ -13,6 +13,7 @@ module.exports = {
     path:  path.resolve(config.build.build_dir),
     filename: 'socket.js',
   },
+  devtool: 'source-map',
   resolve: {
     extensions: ['', '.js', '.vue', '.json'],
     fallback: [path.join(__dirname, '../node_modules')],

@@ -44,6 +44,7 @@ $border-radius: 3px;
   margin: 0 auto;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
+  user-select: none;
   img {
     border-radius: $border-radius;
     width: 150px;
