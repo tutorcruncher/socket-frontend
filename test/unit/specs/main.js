@@ -39,11 +39,11 @@ describe('main.vue', () => {
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
-    server.respondWith('/mock_api/contractors.json', dft_response)
+    server.respondWith('/api/contractors.json', dft_response)
   })
   after(() => { server.restore() })
 
-  it('should call get_data', done => {
+  it('should download contractors', done => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)

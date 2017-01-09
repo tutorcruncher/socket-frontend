@@ -42,7 +42,7 @@ app.use(devMiddleware)
 app.use(hotMiddleware)
 
 // serve mock api
-app.use('/mock_api', express.static('./mock_api'))
+app.use('/api', express.static('./api'))
 
 devMiddleware.waitUntilValid(function () {
   console.log('> Listening at http://localhost:' + port + '\n')

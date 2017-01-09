@@ -59,8 +59,6 @@
 </template>
 
 <script>
-import _ from 'lodash'
-
 export default {
   name: 'tcs-modal',
   methods: {
@@ -70,7 +68,12 @@ export default {
   },
   computed: {
     contractor: function () {
-      return _.find(this.$root.contractors, {'slug': this.$route.params.slug})
+      // return _.find(this.$root.contractors, {'slug': this.$route.params.slug})
+      for (var contractor of this.$root.contractors) {
+        if (contractor.slug === this.$route.params.slug) {
+          return contractor
+        }
+      }
     },
     contact_html: function () {
       let raw = this.$root.config.contact_html

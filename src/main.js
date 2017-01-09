@@ -67,7 +67,7 @@ module.exports = function (config) {
       get_data: function () {
         // TODO error reporting, eg. if we get a bad response or invalid json
         let xhr = new window.XMLHttpRequest()
-        xhr.open('GET', config.root_url + '/mock_api/contractors.json')
+        xhr.open('GET', config.root_url + '/api/contractors.json')
         xhr.onload = () => {
           let contractors = JSON.parse(xhr.responseText)
           this.contractors.splice(0)
