@@ -20,6 +20,7 @@ after_success:
 - bash <(curl -s https://codecov.io/bash)
 
 deploy:
+# deploy tagged builds to cdn.tutorcruncher.com/socket/<version>/socket.js
 - provider: s3
   access_key_id:
     secure: "SKus8C48fdO72ch31uR2YKLAZFJRNRRbjQKJWG4xaAh7AOIvVQXXzBgqeDlY5vz4BreIHDOkMDF0/wSHF6Lm5wgNaelbu6VAn3ASupRybrpvEsD92HbDlcUAjjl8OCqaPAXnfwFMKQZ07g61nBOlQIvRGgJvgP0WLflWrB4kyjnyEbH2qIfRnfjYHMFP/xHpLrEr3fL+im2O4W12nTj5AMiS0FM/yb8NZrep8IK/c7jiQIceQuroPm5vTNdBC9ZiKSf0ggwCc2m/hmi+i8KX+OiHz8h8Q8T84J8aik7ig16CQsfXAZq+SUSIDTWIJ1VWY5L67aBaApZKZ1WNASFrREWAgLZvEEEqKUQCDqTE6nYn3Xmu8T1CQK23VObxAJMGs6KZ2DYB9Qsi15bgUK8TYZkKxTxeLLMWtPl9k3mD14NkkeE5TWOVlLr7ATURbzJCgaYkYhf5+4Pudhn8PnzFoJHEzcpEARP+GFAm6SFh8KXQvNiYqSGN2ui2gsb5m2PHjyxpbK2awGjs2EMxTuYHQcIfhEuT+qJ2G6fG9lcpe+/YLwky3E8BgAhMy/5Wzx03JMCwoc+K3/kMGiugGrNdfx5mofbG+lZVDTquPsHl2wzJorZ8Z1zhgWYJWt5LsgQD1u8FyBSOJDxtReaGN7B5qQ1wwNR+lVu3oNcfi3pOUMg="
@@ -32,8 +33,8 @@ deploy:
   local_dir: dist
   upload-dir: socket
   on:
-    branch: master
     tags: true
+# deploy all builds to cdn.tutorcruncher.com/socket/dev/<version>/socket.js
 - provider: s3
   access_key_id:
     secure: "SKus8C48fdO72ch31uR2YKLAZFJRNRRbjQKJWG4xaAh7AOIvVQXXzBgqeDlY5vz4BreIHDOkMDF0/wSHF6Lm5wgNaelbu6VAn3ASupRybrpvEsD92HbDlcUAjjl8OCqaPAXnfwFMKQZ07g61nBOlQIvRGgJvgP0WLflWrB4kyjnyEbH2qIfRnfjYHMFP/xHpLrEr3fL+im2O4W12nTj5AMiS0FM/yb8NZrep8IK/c7jiQIceQuroPm5vTNdBC9ZiKSf0ggwCc2m/hmi+i8KX+OiHz8h8Q8T84J8aik7ig16CQsfXAZq+SUSIDTWIJ1VWY5L67aBaApZKZ1WNASFrREWAgLZvEEEqKUQCDqTE6nYn3Xmu8T1CQK23VObxAJMGs6KZ2DYB9Qsi15bgUK8TYZkKxTxeLLMWtPl9k3mD14NkkeE5TWOVlLr7ATURbzJCgaYkYhf5+4Pudhn8PnzFoJHEzcpEARP+GFAm6SFh8KXQvNiYqSGN2ui2gsb5m2PHjyxpbK2awGjs2EMxTuYHQcIfhEuT+qJ2G6fG9lcpe+/YLwky3E8BgAhMy/5Wzx03JMCwoc+K3/kMGiugGrNdfx5mofbG+lZVDTquPsHl2wzJorZ8Z1zhgWYJWt5LsgQD1u8FyBSOJDxtReaGN7B5qQ1wwNR+lVu3oNcfi3pOUMg="
@@ -46,4 +47,4 @@ deploy:
   local_dir: dist
   upload-dir: socket/dev
   on:
-    branch: dev
+    all_branches: true
