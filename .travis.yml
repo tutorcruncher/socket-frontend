@@ -30,6 +30,7 @@ deploy:
   acl: public_read
   region: eu-west-1
   local_dir: dist
+  upload-dir: socket
   on:
     branch: master
     tags: true
@@ -43,6 +44,6 @@ deploy:
   acl: public_read
   region: eu-west-1
   local_dir: dist
-  upload-dir: dev
+  upload-dir: socket/dev
   on:
     branch: dev
