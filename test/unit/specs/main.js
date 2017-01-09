@@ -1,13 +1,13 @@
 import socket from 'src/main'
 
-const DftResponse = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "slug": "foobar"}]']
+const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "slug": "foobar"}]']
 
 describe('main.vue', done => {
   let server
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
-    server.respondWith(DftResponse)
+    server.respondWith(dft_response)
   })
   after(() => { server.restore() })
 
@@ -39,7 +39,7 @@ describe('main.vue', () => {
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
-    server.respondWith('/mock_api/contractors.json', DftResponse)
+    server.respondWith('/mock_api/contractors.json', dft_response)
   })
   after(() => { server.restore() })
 

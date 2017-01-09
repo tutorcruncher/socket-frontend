@@ -6,7 +6,8 @@ import modal from './components/modal'
 
 Vue.use(VueRouter)
 
-const router = new VueRouter({
+const ConfiguredVueRouter = config => new VueRouter({
+  mode: config.router_mode,
   routes: [
     {
       path: '/',
@@ -34,12 +35,29 @@ module.exports = function (config) {
     config.element = '#socket'
   }
 
+  if (config.router_mode === undefined) {
+    config.router_mode = 'hash'
+  }
+
+  if (config.contact_html === undefined) {
+    config.contact_html = 'To request tutoring from {name} please <a href="{contact_link}">get in touch</a> with us.'
+  }
+
+  if (config.contact_link === undefined) {
+    config.contact_link = '/contact'
+  }
+
+  if (config.skills_label === undefined) {
+    config.skills_label = 'Skills'
+  }
+
   return new Vue({
     el: config.element,
-    router: router,
+    router: ConfiguredVueRouter(config),
     render: h => h(app),
     data: {
-      contractors: []
+      contractors: [],
+      config: config
     },
     components: {
       app

@@ -13,6 +13,10 @@
           <div class="tcs-body">
             <div class="tcs-content">
               <div class="tcs-location">
+                <!--
+                this is the svg for map icon straight from
+                https://github.com/encharm/Font-Awesome-SVG-PNG/blob/master/black/svg/map-marker.svg
+                -->
                 <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
                   <path d="M1152 640q0-106-75-181t-181-75-181 75-75 181 75 181 181 75 181-75 75-181zm256 0q0 109-33
                     179l-364 774q-16 33-47.5 52t-67.5 19-67.5-19-46.5-52l-365-774q-33-70-33-179 0-212 150-362t362-150
@@ -20,6 +24,7 @@
                 </svg>
                 <span>{{ contractor.location }}</span>
               </div>
+
               <div class="tcs-aside">{{ contractor.tag_line }}</div>
               <div v-for="text_attribute in contractor.text_attributes">
                 <h3>{{ text_attribute.name }}</h3>
@@ -27,7 +32,9 @@
               </div>
 
               <table class="tcs-skills" v-if="contractor.skills">
-                <h3>Skills</h3>
+                <caption>
+                  <h3>{{ $root.config.skills_label }}</h3>
+                </caption>
                 <tr v-for="skill in contractor.skills">
                   <th scope="row">{{ skill.subject }}</th>
                   <td>
@@ -41,7 +48,7 @@
             <div class="tcs-extra">
               <img :src="contractor.img" :alt="contractor.name">
               <!--<button>Contact {{ contractor.name }}</button>-->
-              <p>To request tutoring from {{ contractor.name }} please get in touch with us.<p>
+              <p v-html="contact_html"></p>
             </div>
           </div>
         </div>
@@ -64,6 +71,10 @@ export default {
   computed: {
     contractor: function () {
       return _.find(this.$root.contractors, {'slug': this.$route.params.slug})
+    },
+    contact_html: function () {
+      let raw = this.$root.config.contact_html
+      return raw.replace('{name}', this.contractor.name).replace('{contact_link}', this.$root.config.contact_link)
     }
   }
 }
@@ -112,6 +123,11 @@ $back-colour: 35;
     font-size: 1.6rem;
     text-decoration: none;
     color: #888 !important;
+    transition: all .3s ease;
+    padding: 5px;
+    &:hover {
+      color: black !important;
+    }
   }
 }
 
@@ -155,6 +171,9 @@ $back-colour: 35;
     font-weight: 400;
   }
   table.tcs-skills {
+    caption {
+      text-align: left;
+    }
     tr {
       height: 25px;
     }
@@ -190,9 +209,10 @@ $button-colour: #5cb85c;
     padding: 8px 12px;
     width: 100%;
     border: none;
+    transition: all .3s ease;
+    outline: none;
     &:hover {
       background-color: darken($button-colour, 20%);
-      transition: all .3s ease;
     }
   }
   p {
