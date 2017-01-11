@@ -77,9 +77,26 @@ describe('main.vue', () => {
     setTimeout(() => {
       !expect(vm.error).to.not.equal(null)
       expect(vm.error).to.contain('Error: bad response 404')
+      expect(vm.error).to.contain('response status: 404')
       expect(vm.error).to.contain('response text:\nbadness')
+      expect(vm.error).to.not.contain('Connection error')
       done()
     }, 50)
   })
 })
 
+describe('main.vue', () => {
+  it('should show connection error', done => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+
+    const vm = socket({api_root: 'http://localhost:12345678'})
+
+    setTimeout(() => {
+      expect(vm.error).to.contain('Connection error')
+      expect(vm.error).to.contain('response status: 0')
+      done()
+    }, 50)
+  })
+})

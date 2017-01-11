@@ -32,8 +32,8 @@ const ConfiguredVueRouter = config => new VueRouter({
 module.exports = function (config) {
   config = config || {}
 
-  if (config.root_url === undefined) {
-    config.root_url = process.env.SOCKET_API_URL
+  if (config.api_root === undefined) {
+    config.api_root = process.env.SOCKET_API_URL
   }
 
   if (config.element === undefined) {
@@ -72,7 +72,7 @@ module.exports = function (config) {
       // get_data is called by components, eg. grid
       get_data: function () {
         let xhr = new window.XMLHttpRequest()
-        let url = config.root_url + '/contractors.json'
+        let url = config.api_root + '/contractors.json'
         xhr.open('GET', url)
         xhr.onload = () => {
           let contractors
@@ -91,11 +91,18 @@ module.exports = function (config) {
 ${e.toString()}
 requested url:   "${url}"
 response status: ${xhr.status}
-
 response text:
 ${xhr.responseText}`
             Raven.captureException(new Error(this.error))
           }
+        }
+        xhr.onerror = () => {
+          this.error = `\
+Connection error
+requested url:   "${url}"
+response status: ${xhr.status}
+response text: "${xhr.responseText}"`
+          Raven.captureException(new Error(this.error))
         }
         xhr.send()
       }
