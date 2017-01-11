@@ -11,7 +11,8 @@ let webpackConfig = require('./webpack.prod.conf')
 
 console.log('building for production...')
 
-rm('-r', config.build.build_dir)
+// remove the entire ./dist directory to avoid confusion
+rm('-r', path.resolve(__dirname, '../dist'))
 
 webpack(webpackConfig, function (err, stats) {
   if (err) throw err

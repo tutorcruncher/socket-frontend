@@ -1,7 +1,11 @@
 var path = require('path')
 
-if (process.env['TRAVIS_TAG'] !== undefined) {
-  console.log('detected TRAVIS_TAG')
+if (process.env['TRAVIS_TAG']) {
+  console.log(`detected TRAVIS_TAG "${process.env['TRAVIS_TAG']}", building for release deploy.`)
+  if (process.env['TRAVIS_TAG'] !== process.env.npm_package_version) {
+    throw `travis tag does not match npm_pckage_version: \
+${process.env['TRAVIS_TAG']} vs ${process.env.npm_package_version}`
+  }
   var prod_build_dir = path.resolve(__dirname, 'dist', process.env.npm_package_version)
   var prod_public_path = 'https://cdn.tutorcruncher.com/socket/' + process.env.npm_package_version + '/'
 } else {

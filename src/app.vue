@@ -1,11 +1,11 @@
 <template>
   <div id="tcs-app">
-    <div v-if="$root.errors" class="tcs-errors">
+    <div v-if="$root.error" class="tcs-errors">
       <h2>Error</h2>
       <p>
         An error occurred with TutorCruncher socket:
       </p>
-      <p class="tcs-error-content">{{ $root.errors }}</p>
+      <p class="tcs-error-content">{{ $root.error }}</p>
       <p>
       <dl>
         <dt>If you're visiting this site:</dt>
