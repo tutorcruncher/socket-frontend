@@ -7,7 +7,6 @@ var baseWebpackConfig = require('./webpack.base.conf')
 var env = process.env.NODE_ENV === 'testing' ? config.test.env : config.build.env
 
 module.exports = merge(baseWebpackConfig, {
-  // TODO add version to output dir
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({'process.env': env}),

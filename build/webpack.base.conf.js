@@ -3,15 +3,21 @@ var config = require('../config')
 var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
 
-var env = process.env.NODE_ENV
+var current_conf = config.build
+if (process.env.NODE_ENV === 'testing') {
+  current_conf = config.test
+} else if (process.env.NODE_ENV === 'development') {
+  current_conf = config.dev
+}
 
 module.exports = {
   entry: {
-    app: './src/main.js'
+    socket: './src/main.js'
   },
   output: {
-    path:  path.resolve(config.build.build_dir),
-    filename: 'socket.js',
+    path:  path.resolve(current_conf.build_dir),
+    filename: '[name].js',
+    publicPath: current_conf.public_path,
   },
   devtool: 'source-map',
   resolve: {
@@ -58,6 +64,13 @@ module.exports = {
         exclude: /node_modules/
       },
       {
+        test: /\.(png|jpe?g|gif|svg)$/,
+        loader: 'file',
+        query: {
+          name: 'img/[name].[ext]'
+        }
+      },
+      {
         test: /\/main\.js$/,
         loaders: ['expose-loader?socket', 'babel']
       }
@@ -67,7 +80,7 @@ module.exports = {
     formatter: require('eslint-friendly-formatter')
   },
   vue: {
-    loaders: utils.cssLoaders({sourceMap: env === 'development'}),
+    loaders: utils.cssLoaders(current_conf.css_source_map),
     postcss: [
       require('autoprefixer')({
         browsers: ['last 2 versions']

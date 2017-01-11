@@ -23,8 +23,7 @@ webpack(webpackConfig, function (err, stats) {
     chunks: false,
     chunkModules: false
   }) + '\n')
-
-  let f = path.join(config.build.build_dir, stats.compilation.outputOptions.filename)
+  let f = path.join(config.build.build_dir, 'socket.js')
   fs.readFile(f, 'utf8', function (err, content) {
     if (err) throw err
     content = config.build.build_deets + '\n' + content

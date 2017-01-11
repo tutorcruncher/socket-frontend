@@ -4,7 +4,7 @@
     "slug": "adam",
     "tag_line": "Teaches maths and english",
     "location": "London",
-    "img": "https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_1.jpg",
+    "img": "https://demoimages.tutorcruncher.com/men_1.jpg",
     "text_attributes": [
       {
         "name": "Biography",
@@ -43,7 +43,7 @@
     "slug": "bob",
     "tag_line": "I love cheese",
     "location": "London",
-    "img": "https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/men_2.jpg",
+    "img": "https://demoimages.tutorcruncher.com/men_2.jpg",
     "text_attributes": [
       {
         "name": "Biography",
@@ -82,7 +82,7 @@
     "slug": "charlie-c",
     "tag_line": "Loves to eat cats",
     "location": "South West London",
-    "img": "https://s3-eu-west-1.amazonaws.com/tutorcruncher-demo-images/women_1.jpg",
+    "img": "https://demoimages.tutorcruncher.com/women_1.jpg",
     "text_attributes": [
       {
         "name": "Biography",

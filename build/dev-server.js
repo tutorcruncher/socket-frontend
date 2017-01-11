@@ -3,8 +3,8 @@ var path = require('path')
 var express = require('express')
 var webpack = require('webpack')
 if (!process.env.NODE_ENV) {
-  var webpackConfig = require('./webpack.dev.conf')
   process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
+  var webpackConfig = require('./webpack.dev.conf')
 } else {
   var webpackConfig = require('./webpack.prod.conf')
 }

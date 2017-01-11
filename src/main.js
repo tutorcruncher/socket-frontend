@@ -1,15 +1,13 @@
+import Raven from 'raven-js'
+import RavenVue from 'raven-js/plugins/vue'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import app from './app'
 import grid from './components/grid'
 import modal from './components/modal'
 
-// TODO: set once we've got a DSN
-// import Raven from 'raven-js'
-// import RavenVue from 'raven-js/plugins/vue'
-// if (process.env.NODE_ENV === 'production') {
-//   Raven.config('https://?@sentry.io/?').addPlugin(RavenVue, Vue).install()
-// }
+let dsn = process.env.NODE_ENV === 'production' && 'https://e8143a1422274f0bbf312ed8792f4e86@sentry.io/128441'
+Raven.config(dsn).addPlugin(RavenVue, Vue).install()
 
 Vue.use(VueRouter)
 
@@ -64,7 +62,8 @@ module.exports = function (config) {
     render: h => h(app),
     data: {
       contractors: [],
-      config: config
+      config: config,
+      error: null,
     },
     components: {
       app
@@ -72,15 +71,31 @@ module.exports = function (config) {
     methods: {
       // get_data is called by components, eg. grid
       get_data: function () {
-        // TODO error reporting, eg. if we get a bad response or invalid json
         let xhr = new window.XMLHttpRequest()
-        xhr.open('GET', config.root_url + '/api/contractors.json')
+        let url = config.root_url + '/api/contractors.json'
+        xhr.open('GET', url)
         xhr.onload = () => {
-          let contractors = JSON.parse(xhr.responseText)
-          this.contractors.splice(0)
-          contractors.forEach(con => {
-            this.contractors.push(con)
-          })
+          let contractors
+          try {
+            if (xhr.status !== 200) {
+              throw new Error(`bad response ${xhr.status}`)
+            } else {
+              contractors = JSON.parse(xhr.responseText)
+            }
+            this.contractors.splice(0)
+            contractors.forEach(con => {
+              this.contractors.push(con)
+            })
+          } catch (e) {
+            this.error = `\
+${e.toString()}
+requested url:   "${url}"
+response status: ${xhr.status}
+
+response text:
+${xhr.responseText}`
+            Raven.captureException(e)
+          }
         }
         xhr.send()
       }
