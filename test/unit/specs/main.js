@@ -39,7 +39,7 @@ describe('main.vue', () => {
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
-    server.respondWith('/api/contractors.json', dft_response)
+    server.respondWith('/contractors.json', dft_response)
   })
   after(() => { server.restore() })
 
@@ -63,7 +63,7 @@ describe('main.vue', () => {
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
-    server.respondWith('/api/contractors.json', [404, {}, 'badness'])
+    server.respondWith('/contractors.json', [404, {}, 'badness'])
   })
   after(() => { server.restore() })
 

@@ -7,7 +7,7 @@ import grid from './components/grid'
 import modal from './components/modal'
 
 let dsn = process.env.NODE_ENV === 'production' && 'https://e8143a1422274f0bbf312ed8792f4e86@sentry.io/128441'
-Raven.config(dsn).addPlugin(RavenVue, Vue).install()
+Raven.config(dsn, {release: process.env.RELEASE}).addPlugin(RavenVue, Vue).install()
 
 Vue.use(VueRouter)
 
@@ -33,7 +33,7 @@ module.exports = function (config) {
   config = config || {}
 
   if (config.root_url === undefined) {
-    config.root_url = ''  // TODO
+    config.root_url = process.env.SOCKET_API_URL
   }
 
   if (config.element === undefined) {
@@ -72,7 +72,7 @@ module.exports = function (config) {
       // get_data is called by components, eg. grid
       get_data: function () {
         let xhr = new window.XMLHttpRequest()
-        let url = config.root_url + '/api/contractors.json'
+        let url = config.root_url + '/contractors.json'
         xhr.open('GET', url)
         xhr.onload = () => {
           let contractors
@@ -94,7 +94,7 @@ response status: ${xhr.status}
 
 response text:
 ${xhr.responseText}`
-            Raven.captureException(e)
+            Raven.captureException(new Error(this.error))
           }
         }
         xhr.send()
