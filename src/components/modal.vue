@@ -22,20 +22,25 @@
                     179l-364 774q-16 33-47.5 52t-67.5 19-67.5-19-46.5-52l-365-774q-33-70-33-179 0-212 150-362t362-150
                     362 150 150 362z"/>
                 </svg>
-                <span>{{ contractor.location }}</span>
+                <span>{{ contractor.town }}, {{ contractor.country }}</span>
               </div>
 
               <div class="tcs-aside">{{ contractor.tag_line }}</div>
-              <div v-for="text_attribute in contractor.text_attributes">
-                <h3>{{ text_attribute.name }}</h3>
-                {{ text_attribute.value }}
+
+              <div>
+                {{ contractor.primary_description }}
               </div>
 
-              <table class="tcs-skills" v-if="contractor.skills">
+              <div v-for="attr in contractor_extra.extra_attributes">
+                <h3>{{ attr.name }}</h3>
+                {{ attr.value }}
+              </div>
+
+              <table class="tcs-skills" v-if="contractor_extra.skills">
                 <caption>
                   <h3>{{ $root.config.skills_label }}</h3>
                 </caption>
-                <tr v-for="skill in contractor.skills">
+                <tr v-for="skill in contractor_extra.skills">
                   <th scope="row">{{ skill.subject }}</th>
                   <td>
                   <span v-for="qual_level in skill.qual_levels">
@@ -46,13 +51,16 @@
               </table>
             </div>
             <div class="tcs-extra">
-              <img :src="contractor.img" :alt="contractor.name">
+              <img :src="contractor.photo" :alt="contractor.name">
               <!--<button>Contact {{ contractor.name }}</button>-->
               <p v-html="contact_html"></p>
             </div>
           </div>
         </div>
 
+      </div>
+      <div v-else class="tcs-container">
+        <p>Could not find contractor.</p>
       </div>
     </div>
   </transition>
@@ -68,12 +76,16 @@ export default {
   },
   computed: {
     contractor: function () {
-      // return _.find(this.$root.contractors, {'slug': this.$route.params.slug})
       for (var contractor of this.$root.contractors) {
-        if (contractor.slug === this.$route.params.slug) {
+        if (contractor.link === this.$route.params.link) {
+          console.log('con', contractor)
+          this.$root.get_details(contractor.url, contractor.link)
           return contractor
         }
       }
+    },
+    contractor_extra: function () {
+      return this.$root.contractors_extra[this.$route.params.link] || {}
     },
     contact_html: function () {
       let raw = this.$root.config.contact_html
@@ -142,7 +154,7 @@ $back-colour: 35;
 .tcs-location {
   margin-bottom: 10px;
   float: right;
-  $svg-size: 24px;
+  $svg-size: 22px;
   svg {
     width: $svg-size;
     height: $svg-size;

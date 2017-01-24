@@ -41,7 +41,8 @@ module.exports = {
     env: {
       NODE_ENV: '"development"',
       RELEASE: '"development"',
-      SOCKET_API_URL: '"api/"',
+      // SOCKET_API_URL: '"api/"',
+      SOCKET_API_URL: '"https://socket.tutorcruncher.com"',
     },
     port: 8000,
     build_dir: path.resolve(__dirname, 'dev'),

@@ -1,8 +1,8 @@
 <template>
   <div id="tcs-grid">
     <div v-for="contractor in contractors" class="tcs-col">
-      <router-link :to="{name: 'modal', params: {slug: contractor.slug}}" class="tcs-box">
-        <img :src="contractor.img" :alt="contractor.name">
+      <router-link :to="{name: 'modal', params: {link: contractor.link}}" class="tcs-box">
+        <img :src="contractor.photo" :alt="contractor.name">
         <h3 class="tcs-name">{{ contractor.name }}</h3>
       </router-link>
     </div>
@@ -15,7 +15,7 @@ export default {
   name: 'grid',
   created: function () {
     // called here so get_data can be passed an argument for extra pages
-    this.$root.get_data()
+    this.$root.get_list()
   },
   data: function () {
     return {contractors: this.$root.contractors}

@@ -20,7 +20,7 @@ const ConfiguredVueRouter = config => new VueRouter({
       component: grid,
       children: [
         {
-          path: '/:slug',
+          path: '/:link',
           name: 'modal',
           component: modal,
         }
@@ -29,7 +29,7 @@ const ConfiguredVueRouter = config => new VueRouter({
   ]
 })
 
-module.exports = function (config) {
+module.exports = function (public_key, config) {
   config = config || {}
 
   if (config.api_root === undefined) {
@@ -62,17 +62,19 @@ module.exports = function (config) {
     render: h => h(app),
     data: {
       contractors: [],
+      contractors_extra: {},
       config: config,
       error: null,
+      public_key: public_key,
     },
     components: {
       app
     },
     methods: {
       // get_data is called by components, eg. grid
-      get_data: function () {
+      get_list: function () {
         let xhr = new window.XMLHttpRequest()
-        let url = config.api_root + '/contractors.json'
+        let url = `${config.api_root}/${public_key}/contractors`
         xhr.open('GET', url)
         xhr.onload = () => {
           let contractors
@@ -83,9 +85,7 @@ module.exports = function (config) {
               contractors = JSON.parse(xhr.responseText)
             }
             this.contractors.splice(0)
-            contractors.forEach(con => {
-              this.contractors.push(con)
-            })
+            contractors.forEach(con => this.contractors.push(con))
           } catch (e) {
             this.error = `\
 ${e.toString()}
@@ -101,8 +101,24 @@ ${xhr.responseText}`
 Connection error
 requested url:   "${url}"
 response status: ${xhr.status}
-response text: "${xhr.responseText}"`
+response text:   "${xhr.responseText}"`
           Raven.captureException(new Error(this.error))
+        }
+        xhr.send()
+      },
+      get_details: function (url, link) {
+        if (this.contractors_extra[link] !== undefined) {
+          return
+        }
+        let xhr = new window.XMLHttpRequest()
+        xhr.open('GET', url)
+        xhr.onload = () => {
+          if (xhr.status !== 200) {
+            throw new Error(`bad response ${xhr.status}`)
+          } else {
+            let con = JSON.parse(xhr.responseText)
+            Vue.set(this.contractors_extra, link, con)
+          }
         }
         xhr.send()
       }
