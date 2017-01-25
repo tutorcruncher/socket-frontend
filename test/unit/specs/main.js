@@ -2,7 +2,7 @@ import socket from 'src/main'
 
 const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "slug": "foobar"}]']
 
-describe('main.vue', done => {
+describe('main.js', done => {
   let server
   before(() => {
     server = sinon.fakeServer.create()
@@ -19,7 +19,7 @@ describe('main.vue', done => {
     el.setAttribute('id', 'foobar')
     outer.appendChild(el)
 
-    const vm = socket({
+    const vm = socket('public_key', {
       element: '#foobar'
     })
 
@@ -34,12 +34,12 @@ describe('main.vue', done => {
   })
 })
 
-describe('main.vue', () => {
+describe('main.js', () => {
   let server
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
-    server.respondWith('/contractors.json', dft_response)
+    server.respondWith('/public_key/contractors', dft_response)
   })
   after(() => { server.restore() })
 
@@ -48,7 +48,7 @@ describe('main.vue', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket()
+    const vm = socket('public_key')
 
     setTimeout(() => {
       expect(vm.error).to.equal(null)
@@ -58,12 +58,12 @@ describe('main.vue', () => {
   })
 })
 
-describe('main.vue', () => {
+describe('main.js', () => {
   let server
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
-    server.respondWith('/contractors.json', [404, {}, 'badness'])
+    server.respondWith('/public_key/contractors', [404, {}, 'badness'])
   })
   after(() => { server.restore() })
 
@@ -72,7 +72,7 @@ describe('main.vue', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket()
+    const vm = socket('public_key')
 
     setTimeout(() => {
       !expect(vm.error).to.not.equal(null)
@@ -85,13 +85,13 @@ describe('main.vue', () => {
   })
 })
 
-describe('main.vue', () => {
+describe('main.js', () => {
   it('should show connection error', done => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket({api_root: 'http://localhost:12345678'})
+    const vm = socket('the-public-key', {api_root: 'http://localhost:12345678'})
 
     setTimeout(() => {
       expect(vm.error).to.contain('Connection error')

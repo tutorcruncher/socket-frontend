@@ -31,9 +31,9 @@
                 {{ contractor.primary_description }}
               </div>
 
-              <div v-for="attr in contractor_extra.extra_attributes">
+              <div class="tcs-attr" v-for="attr in contractor_extra.extra_attributes">
                 <h3>{{ attr.name }}</h3>
-                {{ attr.value }}
+                <p>{{ attr.value }}</p>
               </div>
 
               <table class="tcs-skills" v-if="contractor_extra.skills">
@@ -78,7 +78,6 @@ export default {
     contractor: function () {
       for (var contractor of this.$root.contractors) {
         if (contractor.link === this.$route.params.link) {
-          console.log('con', contractor)
           this.$root.get_details(contractor.url, contractor.link)
           return contractor
         }

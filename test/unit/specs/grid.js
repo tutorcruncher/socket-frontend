@@ -6,7 +6,7 @@ describe('grid.vue', () => {
   it('should render contractors', () => {
     Vue.use(VueRouter)
     const router = new VueRouter({routes: [
-        {path: '/:slug', name: 'modal', component: {render: h => '-'}},
+        {path: '/:link', name: 'modal', component: {render: h => '-'}},
     ]})
     const vm = new Vue({
       el: document.createElement('div'),
@@ -16,8 +16,8 @@ describe('grid.vue', () => {
         contractors: []
       },
       methods: {
-        get_data: function () {
-          this.contractors.push({name: 'Fred Bloggs', slug: 'fred-bloggs', img: 'http://path/to/img.jpg'})
+        get_list: function () {
+          this.contractors.push({name: 'Fred Bloggs', link: 'fred-bloggs', photo: 'http://path/to/img.jpg'})
         }
       }
     })
