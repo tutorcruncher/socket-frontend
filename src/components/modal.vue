@@ -177,6 +177,7 @@ $back-colour: 35;
     font-size: 1.4rem;
     margin-bottom: 10px;
     color: #1f2e50;
+    min-height: 28px;
   }
   h3 {
     margin-top: 12px;
