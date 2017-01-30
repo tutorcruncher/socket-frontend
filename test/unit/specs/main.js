@@ -1,6 +1,6 @@
 import socket from 'src/main'
 
-const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "slug": "foobar"}]']
+const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "link": "foobar"}]']
 
 describe('main.js', done => {
   let server
@@ -52,7 +52,7 @@ describe('main.js', () => {
 
     setTimeout(() => {
       expect(vm.error).to.equal(null)
-      expect(vm.contractors).to.deep.equal([{name: 'Foobars', slug: 'foobar'}])
+      expect(vm.contractors).to.deep.equal([{name: 'Foobars', link: 'foobar'}])
       done()
     }, 50)
   })
