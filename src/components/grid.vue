@@ -2,7 +2,7 @@
   <div id="tcs-grid">
     <div v-for="contractor in contractors" class="tcs-col">
       <router-link :to="{name: 'modal', params: {link: contractor.link}}" class="tcs-box">
-        <img :src="contractor.photo" :alt="contractor.name">
+        <img :src="contractor.photo" :alt="contractor.name" class="tcs-thumb">
         <h3 class="tcs-name">{{ contractor.name }}</h3>
       </router-link>
     </div>
@@ -23,7 +23,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #tcs-grid {
   padding: 10px;
   display: flex;
@@ -45,10 +45,11 @@ $border-radius: 3px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
   user-select: none;
-  img {
+  img.tcs-thumb {
     border-radius: $border-radius;
     width: 150px;
     height: 150px;
+    margin: 0 0 5px;
   }
   .tcs-name {
     display: block;

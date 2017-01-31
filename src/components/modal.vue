@@ -1,7 +1,7 @@
 <template>
   <transition name="tcs-modal">
-    <div class="modal-mask" @click="close">
-      <div v-if="contractor" class="tcs-container" @click.stop>
+    <div class="tcs-modal-mask" @click="close">
+      <div v-if="contractor" class="tcs-modal" @click.stop>
         <div class="tcs-scroll">
           <div class="tcs-header">
             <h2>{{ contractor.name }}</h2>
@@ -59,7 +59,7 @@
         </div>
 
       </div>
-      <div v-else class="tcs-container">
+      <div v-else class="tcs-modal">
         <p>Could not find contractor.</p>
       </div>
     </div>
@@ -90,13 +90,21 @@ export default {
       let raw = this.$root.config.contact_html
       return raw.replace('{name}', this.contractor.name).replace('{contact_link}', this.$root.config.contact_link)
     }
+  },
+  created: function () {
+    this.body_overflow_before = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+  },
+  destroyed: function () {
+    document.body.style.overflow = this.body_overflow_before
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $back-colour: 35;
-.modal-mask {
+$hightlight: #1f2e50;
+.tcs-modal-mask {
   position: fixed;
   z-index: 9998;
   top: 0;
@@ -107,7 +115,7 @@ $back-colour: 35;
   transition: opacity .3s ease;
 }
 
-.tcs-container {
+.tcs-modal {
   max-width: 800px;
   margin: 6vh auto 0;
   padding: 20px 20px 40px;
@@ -129,12 +137,12 @@ $back-colour: 35;
     margin-top: 0;
     margin-bottom: 0;
     display: inline;
-    font-size: 1.8rem;
+    font-size: 29px;
     font-weight: 400;
   }
   .close {
     float: right;
-    font-size: 1.6rem;
+    font-size: 26px;
     text-decoration: none;
     color: #888 !important;
     transition: all .3s ease;
@@ -158,7 +166,7 @@ $back-colour: 35;
     width: $svg-size;
     height: $svg-size;
     path {
-      fill: #1f2e50;
+      fill: $hightlight;
     }
   }
   span {
@@ -174,20 +182,25 @@ $back-colour: 35;
   padding-right: 10px;
   color: #444;
   .tcs-aside {
-    font-size: 1.4rem;
+    font-size: 22px;
     margin-bottom: 10px;
-    color: #1f2e50;
+    color: $hightlight;
     min-height: 28px;
   }
   h3 {
     margin-top: 12px;
     margin-bottom: 4px;
-    font-size: 1.5rem;
+    font-size: 24px;
     font-weight: 400;
   }
   table.tcs-skills {
+    border: none;
     caption {
       text-align: left;
+    }
+    th, td {
+      padding: 0;
+      font-size: 15px;
     }
     tr {
       height: 25px;
@@ -200,7 +213,7 @@ $back-colour: 35;
       padding: 2px 4px;
       margin: 0 3px;
       color: white;
-      background: #1f2e50;
+      background: $hightlight;
       border-radius: 3px;
     }
   }
@@ -220,7 +233,7 @@ $button-colour: #5cb85c;
     background-color: $button-colour;
     color: white;
     border-radius: 5px;
-    font-size: 1.05rem;
+    font-size: 17px;
     padding: 8px 12px;
     width: 100%;
     border: none;
@@ -232,6 +245,9 @@ $button-colour: #5cb85c;
   }
   p {
     max-width: $extra-width;
+  }
+  a {
+    color: $hightlight;
   }
 }
 

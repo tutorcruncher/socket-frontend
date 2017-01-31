@@ -34,7 +34,7 @@ describe('modal.vue', () => {
 })
 
 describe('modal.vue', () => {
-  it('should closes on modal-mask', done => {
+  it('should closes on tcs-modal-mask', done => {
     Vue.use(VueRouter)
     const router = new VueRouter({routes: [
         {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
@@ -49,7 +49,7 @@ describe('modal.vue', () => {
     })
     router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
-      expect(vm.$el.attributes['class'].value).to.equal('modal-mask')
+      expect(vm.$el.attributes['class'].value).to.equal('tcs-modal-mask')
       // this is clicking the background
       vm.$el.click()
       Vue.nextTick(() => {
