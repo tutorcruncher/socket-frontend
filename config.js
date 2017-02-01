@@ -10,10 +10,12 @@ if (process.env.TRAVIS_TAG) {
   prod_public_path = 'https://cdn.tutorcruncher.com/socket/' + process.env.npm_package_version + '/'
   version = `${process.env.npm_package_version}`
 } else {
-  prod_build_dir = path.resolve(__dirname, 'dist', 'dev', process.env.npm_package_version)
+  console.log('no tag detected, building to dev > branch')
+  prod_build_dir = path.resolve(__dirname, 'dist', 'dev', process.env.TRAVIS_BRANCH || '')
   prod_public_path = 'https://cdn.tutorcruncher.com/socket/dev/' + process.env.npm_package_version + '/'
   version = `${process.env.npm_package_version}-${process.env.TRAVIS_COMMIT}`
 }
+console.log(`build directory: "${prod_build_dir}"`)
 
 module.exports = {
   build: {

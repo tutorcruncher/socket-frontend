@@ -15,12 +15,12 @@ const ConfiguredVueRouter = config => new VueRouter({
   mode: config.router_mode,
   routes: [
     {
-      path: '/',
+      path: config.url_root,
       name: 'index',
       component: grid,
       children: [
         {
-          path: '/:link',
+          path: config.url_root + ':link',
           name: 'modal',
           component: modal,
         }
@@ -31,17 +31,25 @@ const ConfiguredVueRouter = config => new VueRouter({
 
 module.exports = function (public_key, config) {
   config = config || {}
+  let error = null
 
   if (config.api_root === undefined) {
     config.api_root = process.env.SOCKET_API_URL
   }
 
-  if (config.element === undefined) {
-    config.element = '#socket'
+  if (config.url_root === undefined) {
+    config.url_root = '/'
+  } else if (!config.url_root.startsWith('/')) {
+    config.url_root = '/'
+    error = 'the "url_root" config parameter should start (and probably end) with a slash "/"'
   }
 
   if (config.router_mode === undefined) {
     config.router_mode = 'hash'
+  }
+
+  if (config.element === undefined) {
+    config.element = '#socket'
   }
 
   if (config.contact_html === undefined) {
@@ -72,7 +80,17 @@ module.exports = function (public_key, config) {
     },
     methods: {
       // get_data is called by components, eg. grid
+      handle_error: function (error_message) {
+        this.error = error_message || 'unknown'
+        console.error(this.error)
+        Raven.captureException(new Error(this.error))
+      },
       get_list: function () {
+        // if an error already exists show that and return
+        if (error !== null) {
+          this.handle_error(error)
+          return
+        }
         let xhr = new window.XMLHttpRequest()
         let url = `${config.api_root}/${public_key}/contractors`
         xhr.open('GET', url)
@@ -87,22 +105,20 @@ module.exports = function (public_key, config) {
             this.contractors.splice(0)
             contractors.forEach(con => this.contractors.push(con))
           } catch (e) {
-            this.error = `\
+            this.handle_error(`\
 ${e.toString()}
 requested url:   "${url}"
 response status: ${xhr.status}
 response text:
-${xhr.responseText}`
-            Raven.captureException(new Error(this.error))
+${xhr.responseText}`)
           }
         }
         xhr.onerror = () => {
-          this.error = `\
+          this.handle_error(`\
 Connection error
 requested url:   "${url}"
 response status: ${xhr.status}
-response text:   "${xhr.responseText}"`
-          Raven.captureException(new Error(this.error))
+response text:   "${xhr.responseText}"`)
         }
         xhr.send()
       },
