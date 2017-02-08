@@ -59,3 +59,56 @@ describe('modal.vue', () => {
     })
   })
 })
+
+describe('modal.vue', () => {
+  it('should render only five qual levels', done => {
+    Vue.use(VueRouter)
+    const router = new VueRouter({routes: [
+        {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
+        {path: '/:link', name: 'modal', component: modal},
+    ]})
+    const _vm_data = {
+      contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
+      config: {contact_html: 'name is: {name}'},
+      contractors_extra: {
+        'fred-bloggs': {
+          extra_attributes: [{'name': 'Bio', 'value': 'I am great'}],
+          skills: [
+            {
+              subject: 'Biology',
+              category: 'Science',
+              qual_levels: ['GCSE', 'AS Level', 'A Level']
+            },
+            {
+              subject: 'Physics',
+              category: 'Science',
+              qual_levels: ['QL1', 'QL2', 'QL3', 'QL4', 'QL5', 'QL6']
+            },
+          ]
+        },
+      }
+    }
+
+    const vm = new Vue({
+      el: document.createElement('div'),
+      router: router,
+      render: h => h('router-view'),
+      data: _vm_data,
+      methods: {get_details: function (url, link) {}}
+    })
+    router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
+      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('GCSE')
+      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('AS Level')
+      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL1')
+      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL2')
+      expect(vm.$el.querySelector('.tcs-skills').textContent).to.not.include('QL3')
+      expect(vm.$el.querySelector('.tcs-skills').textContent).to.not.include('QL4')
+      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL5')
+      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL6')
+      done()
+    })
+  })
+})
+

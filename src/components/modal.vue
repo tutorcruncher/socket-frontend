@@ -83,7 +83,7 @@ export default {
       if (skills.length <= 5) {
         return skills
       } else {
-        return skills.slice(1, 3).concat(['...']).concat(skills.slice(-2))
+        return skills.slice(0, 2).concat(['...']).concat(skills.slice(-2))
       }
     }
   },
