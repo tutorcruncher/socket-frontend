@@ -5,7 +5,15 @@
         <div class="tcs-header">
           <h2>{{ contractor.name }}</h2>
           <router-link :to="{name: 'index'}" class="close">
-            &#x274c;
+            <!--
+            this is the svg for map icon straight from
+            https://github.com/encharm/Font-Awesome-SVG-PNG/blob/master/black/svg/times.svg
+            -->
+            <svg class="tcs-svg" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1490 1322q0 40-28 68l-136 136q-28 28-68 28t-68-28l-294-294-294 294q-28 28-68
+                28t-68-28l-136-136q-28-28-28-68t28-68l294-294-294-294q-28-28-28-68t28-68l136-136q28-28 68-28t68
+                28l294 294 294-294q28-28 68-28t68 28l136 136q28 28 28 68t-28 68l-294 294 294 294q28 28 28 68z"/>
+            </svg>
           </router-link>
         </div>
 
@@ -16,7 +24,7 @@
               this is the svg for map icon straight from
               https://github.com/encharm/Font-Awesome-SVG-PNG/blob/master/black/svg/map-marker.svg
               -->
-              <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <svg class="tcs-svg" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1152 640q0-106-75-181t-181-75-181 75-75 181 75 181 181 75 181-75 75-181zm256 0q0 109-33
                   179l-364 774q-16 33-47.5 52t-67.5 19-67.5-19-46.5-52l-365-774q-33-70-33-179 0-212 150-362t362-150
                   362 150 150 362z"/>
@@ -131,6 +139,15 @@ $hightlight: #1f2e50;
   transition: all .3s ease;
 }
 
+$svg-size: 22px;
+svg.tcs-svg {
+  width: $svg-size;
+  height: $svg-size;
+  path {
+    fill: $hightlight;
+  }
+}
+
 .tcs-header {
   margin-bottom: 10px;
   padding-bottom: 10px;
@@ -165,14 +182,6 @@ $hightlight: #1f2e50;
 .tcs-location {
   margin-bottom: 10px;
   float: right;
-  $svg-size: 22px;
-  svg {
-    width: $svg-size;
-    height: $svg-size;
-    path {
-      fill: $hightlight;
-    }
-  }
   span {
     display: inline-block;
     padding-top: 4px;
