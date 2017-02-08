@@ -31,7 +31,7 @@ export default {
 }
 .tcs-col {
   flex-grow: 1;
-  padding: 15px 30px;
+  padding: 15px 15px;
 }
 $border-radius: 3px;
 .tcs-box {
@@ -45,6 +45,11 @@ $border-radius: 3px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
   user-select: none;
+  h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   img.tcs-thumb {
     border-radius: $border-radius;
     width: 150px;

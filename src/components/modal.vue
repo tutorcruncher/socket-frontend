@@ -1,60 +1,58 @@
 <template>
-  <transition name="tcs-modal">
+  <transition name="tcs-modal-trans">
     <div class="tcs-modal-mask" @click="close">
       <div v-if="contractor" class="tcs-modal" @click.stop>
-        <div class="tcs-scroll">
-          <div class="tcs-header">
-            <h2>{{ contractor.name }}</h2>
-            <router-link :to="{name: 'index'}" class="close">
-              &#x274c;
-            </router-link>
+        <div class="tcs-header">
+          <h2>{{ contractor.name }}</h2>
+          <router-link :to="{name: 'index'}" class="close">
+            &#x274c;
+          </router-link>
+        </div>
+
+        <div class="tcs-body">
+          <div class="tcs-content">
+            <div class="tcs-location">
+              <!--
+              this is the svg for map icon straight from
+              https://github.com/encharm/Font-Awesome-SVG-PNG/blob/master/black/svg/map-marker.svg
+              -->
+              <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1152 640q0-106-75-181t-181-75-181 75-75 181 75 181 181 75 181-75 75-181zm256 0q0 109-33
+                  179l-364 774q-16 33-47.5 52t-67.5 19-67.5-19-46.5-52l-365-774q-33-70-33-179 0-212 150-362t362-150
+                  362 150 150 362z"/>
+              </svg>
+              <span>{{ contractor.town }}, {{ contractor.country }}</span>
+            </div>
+
+            <div class="tcs-aside">{{ contractor.tag_line }}</div>
+
+            <div>
+              {{ contractor.primary_description }}
+            </div>
+
+            <div class="tcs-attr" v-for="attr in contractor_extra.extra_attributes">
+              <h3>{{ attr.name }}</h3>
+              <p>{{ attr.value }}</p>
+            </div>
+
+            <table class="tcs-skills" v-if="contractor_extra.skills">
+              <caption>
+                <h3>{{ $root.config.skills_label }}</h3>
+              </caption>
+              <tr v-for="skill in contractor_extra.skills">
+                <th scope="row">{{ skill.subject }}</th>
+                <td>
+                <span v-for="qual_level in filter_qual_levels(skill.qual_levels)">
+                  {{ qual_level }}
+                </span>
+                </td>
+              </tr>
+            </table>
           </div>
-
-          <div class="tcs-body">
-            <div class="tcs-content">
-              <div class="tcs-location">
-                <!--
-                this is the svg for map icon straight from
-                https://github.com/encharm/Font-Awesome-SVG-PNG/blob/master/black/svg/map-marker.svg
-                -->
-                <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1152 640q0-106-75-181t-181-75-181 75-75 181 75 181 181 75 181-75 75-181zm256 0q0 109-33
-                    179l-364 774q-16 33-47.5 52t-67.5 19-67.5-19-46.5-52l-365-774q-33-70-33-179 0-212 150-362t362-150
-                    362 150 150 362z"/>
-                </svg>
-                <span>{{ contractor.town }}, {{ contractor.country }}</span>
-              </div>
-
-              <div class="tcs-aside">{{ contractor.tag_line }}</div>
-
-              <div>
-                {{ contractor.primary_description }}
-              </div>
-
-              <div class="tcs-attr" v-for="attr in contractor_extra.extra_attributes">
-                <h3>{{ attr.name }}</h3>
-                <p>{{ attr.value }}</p>
-              </div>
-
-              <table class="tcs-skills" v-if="contractor_extra.skills">
-                <caption>
-                  <h3>{{ $root.config.skills_label }}</h3>
-                </caption>
-                <tr v-for="skill in contractor_extra.skills">
-                  <th scope="row">{{ skill.subject }}</th>
-                  <td>
-                  <span v-for="qual_level in skill.qual_levels">
-                    {{ qual_level }}
-                  </span>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div class="tcs-extra">
-              <img :src="contractor.photo" :alt="contractor.name">
-              <!--<button>Contact {{ contractor.name }}</button>-->
-              <p v-html="contact_html"></p>
-            </div>
+          <div class="tcs-extra">
+            <img :src="contractor.photo" :alt="contractor.name">
+            <!--<button>Contact {{ contractor.name }}</button>-->
+            <p v-html="contact_html"></p>
           </div>
         </div>
 
@@ -73,6 +71,13 @@ export default {
     close: function () {
       this.$router.push({name: 'index'})
     },
+    filter_qual_levels: (skills) => {
+      if (skills.length <= 5) {
+        return skills
+      } else {
+        return skills.slice(1, 3).concat(['...']).concat(skills.slice(-2))
+      }
+    }
   },
   computed: {
     contractor: function () {
@@ -92,6 +97,7 @@ export default {
     }
   },
   created: function () {
+    // TODO could do something less ugly here like hide the scroll bar at all times
     this.body_overflow_before = document.body.style.overflow
     document.body.style.overflow = 'hidden'
   },
@@ -116,17 +122,13 @@ $hightlight: #1f2e50;
 }
 
 .tcs-modal {
-  max-width: 800px;
+  max-width: 900px;
   margin: 6vh auto 0;
   padding: 20px 20px 40px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
   transition: all .3s ease;
-  .tcs-scroll {
-    max-height: calc(94vh - 65px);
-    overflow-y: auto;
-  }
 }
 
 .tcs-header {
@@ -156,6 +158,8 @@ $hightlight: #1f2e50;
 .tcs-body {
   display: flex;
   justify-content: space-between;
+  max-height: calc(94vh - 130px);
+  overflow-y: auto;
 }
 
 .tcs-location {
@@ -181,6 +185,7 @@ $hightlight: #1f2e50;
   flex-grow: 1;
   padding-right: 10px;
   color: #444;
+  width: calc(100% - 200px);
   .tcs-aside {
     font-size: 22px;
     margin-bottom: 10px;
@@ -195,6 +200,9 @@ $hightlight: #1f2e50;
   }
   table.tcs-skills {
     border: none;
+    &, th, td, tr {
+      background-color: inherit;
+    }
     caption {
       text-align: left;
     }
@@ -208,13 +216,19 @@ $hightlight: #1f2e50;
     th {
       text-align: left;
       padding-right: 10px;
+      vertical-align: top;
     }
-    span {
-      padding: 2px 4px;
-      margin: 0 3px;
-      color: white;
-      background: $hightlight;
-      border-radius: 3px;
+    td {
+      display: flex;
+      flex-wrap: wrap;
+      span {
+        white-space: nowrap;
+        padding: 3px 3px;
+        margin: 0 2px 2px;
+        color: white;
+        background: $hightlight;
+        border-radius: 3px;
+      }
     }
   }
 }
@@ -253,15 +267,10 @@ $button-colour: #5cb85c;
 
 // auto applied:
 
-.tcs-modal-enter {
+.tcs-modal-trans-enter, .tcs-modal-trans-leave-active {
   opacity: 0;
-}
-
-.tcs-modal-leave-active {
-  opacity: 0;
-}
-
-.tcs-modal-enter .tcs-container, .tcs-modal-leave-active .tcs-container {
-  transform: translate(0, 40px);
+  .tcs-modal {
+    transform: translate(0, 40px);
+  }
 }
 </style>
