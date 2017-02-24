@@ -75,8 +75,8 @@ export default {
 </script>
 
 <style lang="scss">
-$back-colour: 35;
-$hightlight: #1f2e50;
+@import '../conf';
+
 .tcs-modal-mask {
   position: fixed;
   z-index: 9998;
@@ -98,7 +98,6 @@ $hightlight: #1f2e50;
   transition: all .3s ease;
 }
 
-$svg-size: 22px;
 svg.tcs-svg {
   width: $svg-size;
   height: $svg-size;
@@ -145,8 +144,6 @@ svg.tcs-svg {
   width: calc(100% - 200px);
 }
 
-$extra-width: 200px;
-$button-colour: #5cb85c;
 .tcs-extra {
   text-align: center;
   img {

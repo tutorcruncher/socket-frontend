@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style lang="scss">
-$hightlight: #1f2e50;
+@import '../conf';
 
 .tcs-location {
   margin-bottom: 10px;

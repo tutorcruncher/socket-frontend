@@ -24,16 +24,19 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../conf';
+
 #tcs-grid {
   padding: 10px;
   display: flex;
   flex-wrap: wrap;
 }
+
 .tcs-col {
   flex-grow: 1;
   padding: 15px 15px;
 }
-$border-radius: 3px;
+
 .tcs-box {
   border-radius: $border-radius;
   display: block;
