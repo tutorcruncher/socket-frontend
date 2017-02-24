@@ -25,7 +25,7 @@ describe('modal.vue', () => {
     router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
-      expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
+      expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello\n')
       expect(vm.$el.querySelector('.tcs-attr h3').textContent).to.equal('Bio')
       expect(vm.$el.querySelector('.tcs-attr p').textContent).to.equal('I am great')
       done()
@@ -112,3 +112,35 @@ describe('modal.vue', () => {
   })
 })
 
+describe('modal.vue', () => {
+  it('should render markdown', done => {
+    Vue.use(VueRouter)
+    const router = new VueRouter({routes: [
+        {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
+        {path: '/:link', name: 'modal', component: modal},
+    ]})
+    const _vm_data = {
+      contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
+      config: {contact_html: 'name is: {name}'},
+      contractors_extra: {
+        'fred-bloggs': {
+          extra_attributes: [{'name': 'Bio', 'value': 'I am **great**', 'type': 'text_extended'}],
+        },
+      }
+    }
+
+    const vm = new Vue({
+      el: document.createElement('div'),
+      router: router,
+      render: h => h('router-view'),
+      data: _vm_data,
+      methods: {get_details: function (url, link) {}}
+    })
+    router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
+      expect(vm.$el.querySelector('.tcs-attr').innerHTML).to.include('I am <strong>great</strong>')
+      done()
+    })
+  })
+})

@@ -32,15 +32,14 @@
               <span>{{ contractor.town }}, {{ contractor.country }}</span>
             </div>
 
-            <div class="tcs-aside">{{ contractor.tag_line }}</div>
+            <div class="tcs-aside tcs-md" v-html="to_markdown(contractor.tag_line)"></div>
 
-            <div>
-              {{ contractor.primary_description }}
-            </div>
+            <div class="tcs-md" v-html="to_markdown(contractor.primary_description)"></div>
 
             <div class="tcs-attr" v-for="attr in contractor_extra.extra_attributes">
               <h3>{{ attr.name }}</h3>
-              <p>{{ attr.value }}</p>
+              <p v-if="attr.type == 'text_short' || attr.type == 'text_extended'" class="tcs-md" v-html="to_markdown(attr.value)"></p>
+              <p v-else>{{ attr.value }}</p>
             </div>
 
             <table class="tcs-skills" v-if="contractor_extra.skills">
@@ -73,6 +72,8 @@
 </template>
 
 <script>
+var utils = require('../utils')
+
 export default {
   name: 'tcs-modal',
   methods: {
@@ -85,7 +86,8 @@ export default {
       } else {
         return skills.slice(0, 2).concat(['...']).concat(skills.slice(-2))
       }
-    }
+    },
+    to_markdown: utils.to_markdown
   },
   computed: {
     contractor: function () {
@@ -187,6 +189,12 @@ svg.tcs-svg {
     padding-top: 4px;
     vertical-align: top;
     font-weight: 500;
+  }
+}
+
+.tcs-md {
+  p {
+    margin: 0 0 8px;
   }
 }
 

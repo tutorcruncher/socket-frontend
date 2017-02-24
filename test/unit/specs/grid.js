@@ -18,7 +18,8 @@ describe('grid.vue', () => {
       methods: {
         get_list: function () {
           this.contractors.push({name: 'Fred Bloggs', link: 'fred-bloggs', photo: 'http://path/to/img.jpg'})
-        }
+        },
+        to_markdown: (t) => t
       }
     })
     expect(vm.$el.querySelector('h3').textContent).to.equal('Fred Bloggs')
