@@ -25,7 +25,7 @@ describe('modal.vue', () => {
     router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
-      expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello\n')
+      expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
       expect(vm.$el.querySelector('.tcs-attr h3').textContent).to.equal('Bio')
       expect(vm.$el.querySelector('.tcs-attr p').textContent).to.equal('I am great')
       done()
