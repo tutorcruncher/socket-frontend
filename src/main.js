@@ -29,6 +29,14 @@ const ConfiguredVueRouter = config => new VueRouter({
   ]
 })
 
+const STRINGS = {
+  skills_label: 'Skills',
+  contractor_enquiry_message: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
+  contractor_enquiry_button: 'Contact {contractor_name}',
+  contractor_details_button: 'Show Profile',
+  submit_enquiry: 'Submit Enquiry'
+}
+
 module.exports = function (public_key, config) {
   config = config || {}
   let error = null
@@ -52,16 +60,14 @@ module.exports = function (public_key, config) {
     config.element = '#socket'
   }
 
-  if (config.contact_html === undefined) {
-    config.contact_html = 'To request tutoring from {name} please <a href="{contact_link}">get in touch</a> with us.'
-  }
-
   if (config.contact_link === undefined) {
     config.contact_link = '/contact'
   }
 
-  if (config.skills_label === undefined) {
-    config.skills_label = 'Skills'
+  for (let k of Object.keys(STRINGS)) {
+    if (config[k] === undefined) {
+      config[k] = STRINGS[k]
+    }
   }
 
   return new Vue({
@@ -74,6 +80,7 @@ module.exports = function (public_key, config) {
       config: config,
       error: null,
       public_key: public_key,
+      enquiry_info: null,
     },
     components: {
       app
@@ -137,6 +144,28 @@ response text:   "${xhr.responseText}"`)
           }
         }
         xhr.send()
+      },
+      get_enquiry: function () {
+        if (this.enquiry_info !== null) {
+          return
+        }
+        let xhr = new window.XMLHttpRequest()
+        xhr.open('GET', `${config.api_root}/${public_key}/enquiry`)
+        xhr.onload = () => {
+          if (xhr.status !== 200) {
+            throw new Error(`bad response ${xhr.status}`)
+          } else {
+            this.enquiry_info = JSON.parse(xhr.responseText)
+          }
+        }
+        xhr.send()
+      },
+      get_text: function (key, replace_with) {
+        let s = this.config[key]
+        for (let [k, v] of Object.entries(replace_with)) {
+          s = s.replace('{' + k + '}', v)
+        }
+        return s
       }
     }
   })

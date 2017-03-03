@@ -3,7 +3,7 @@ $border-radius: 3px;
 // model background colour
 $back-colour: 35;
 // highlight sections of modals
-$hightlight: #1f2e50;
+$hightlight: lighten(#1f2e50, 10%);
 // svgs on modals
 $svg-size: 22px;
 // section on right (with image) on modals

@@ -35,14 +35,18 @@
             <div class="tcs-aside tcs-md">{{ contractor.tag_line }}</div>
 
             <div class="tcs-scroll">
-              <enquiry v-if="show_enquiry"></enquiry>
+              <enquiry v-if="show_enquiry" :contractor="contractor"></enquiry>
               <con-details v-else :contractor="contractor"></con-details>
             </div>
           </div>
           <div class="tcs-extra">
             <img :src="contractor.photo" :alt="contractor.name">
-            <button v-if="show_enquiry" @click="switch_show">Show Profile</button>
-            <button v-else @click="switch_show">Contact {{ contractor.name }}</button>
+            <button v-if="show_enquiry" @click="switch_show">
+              {{ $root.get_text('contractor_details_button', {contractor_name: contractor.name}) }}
+            </button>
+            <button v-else @click="switch_show">
+              {{ $root.get_text('contractor_enquiry_button', {contractor_name: contractor.name}) }}
+            </button>
           </div>
         </div>
 
@@ -72,12 +76,9 @@ export default {
     'con-details': con_details,
     'enquiry': enquiry,
   },
-  props: {
-    show_enquiry: {
-      type: Boolean,
-      default: false
-    },
-  },
+  data: () => ({
+    show_enquiry: false
+  }),
   computed: {
     contractor: function () {
       for (var contractor of this.$root.contractors) {
@@ -86,13 +87,10 @@ export default {
           return contractor
         }
       }
-    },
-    contact_html: function () {
-      let raw = this.$root.config.contact_html
-      return raw.replace('{name}', this.contractor.name).replace('{contact_link}', this.$root.config.contact_link)
     }
   },
   created: function () {
+    this.$root.get_enquiry()
     // TODO could do something less ugly here like hide the scroll bar at all times
     this.body_overflow_before = document.body.style.overflow
     document.body.style.overflow = 'hidden'
