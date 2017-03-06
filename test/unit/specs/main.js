@@ -1,7 +1,24 @@
 import socket from 'src/main'
 
 const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "link": "foobar"}]']
-const blank_response = [200, {'Content-Type': 'application/json'}, '{}']
+
+class TestConsole {
+  log_ = []
+  warning_ = []
+  error_ = []
+
+  log () {
+    this.log_.push(Array.from(arguments).join())
+  }
+
+  warning () {
+    this.warning_.push(Array.from(arguments).join())
+  }
+
+  error () {
+    this.error_.push(Array.from(arguments).join())
+  }
+}
 
 describe('main.js', done => {
   let server
@@ -23,9 +40,9 @@ describe('main.js', done => {
     const vm = socket('public_key', {
       element: '#foobar'
     })
-
+    vm.enquiry_info = 'foobar'  // prevent get_enquiry making a GET request
     expect(vm.$el.parentNode.attributes['id'].value).to.equal('outer')
-    // no time for get_data to be called so wont fail
+    // no time for get_data to be called so should be empty
     expect(vm.contractors).to.be.empty
 
     setTimeout(() => {
@@ -41,7 +58,6 @@ describe('main.js', () => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith('/public_key/contractors', dft_response)
-    server.respondWith('/public_key/enquiry', blank_response)
   })
   after(() => { server.restore() })
 
@@ -51,6 +67,7 @@ describe('main.js', () => {
     document.body.appendChild(el)
 
     const vm = socket('public_key')
+    vm.enquiry_info = 'foobar'  // prevent get_enquiry making a GET request
 
     setTimeout(() => {
       expect(vm.error).to.equal(null)
@@ -74,7 +91,8 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('public_key')
+    let test_console = new TestConsole()
+    const vm = socket('public_key', {console: test_console})
 
     setTimeout(() => {
       !expect(vm.error).to.not.equal(null)
@@ -82,6 +100,9 @@ describe('main.js', () => {
       expect(vm.error).to.contain('response status: 404')
       expect(vm.error).to.contain('response text:\nbadness')
       expect(vm.error).to.not.contain('Connection error')
+      expect(test_console.log_).to.have.lengthOf(0)
+      expect(test_console.warning_).to.have.lengthOf(0)
+      expect(test_console.error_).to.have.lengthOf(1)
       done()
     }, 50)
   })
@@ -93,11 +114,13 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('the-public-key', {api_root: 'http://localhost:12345678'})
+    let test_console = new TestConsole()
+    const vm = socket('the-public-key', {api_root: 'http://localhost:12345678', console: test_console})
 
     setTimeout(() => {
       expect(vm.error).to.contain('Connection error')
       expect(vm.error).to.contain('response status: 0')
+      expect(test_console.error_).to.have.lengthOf(1)
       done()
     }, 50)
   })

@@ -64,6 +64,10 @@ module.exports = function (public_key, config) {
     config.contact_link = '/contact'
   }
 
+  if (config.console === undefined) {
+    config.console = console
+  }
+
   for (let k of Object.keys(STRINGS)) {
     if (config[k] === undefined) {
       config[k] = STRINGS[k]
@@ -89,7 +93,7 @@ module.exports = function (public_key, config) {
       // get_data is called by components, eg. grid
       handle_error: function (error_message) {
         this.error = error_message || 'unknown'
-        console.error(this.error)
+        config.console.error(this.error)
         Raven.captureException(new Error(this.error))
       },
       get_list: function () {
