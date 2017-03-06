@@ -160,9 +160,9 @@ response text:   "${xhr.responseText}"`)
         }
         xhr.send()
       },
-      get_text: function (key, replace_with) {
-        let s = this.config[key]
-        for (let [k, v] of Object.entries(replace_with)) {
+      get_text: function (name, replacements) {
+        let s = this.config[name]
+        for (let [k, v] of Object.entries(replacements)) {
           s = s.replace('{' + k + '}', v)
         }
         return s

@@ -1,6 +1,7 @@
 import socket from 'src/main'
 
 const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "link": "foobar"}]']
+const blank_response = [200, {'Content-Type': 'application/json'}, '{}']
 
 describe('main.js', done => {
   let server
@@ -40,6 +41,7 @@ describe('main.js', () => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith('/public_key/contractors', dft_response)
+    server.respondWith('/public_key/enquiry', blank_response)
   })
   after(() => { server.restore() })
 

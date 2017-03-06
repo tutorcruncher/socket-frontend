@@ -8,6 +8,18 @@ const vm_data = {
   contractors_extra: {'fred-bloggs': {'extra_attributes': [{'name': 'Bio', 'value': 'I am great'}]}},
 }
 
+const generate_vm = (router, vm_data_) => new Vue({
+  el: document.createElement('div'),
+  router: router,
+  render: h => h('router-view'),
+  data: vm_data_ || vm_data,
+  methods: {
+    get_details: () => null,
+    get_enquiry: () => null,
+    get_text: (name, replacements) => null,
+  }
+})
+
 describe('modal.vue', () => {
   it('should render contractor details', done => {
     Vue.use(VueRouter)
@@ -15,13 +27,7 @@ describe('modal.vue', () => {
         {path: '/', name: 'index', component: {render: h => h('div')}},
         {path: '/:link', name: 'modal', component: modal},
     ]})
-    const vm = new Vue({
-      el: document.createElement('div'),
-      router: router,
-      render: h => h('router-view'),
-      data: vm_data,
-      methods: {get_details: function (url, link) {}}
-    })
+    const vm = generate_vm(router)
     router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
@@ -34,22 +40,16 @@ describe('modal.vue', () => {
 })
 
 describe('modal.vue', () => {
-  it('should closes on tcs-modal-mask', done => {
+  it('should close on tcs-modal-mask', done => {
     Vue.use(VueRouter)
     const router = new VueRouter({routes: [
         {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
         {path: '/:link', name: 'modal', component: modal},
     ]})
-    const vm = new Vue({
-      el: document.createElement('div'),
-      router: router,
-      render: h => h('router-view'),
-      data: vm_data,
-      methods: {get_details: function (url, link) {}}
-    })
+    const vm = generate_vm(router)
     router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
-      expect(vm.$el.attributes['class'].value).to.equal('tcs-modal-mask')
+      expect(vm.$el.attributes['class'].value).to.contain('tcs-modal-mask')
       // this is clicking the background
       vm.$el.click()
       Vue.nextTick(() => {
@@ -89,13 +89,7 @@ describe('modal.vue', () => {
       }
     }
 
-    const vm = new Vue({
-      el: document.createElement('div'),
-      router: router,
-      render: h => h('router-view'),
-      data: _vm_data,
-      methods: {get_details: function (url, link) {}}
-    })
+    const vm = generate_vm(router, _vm_data)
     router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
@@ -129,13 +123,7 @@ describe('modal.vue', () => {
       }
     }
 
-    const vm = new Vue({
-      el: document.createElement('div'),
-      router: router,
-      render: h => h('router-view'),
-      data: _vm_data,
-      methods: {get_details: function (url, link) {}}
-    })
+    const vm = generate_vm(router, _vm_data)
     router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
