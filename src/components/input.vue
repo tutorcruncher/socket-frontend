@@ -33,7 +33,7 @@ export default {
   computed: {
     is_textarea: function () {
       // TODO return this.field.type === 'text' && this.field.max_length > 1000
-      return this.field.type === 'text' && this.prefix === 'attribute_'
+      return this.field.type === 'text' && this.prefix === 'attributes'
     },
     name: function () {
       return this.prefix + '.' + this.field.field
@@ -73,6 +73,7 @@ $border-colour: #66afe9;
     padding: 10px 12px;
     border-radius: 5px;
     border: 1px solid #aaa;
+    font-family: inherit;
     outline: none;
     &:focus {
       border-color: $border-colour;

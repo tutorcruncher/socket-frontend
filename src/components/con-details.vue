@@ -92,7 +92,7 @@ table.tcs-skills {
       padding: 3px 3px;
       margin: 0 2px 2px;
       color: white;
-      background: $hightlight-light;
+      background: $hightlight;
       border-radius: 3px;
     }
   }
