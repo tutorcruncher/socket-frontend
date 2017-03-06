@@ -20,15 +20,17 @@ class TestConsole {
   }
 }
 
+const enquiry_options = {
+  visible: [
+    {field: 'first_field', type: 'text', label: 'Foobar'}
+  ]
+}
+
 const vm_data = {
   contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
   config: {contact_html: 'name is: {name}'},
   contractors_extra: {'fred-bloggs': {'extra_attributes': [{'name': 'Bio', 'value': 'I am great'}]}},
-  enquiry_form_info: {
-    visible: [
-      {field: 'first_field', type: 'text', label: 'Foobar'}
-    ]
-  },
+  enquiry_form_info: enquiry_options,
   enquiry_data: {},
 }
 
@@ -44,4 +46,4 @@ const generate_vm = (router, vm_data_) => new Vue({
   }
 })
 
-export {dft_response, TestConsole, vm_data, generate_vm}
+export {dft_response, TestConsole, enquiry_options, vm_data, generate_vm}

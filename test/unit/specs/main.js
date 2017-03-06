@@ -1,5 +1,5 @@
 import socket from 'src/main'
-import {dft_response, TestConsole} from './_shared'
+import {dft_response, TestConsole, enquiry_options} from './_shared'
 
 describe('main.js', done => {
   let server
@@ -146,7 +146,7 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('public-key', {contractor_enquiry_button: 'Speak to {contractor_name}'})
+    const vm = socket('public-key')
     vm.get_enquiry()
 
     setTimeout(() => {
@@ -155,3 +155,37 @@ describe('main.js', () => {
     }, 50)
   })
 })
+
+describe('main.js', () => {
+  let server
+  before(() => {
+    server = sinon.fakeServer.create()
+    server.autoRespond = true
+    server.respondWith('/public-key/contractors', dft_response)
+    server.respondWith('/public-key/enquiry',
+        [200, {'Content-Type': 'application/json'}, JSON.stringify(enquiry_options)])
+    server.respondWith('POST', '/public-key/enquiry',
+        [201, {'Content-Type': 'application/json'}, '{"response": "ok"}'])
+  })
+  after(() => { server.restore() })
+
+  it('should post enquiry data', done => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+
+    const vm = socket('public-key')
+    vm.get_enquiry()
+
+    setTimeout(() => {
+      vm.$set(vm.enquiry_data, 'first_field', 'foobar')
+      expect(vm.enquiry_data).to.deep.equal({first_field: 'foobar'})
+      let callback = () => {
+        expect(vm.enquiry_data).to.deep.equal({})
+        done()
+      }
+      vm.submit_enquiry(callback)
+    }, 50)
+  })
+})
+
