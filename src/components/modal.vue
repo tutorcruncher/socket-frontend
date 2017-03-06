@@ -139,7 +139,7 @@ export default {
 .tcs-aside {
   font-size: 22px;
   margin-bottom: 10px;
-  color: $hightlight;
+  color: $hightlight-dark;
   min-height: 28px;
 }
 
@@ -147,7 +147,7 @@ svg.tcs-svg {
   width: $svg-size;
   height: $svg-size;
   path {
-    fill: $hightlight;
+    fill: $hightlight-dark;
   }
 }
 

@@ -40,7 +40,7 @@ describe('main.js', done => {
     const vm = socket('public_key', {
       element: '#foobar'
     })
-    vm.enquiry_info = 'foobar'  // prevent get_enquiry making a GET request
+    vm.enquiry_form_info = 'foobar'  // prevent get_enquiry making a GET request
     expect(vm.$el.parentNode.attributes['id'].value).to.equal('outer')
     // no time for get_data to be called so should be empty
     expect(vm.contractors).to.be.empty
@@ -67,7 +67,7 @@ describe('main.js', () => {
     document.body.appendChild(el)
 
     const vm = socket('public_key')
-    vm.enquiry_info = 'foobar'  // prevent get_enquiry making a GET request
+    vm.enquiry_form_info = 'foobar'  // prevent get_enquiry making a GET request
 
     setTimeout(() => {
       expect(vm.error).to.equal(null)
@@ -141,7 +141,7 @@ describe('main.js', () => {
     document.body.appendChild(el)
 
     const vm = socket('public-key', {contractor_enquiry_button: 'Speak to {contractor_name}'})
-    vm.enquiry_info = 'x'  // prevent get_enquiry making a GET request
+    vm.enquiry_form_info = 'x'  // prevent get_enquiry making a GET request
     let text = vm.get_text('skills_label')
     expect(text).to.equal('Skills')
     text = vm.get_text('contractor_enquiry_button', {'contractor_name': 'foobar'})
@@ -168,7 +168,7 @@ describe('main.js', () => {
     vm.get_enquiry()
 
     setTimeout(() => {
-      expect(vm.enquiry_info).to.deep.equal({response: 'ok'})
+      expect(vm.enquiry_form_info).to.deep.equal({response: 'ok'})
       done()
     }, 50)
   })

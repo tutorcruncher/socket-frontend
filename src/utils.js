@@ -6,10 +6,11 @@ marked.setOptions({
   smartLists: true,
 })
 
-export function to_markdown (t) {
+function to_markdown (t) {
   if (t === null || t === undefined) {
     return ''
   } else {
     return marked(t)
   }
 }
+export { to_markdown }

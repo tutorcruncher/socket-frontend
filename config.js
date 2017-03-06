@@ -46,7 +46,7 @@ module.exports = {
       // SOCKET_API_URL: '"api/"',
       SOCKET_API_URL: '"https://socket.tutorcruncher.com"',
     },
-    port: 8000,
+    port: 5000,
     build_dir: path.resolve(__dirname, 'dev'),
     css_source_map: true,
     public_path: '/',
