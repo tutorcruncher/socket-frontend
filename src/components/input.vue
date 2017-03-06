@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     is_textarea: function () {
-      // TODO return this.field.type === 'text' && this.field.max_length > 1000
+      // TODO return this.field.type === 'text' && this.field.max_length > 500
       return this.field.type === 'text' && this.prefix === 'attributes'
     },
     name: function () {

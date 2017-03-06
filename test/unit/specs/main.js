@@ -1,24 +1,5 @@
 import socket from 'src/main'
-
-const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "link": "foobar"}]']
-
-class TestConsole {
-  log_ = []
-  warning_ = []
-  error_ = []
-
-  log () {
-    this.log_.push(Array.from(arguments).join())
-  }
-
-  warning () {
-    this.warning_.push(Array.from(arguments).join())
-  }
-
-  error () {
-    this.error_.push(Array.from(arguments).join())
-  }
-}
+import {dft_response, TestConsole} from './_shared'
 
 describe('main.js', done => {
   let server
@@ -58,6 +39,7 @@ describe('main.js', () => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith('/public_key/contractors', dft_response)
+    server.respondWith('/public_key/enquiry', dft_response)  // to prevent errors with get_enquiry
   })
   after(() => { server.restore() })
 
@@ -67,7 +49,6 @@ describe('main.js', () => {
     document.body.appendChild(el)
 
     const vm = socket('public_key')
-    vm.enquiry_form_info = 'foobar'  // prevent get_enquiry making a GET request
 
     setTimeout(() => {
       expect(vm.error).to.equal(null)
@@ -83,6 +64,7 @@ describe('main.js', () => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith('/public_key/contractors', [404, {}, 'badness'])
+    server.respondWith('/public_key/enquiry', dft_response)  // to prevent errors with get_enquiry
   })
   after(() => { server.restore() })
 
@@ -92,7 +74,7 @@ describe('main.js', () => {
     document.body.appendChild(el)
 
     let test_console = new TestConsole()
-    const vm = socket('public_key', {console: test_console})
+    const vm = socket('public_key', {console: test_console, v: 404})
 
     setTimeout(() => {
       expect(vm.error).to.not.equal(null)

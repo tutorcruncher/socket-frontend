@@ -108,7 +108,7 @@ module.exports = function (public_key, config) {
           let contractors
           try {
             if (xhr.status !== 200) {
-              throw new Error(`bad response ${xhr.status}`)
+              throw new Error(`bad response ${xhr.status} at "${url}"`)
             } else {
               contractors = JSON.parse(xhr.responseText)
             }
@@ -140,7 +140,7 @@ response text:   "${xhr.responseText}"`)
         xhr.open('GET', url)
         xhr.onload = () => {
           if (xhr.status !== 200) {
-            throw new Error(`bad response ${xhr.status}`)
+            throw new Error(`bad response ${xhr.status} at "${url}"`)
           } else {
             let con = JSON.parse(xhr.responseText)
             Vue.set(this.contractors_extra, link, con)
@@ -153,10 +153,11 @@ response text:   "${xhr.responseText}"`)
           return
         }
         let xhr = new window.XMLHttpRequest()
-        xhr.open('GET', `${config.api_root}/${public_key}/enquiry`)
+        let url = `${config.api_root}/${public_key}/enquiry`
+        xhr.open('GET', url)
         xhr.onload = () => {
           if (xhr.status !== 200) {
-            throw new Error(`bad response ${xhr.status}`)
+            throw new Error(`bad response ${xhr.status} at "${url}"`)
           } else {
             this.enquiry_form_info = JSON.parse(xhr.responseText)
           }
