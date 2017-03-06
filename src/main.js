@@ -166,7 +166,7 @@ response text:   "${xhr.responseText}"`)
       },
       get_text: function (name, replacements) {
         let s = this.config[name]
-        for (let [k, v] of Object.entries(replacements)) {
+        for (let [k, v] of Object.entries(replacements || {})) {
           s = s.replace('{' + k + '}', v)
         }
         return s
