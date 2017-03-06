@@ -5,12 +5,23 @@
     </p>
     <form class="tcs">
       <div class="tcs-field" v-for="field in visible_fields">
-        <input :type="field.type" :id="field.field" :placeholder="field.label" :required="field.required">
+        <input :type="field.type"
+               :id="field.field"
+               :placeholder="field.label"
+               :required="field.required">
       </div>
       <div class="tcs-field" v-for="field in attribute_fields">
-        <textarea v-if="field.type == 'text'" :id="'attributes_' + field.field" :placeholder="field.label" :required="field.required" rows="5">
+        <textarea v-if="field.type == 'text'"
+                  :id="'attributes_' + field.field"
+                  :placeholder="field.label"
+                  :required="field.required"
+                  rows="5">
         </textarea>
-        <input v-else :type="field.type" :id="'attributes_' + field.field" :placeholder="field.label" :required="field.required">
+        <input v-else
+               :type="field.type"
+               :id="'attributes_' + field.field"
+               :placeholder="field.label"
+               :required="field.required">
       </div>
       <div class="tcs-field tcs-submit">
         <button type="submit">

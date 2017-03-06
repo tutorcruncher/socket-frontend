@@ -149,7 +149,6 @@ describe('main.js', () => {
   })
 })
 
-
 describe('main.js', () => {
   let server
   before(() => {
