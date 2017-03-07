@@ -113,31 +113,9 @@ describe('main.js', () => {
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
-    server.respondWith(dft_response)
-  })
-  after(() => { server.restore() })
-
-  it('should convert text', () => {
-    let el = document.createElement('div')
-    el.setAttribute('id', 'socket')
-    document.body.appendChild(el)
-
-    const vm = socket('public-key', {contractor_enquiry_button: 'Speak to {contractor_name}'})
-    vm.enquiry_form_info = 'x'  // prevent get_enquiry making a GET request
-    let text = vm.get_text('skills_label')
-    expect(text).to.equal('Skills')
-    text = vm.get_text('contractor_enquiry_button', {'contractor_name': 'foobar'})
-    expect(text).to.equal('Speak to foobar')
-  })
-})
-
-describe('main.js', () => {
-  let server
-  before(() => {
-    server = sinon.fakeServer.create()
-    server.autoRespond = true
     server.respondWith('/public-key/contractors', dft_response)
     server.respondWith('/public-key/enquiry', [200, {'Content-Type': 'application/json'}, '{"response": "ok"}'])
+    server.respondWith('/foobar', [200, {'Content-Type': 'application/json'}, '{"the": "response"}'])
   })
   after(() => { server.restore() })
 
@@ -151,6 +129,37 @@ describe('main.js', () => {
 
     setTimeout(() => {
       expect(vm.enquiry_form_info).to.deep.equal({response: 'ok'})
+      done()
+    }, 50)
+  })
+
+  it('should convert text', () => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+
+    const vm = socket('public-key', {contractor_enquiry_button: 'Speak to {contractor_name}'})
+    vm.enquiry_form_info = 'x'  // prevent get_enquiry making a GET request
+    let text = vm.get_text('skills_label')
+    expect(text).to.equal('Skills')
+    text = vm.get_text('contractor_enquiry_button', {'contractor_name': 'foobar'})
+    expect(text).to.equal('Speak to foobar')
+  })
+
+  it('should get contractor details', done => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+
+    const vm = socket('public-key')
+    expect(vm.contractors_extra).to.deep.equal({})
+    let v = vm.get_details('/foobar', 'key')
+    expect(v).to.equal(true)
+
+    setTimeout(() => {
+      expect(vm.contractors_extra).to.deep.equal({key: {the: 'response'}})
+      v = vm.get_details('/foobar', 'key')
+      expect(v).to.equal(false)
       done()
     }, 50)
   })

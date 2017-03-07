@@ -1,38 +1,35 @@
-import Vue from 'vue'
-import {generate_vm} from './_shared'
+import {generate_vm, tick} from './_shared'
 
 describe('modal.vue', () => {
-  it('should close on tcs-modal-mask', done => {
+  it('should close on tcs-modal-mask', async function () {
     const vm = generate_vm()
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
-    Vue.nextTick(() => {
-      expect(vm.$el.attributes['class'].value).to.contain('tcs-modal-mask')
-      // this is clicking the background
-      vm.$el.click()
-      Vue.nextTick(() => {
-        expect(vm.$el.attributes['class'].value).to.equal('index')
-        done()
-      })
-    })
+
+    await tick()
+    expect(vm.$el.attributes['class'].value).to.contain('tcs-modal-mask')
+    // this is clicking the background
+    vm.$el.click()
+
+    await tick()
+    expect(vm.$el.attributes['class'].value).to.equal('index')
   })
 })
 
 describe('con-details.vue', () => {
-  it('should render contractor details', done => {
+  it('should render contractor details', async function () {
     const vm = generate_vm()
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
-      expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
-      expect(vm.$el.querySelector('.tcs-attr h3').textContent).to.equal('Bio')
-      expect(vm.$el.querySelector('.tcs-attr p').textContent).to.equal('I am great')
-      done()
-    })
+
+    await tick()
+    expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
+    expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
+    expect(vm.$el.querySelector('.tcs-attr h3').textContent).to.equal('Bio')
+    expect(vm.$el.querySelector('.tcs-attr p').textContent).to.equal('I am great')
   })
 })
 
 describe('con-details.vue', () => {
-  it('should render only five qual levels', done => {
+  it('should render only five qual levels', async function () {
     const _vm_data = {
       contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
       config: {},
@@ -57,23 +54,22 @@ describe('con-details.vue', () => {
 
     const vm = generate_vm(null, _vm_data)
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
-      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('GCSE')
-      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('AS Level')
-      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL1')
-      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL2')
-      expect(vm.$el.querySelector('.tcs-skills').textContent).to.not.include('QL3')
-      expect(vm.$el.querySelector('.tcs-skills').textContent).to.not.include('QL4')
-      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL5')
-      expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL6')
-      done()
-    })
+
+    await tick()
+    expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
+    expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('GCSE')
+    expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('AS Level')
+    expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL1')
+    expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL2')
+    expect(vm.$el.querySelector('.tcs-skills').textContent).to.not.include('QL3')
+    expect(vm.$el.querySelector('.tcs-skills').textContent).to.not.include('QL4')
+    expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL5')
+    expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('QL6')
   })
 })
 
 describe('con-details.vue', () => {
-  it('should render markdown', done => {
+  it('should render markdown', async function () {
     const _vm_data = {
       contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
       config: {},
@@ -86,10 +82,9 @@ describe('con-details.vue', () => {
 
     const vm = generate_vm(null, _vm_data)
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
-      expect(vm.$el.querySelector('.tcs-attr').innerHTML).to.include('I am <strong>great</strong>')
-      done()
-    })
+
+    await tick()
+    expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
+    expect(vm.$el.querySelector('.tcs-attr').innerHTML).to.include('I am <strong>great</strong>')
   })
 })

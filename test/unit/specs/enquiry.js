@@ -1,56 +1,50 @@
-import Vue from 'vue'
-import {generate_vm} from './_shared'
+import {generate_vm, tick} from './_shared'
 
 describe('enquiry.vue', () => {
-  it('should render contractor details then form', done => {
+  it('should render contractor details then form', async function () {
     const vm = generate_vm()
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
-      expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
-      vm.$el.querySelector('.tcs-extra button').click()
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('input').attributes['placeholder'].value).to.equal('Foobar')
-        expect(vm.$el.querySelector('input').attributes['name'].value).to.equal('.first_field')
-        expect(vm.$el.querySelector('textarea').attributes['placeholder'].value).to.equal('Custom Field')
-        expect(vm.$el.querySelector('textarea').attributes['name'].value).to.equal('attributes.custom_field')
-        done()
-      })
-    })
+    await tick()
+    expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
+    expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
+    vm.$el.querySelector('.tcs-extra button').click()
+    await tick()
+    expect(vm.$el.querySelector('input').attributes['placeholder'].value).to.equal('Foobar')
+    expect(vm.$el.querySelector('input').attributes['name'].value).to.equal('.first_field')
+    expect(vm.$el.querySelector('textarea').attributes['placeholder'].value).to.equal('Custom Field')
+    expect(vm.$el.querySelector('textarea').attributes['name'].value).to.equal('attributes.custom_field')
   })
 })
 
 describe('enquiry.vue', () => {
-  it('should submit form', done => {
+  it('should submit form', async function () {
     const vm = generate_vm()
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
-      vm.$el.querySelector('.tcs-extra button').click()
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('input').attributes['placeholder'].value).to.equal('Foobar')
-        expect(vm.$el.querySelector('input').value).to.equal('')
-        expect(vm.enquiry_data).to.deep.equal({})
-        vm.$el.querySelector('input').value = 'the new value'
-        vm.$el.querySelector('input').dispatchEvent(new window.Event('input'))
 
-        vm.$el.querySelector('textarea').value = 'X'
-        vm.$el.querySelector('textarea').dispatchEvent(new window.Event('input'))
+    await tick()
+    expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
+    vm.$el.querySelector('.tcs-extra button').click()
 
-        Vue.nextTick(() => {
-          expect(vm.$el.querySelector('input').value).to.equal('the new value')
-          expect(vm.enquiry_data).to.deep.equal({first_field: 'the new value', attributes: {custom_field: 'X'}})
+    await tick()
+    expect(vm.$el.querySelector('input').attributes['placeholder'].value).to.equal('Foobar')
+    expect(vm.$el.querySelector('input').value).to.equal('')
+    expect(vm.enquiry_data).to.deep.equal({})
+    vm.$el.querySelector('input').value = 'the new value'
+    vm.$el.querySelector('input').dispatchEvent(new window.Event('input'))
 
-          expect(vm.method_calls['submit_enquiry']).to.equal(undefined)
-          vm.$el.querySelector('form').dispatchEvent(new window.Event('submit'))
-          Vue.nextTick(() => {
-            expect(vm.method_calls['submit_enquiry']).to.equal(1)
-            expect(vm.enquiry_data).to.deep.equal({})
-            done()
-          })
-        })
-      })
-    })
+    vm.$el.querySelector('textarea').value = 'X'
+    vm.$el.querySelector('textarea').dispatchEvent(new window.Event('input'))
+
+    await tick()
+    expect(vm.$el.querySelector('input').value).to.equal('the new value')
+    expect(vm.enquiry_data).to.deep.equal({first_field: 'the new value', attributes: {custom_field: 'X'}})
+
+    expect(vm.method_calls['submit_enquiry']).to.equal(undefined)
+    vm.$el.querySelector('form').dispatchEvent(new window.Event('submit'))
+
+    await tick()
+    expect(vm.method_calls['submit_enquiry']).to.equal(1)
+    expect(vm.enquiry_data).to.deep.equal({})
   })
 })
 

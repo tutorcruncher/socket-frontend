@@ -70,4 +70,8 @@ const generate_vm = (router, vm_data_) => {
   })
 }
 
-export {dft_response, TestConsole, enquiry_options, vm_data, generate_vm}
+function tick () {
+  return new Promise((resolve, reject) => Vue.nextTick(resolve))
+}
+
+export {dft_response, TestConsole, enquiry_options, vm_data, generate_vm, tick}

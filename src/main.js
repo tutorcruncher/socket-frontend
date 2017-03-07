@@ -134,7 +134,7 @@ response text:   "${xhr.responseText}"`)
       },
       get_details: function (url, link) {
         if (this.contractors_extra[link] !== undefined) {
-          return
+          return false
         }
         let xhr = new window.XMLHttpRequest()
         xhr.open('GET', url)
@@ -147,6 +147,7 @@ response text:   "${xhr.responseText}"`)
           }
         }
         xhr.send()
+        return true
       },
       get_enquiry: function () {
         if (this.enquiry_form_info !== null) {
