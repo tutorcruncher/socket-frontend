@@ -2,7 +2,7 @@
 /* eslint-disable no-extend-native */
 Function.prototype.bind = require('function-bind')
 
-// require all test files (files that ends with .spec.js)
+// const testsContext = require.context('./specs', true, /main\.js$/)
 const testsContext = require.context('./specs', true)
 testsContext.keys().forEach(testsContext)
 

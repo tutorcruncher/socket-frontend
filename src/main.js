@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import app from './app'
 import grid from './components/grid'
 import modal from './components/modal'
+import {to_markdown} from './utils'
 
 let dsn = process.env.NODE_ENV === 'production' && 'https://e8143a1422274f0bbf312ed8792f4e86@sentry.io/128441'
 Raven.config(dsn, {release: process.env.RELEASE}).addPlugin(RavenVue, Vue).install()
@@ -29,6 +30,15 @@ const ConfiguredVueRouter = config => new VueRouter({
   ]
 })
 
+const STRINGS = {
+  skills_label: 'Skills',
+  contractor_enquiry_message: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
+  contractor_enquiry_button: 'Contact {contractor_name}',
+  contractor_details_button: 'Show Profile',
+  submit_enquiry: 'Submit Enquiry',
+  enquiry_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.'
+}
+
 module.exports = function (public_key, config) {
   config = config || {}
   let error = null
@@ -52,16 +62,14 @@ module.exports = function (public_key, config) {
     config.element = '#socket'
   }
 
-  if (config.contact_html === undefined) {
-    config.contact_html = 'To request tutoring from {name} please <a href="{contact_link}">get in touch</a> with us.'
+  if (config.console === undefined) {
+    config.console = console
   }
 
-  if (config.contact_link === undefined) {
-    config.contact_link = '/contact'
-  }
-
-  if (config.skills_label === undefined) {
-    config.skills_label = 'Skills'
+  for (let k of Object.keys(STRINGS)) {
+    if (config[k] === undefined) {
+      config[k] = STRINGS[k]
+    }
   }
 
   return new Vue({
@@ -74,6 +82,8 @@ module.exports = function (public_key, config) {
       config: config,
       error: null,
       public_key: public_key,
+      enquiry_form_info: null,
+      enquiry_data: {},
     },
     components: {
       app
@@ -82,7 +92,7 @@ module.exports = function (public_key, config) {
       // get_data is called by components, eg. grid
       handle_error: function (error_message) {
         this.error = error_message || 'unknown'
-        console.error(this.error)
+        config.console.error(this.error)
         Raven.captureException(new Error(this.error))
       },
       get_list: function () {
@@ -98,7 +108,7 @@ module.exports = function (public_key, config) {
           let contractors
           try {
             if (xhr.status !== 200) {
-              throw new Error(`bad response ${xhr.status}`)
+              throw new Error(`bad response ${xhr.status} at "${url}"`)
             } else {
               contractors = JSON.parse(xhr.responseText)
             }
@@ -130,14 +140,60 @@ response text:   "${xhr.responseText}"`)
         xhr.open('GET', url)
         xhr.onload = () => {
           if (xhr.status !== 200) {
-            throw new Error(`bad response ${xhr.status}`)
+            throw new Error(`bad response ${xhr.status} at "${url}"`)
           } else {
             let con = JSON.parse(xhr.responseText)
             Vue.set(this.contractors_extra, link, con)
           }
         }
         xhr.send()
-      }
+      },
+      get_enquiry: function () {
+        if (this.enquiry_form_info !== null) {
+          return
+        }
+        let xhr = new window.XMLHttpRequest()
+        let url = `${config.api_root}/${public_key}/enquiry`
+        xhr.open('GET', url)
+        xhr.onload = () => {
+          if (xhr.status !== 200) {
+            throw new Error(`bad response ${xhr.status} at "${url}"`)
+          } else {
+            this.enquiry_form_info = JSON.parse(xhr.responseText)
+          }
+        }
+        xhr.send()
+      },
+      get_text: function (name, replacements, is_markdown) {
+        let s = this.config[name]
+        for (let [k, v] of Object.entries(replacements || {})) {
+          s = s.replace('{' + k + '}', v)
+        }
+        if (is_markdown === true) {
+          return to_markdown(s)
+        } else {
+          return s
+        }
+      },
+      submit_enquiry: function (callback) {
+        let data = JSON.stringify(this.enquiry_data)
+        let xhr = new window.XMLHttpRequest()
+        let url = `${config.api_root}/${public_key}/enquiry`
+        xhr.open('POST', url)
+        xhr.onload = () => {
+          if (xhr.status !== 201) {
+            this.handle_error(`\
+Connection error
+requested url:   "${url}"
+response status: ${xhr.status}
+response text:   "${xhr.responseText}"`)
+          } else {
+            this.enquiry_data = {}
+            callback()
+          }
+        }
+        xhr.send(data)
+      },
     }
   })
 }

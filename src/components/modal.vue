@@ -19,12 +19,34 @@
 
         <div class="tcs-body">
           <div class="tcs-content">
-            <con-details :contractor="contractor"></con-details>
+            <div class="tcs-location">
+              <!--
+              this is the svg for map icon straight from
+              https://github.com/encharm/Font-Awesome-SVG-PNG/blob/master/black/svg/map-marker.svg
+              -->
+              <svg class="tcs-svg" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1152 640q0-106-75-181t-181-75-181 75-75 181 75 181 181 75 181-75 75-181zm256 0q0 109-33
+                  179l-364 774q-16 33-47.5 52t-67.5 19-67.5-19-46.5-52l-365-774q-33-70-33-179 0-212 150-362t362-150
+                  362 150 150 362z"/>
+              </svg>
+              <span>{{ contractor.town }}, {{ contractor.country }}</span>
+            </div>
+
+            <div class="tcs-aside tcs-md">{{ contractor.tag_line }}</div>
+
+            <div class="tcs-scroll">
+              <enquiry v-if="show_enquiry" :contractor="contractor"></enquiry>
+              <con-details v-else :contractor="contractor"></con-details>
+            </div>
           </div>
           <div class="tcs-extra">
             <img :src="contractor.photo" :alt="contractor.name">
-            <!--<button>Contact {{ contractor.name }}</button>-->
-            <p v-html="contact_html"></p>
+            <button v-if="show_enquiry" @click="switch_show">
+              {{ $root.get_text('contractor_details_button', {contractor_name: contractor.name}) }}
+            </button>
+            <button v-else @click="switch_show">
+              {{ $root.get_text('contractor_enquiry_button', {contractor_name: contractor.name}) }}
+            </button>
           </div>
         </div>
 
@@ -38,17 +60,25 @@
 
 <script>
 var con_details = require('./con-details')
+var enquiry = require('./enquiry')
 
 export default {
   name: 'tcs-modal',
   methods: {
     close: function () {
       this.$router.push({name: 'index'})
+    },
+    switch_show: function () {
+      this.show_enquiry = !this.show_enquiry
     }
   },
   components: {
-    'con-details': con_details
+    'con-details': con_details,
+    'enquiry': enquiry,
   },
+  data: () => ({
+    show_enquiry: false
+  }),
   computed: {
     contractor: function () {
       for (var contractor of this.$root.contractors) {
@@ -57,13 +87,10 @@ export default {
           return contractor
         }
       }
-    },
-    contact_html: function () {
-      let raw = this.$root.config.contact_html
-      return raw.replace('{name}', this.contractor.name).replace('{contact_link}', this.$root.config.contact_link)
     }
   },
   created: function () {
+    this.$root.get_enquiry()
     // TODO could do something less ugly here like hide the scroll bar at all times
     this.body_overflow_before = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -96,6 +123,24 @@ export default {
   border-radius: 4px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
   transition: all .3s ease;
+}
+
+.tcs-location {
+  margin-bottom: 10px;
+  float: right;
+  span {
+    display: inline-block;
+    padding-top: 4px;
+    vertical-align: top;
+    font-weight: 500;
+  }
+}
+
+.tcs-aside {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: $hightlight;
+  min-height: 28px;
 }
 
 svg.tcs-svg {
@@ -133,8 +178,6 @@ svg.tcs-svg {
 .tcs-body {
   display: flex;
   justify-content: space-between;
-  max-height: calc(94vh - 130px);
-  overflow-y: auto;
 }
 
 .tcs-content {
@@ -142,12 +185,17 @@ svg.tcs-svg {
   padding-right: 10px;
   color: #444;
   width: calc(100% - 200px);
+  margin-right: 5px;
+  .tcs-scroll {
+    max-height: calc(94vh - 180px);
+    overflow-y: auto;
+  }
 }
 
 .tcs-extra {
   text-align: center;
+  width: $extra-width;
   img {
-    width: $extra-width;
     height: $extra-width;
     border-radius: 4px;
   }
@@ -162,15 +210,10 @@ svg.tcs-svg {
     border: none;
     transition: all .3s ease;
     outline: none;
+    cursor: pointer;
     &:hover {
       background-color: darken($button-colour, 20%);
     }
-  }
-  p {
-    max-width: $extra-width;
-  }
-  a {
-    color: $hightlight;
   }
 }
 
