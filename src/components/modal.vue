@@ -18,7 +18,9 @@
         </div>
 
         <div class="tcs-body">
-          <div class="tcs-content">
+          <div class="tcs-extra">
+            <img :src="contractor.photo" :alt="contractor.name">
+
             <div class="tcs-location">
               <!--
               this is the svg for map icon straight from
@@ -29,8 +31,17 @@
                   179l-364 774q-16 33-47.5 52t-67.5 19-67.5-19-46.5-52l-365-774q-33-70-33-179 0-212 150-362t362-150
                   362 150 150 362z"/>
               </svg>
-              <span>{{ contractor.town }}, {{ contractor.country }}</span>
+              <span>{{ contractor.town }}</span>
             </div>
+
+            <button v-if="show_enquiry" @click="switch_show">
+              {{ $root.get_text('contractor_details_button', {contractor_name: contractor.name}) }}
+            </button>
+            <button v-else @click="switch_show">
+              {{ $root.get_text('contractor_enquiry_button', {contractor_name: contractor.name}) }}
+            </button>
+          </div>
+          <div class="tcs-content">
 
             <div class="tcs-aside tcs-md">{{ contractor.tag_line }}</div>
 
@@ -38,15 +49,6 @@
               <enquiry v-if="show_enquiry" :contractor="contractor"></enquiry>
               <con-details v-else :contractor="contractor"></con-details>
             </div>
-          </div>
-          <div class="tcs-extra">
-            <img :src="contractor.photo" :alt="contractor.name">
-            <button v-if="show_enquiry" @click="switch_show">
-              {{ $root.get_text('contractor_details_button', {contractor_name: contractor.name}) }}
-            </button>
-            <button v-else @click="switch_show">
-              {{ $root.get_text('contractor_enquiry_button', {contractor_name: contractor.name}) }}
-            </button>
           </div>
         </div>
 
@@ -125,22 +127,12 @@ export default {
   transition: all .3s ease;
 }
 
-.tcs-location {
-  margin-bottom: 10px;
-  float: right;
-  span {
-    display: inline-block;
-    padding-top: 4px;
-    vertical-align: top;
-    font-weight: 500;
-  }
-}
-
 .tcs-aside {
   font-size: 22px;
   margin-bottom: 10px;
   color: $hightlight;
   min-height: 28px;
+  width: 300px;
 }
 
 svg.tcs-svg {
@@ -176,31 +168,52 @@ svg.tcs-svg {
 }
 
 .tcs-body {
-  display: flex;
-  justify-content: space-between;
+  max-height: calc(94vh - 140px);
+  overflow-y: auto;
+  @media(min-width: $size-sm) {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+  }
 }
 
 .tcs-content {
   flex-grow: 1;
   padding-right: 10px;
   color: #444;
-  width: calc(100% - 200px);
+  width: calc(100% - $extra-width);
   margin-right: 5px;
-  .tcs-scroll {
-    max-height: calc(94vh - 180px);
-    overflow-y: auto;
+  @media(min-width: $size-sm) {
+    .tcs-scroll {
+      max-height: calc(94vh - 180px);
+      overflow-y: auto;
+    }
   }
 }
 
 .tcs-extra {
-  text-align: center;
   width: $extra-width;
+  margin: 0 auto 20px;
+  text-align: center;
+
   img {
     height: $extra-width;
     border-radius: 4px;
+    display: block;
+    margin: auto;
   }
+
+  .tcs-location {
+    margin: 10px 0;
+    span {
+      padding-top: 4px;
+      vertical-align: top;
+      font-weight: 500;
+    }
+  }
+
   button {
-    margin-top: 10px;
+    margin: 10px auto 0;
     background-color: $button-colour;
     color: white;
     border-radius: 5px;

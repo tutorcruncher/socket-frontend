@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$brand-colour: #016997;
+@import './conf';
 .tcs-errors {
   background-color: $brand-colour;
   color: white;

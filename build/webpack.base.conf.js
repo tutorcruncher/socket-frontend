@@ -17,6 +17,7 @@ module.exports = {
   output: {
     path:  path.resolve(current_conf.build_dir),
     filename: '[name].js',
+    sourceMapFilename: '[name].js.map',
     publicPath: current_conf.public_path,
   },
   devtool: 'source-map',

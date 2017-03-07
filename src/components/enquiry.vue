@@ -76,7 +76,7 @@ p.tcs {
   text-align: right;
   button {
     font-size: 17px;
-    padding: 6px 12px;
+    padding: 10px 12px;
     border: none;
     border-radius: 4px;
 

@@ -8,5 +8,9 @@ $hightlight: #016997;
 $svg-size: 22px;
 // section on right (with image) on modals
 $extra-width: 200px;
+// boundary for assuming mobile
+$size-sm: 768px;
 // contact button on modals
 $button-colour: $hightlight;
+// errors
+$brand-colour: $hightlight;
