@@ -53,7 +53,9 @@ export default {
 
 .tcs-md {
   p {
-    margin: 0 0 8px;
+    margin: 0 0 10px;
+    font-size: 16px;
+    line-height: 18px;
   }
 }
 

@@ -69,8 +69,11 @@ $border-colour: #66afe9;
   width: 100%;
   input, textarea {
     font-size: 16px;
-    width: calc(100% - 26px);
+    box-sizing: border-box;
+    width: 100%;
     padding: 10px 12px;
+    margin: 0;
+    height: inherit;
     border-radius: 5px;
     border: 1px solid #aaa;
     font-family: inherit;

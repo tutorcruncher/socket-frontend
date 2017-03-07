@@ -1,6 +1,6 @@
 {
   "name": "tutorcruncher-socket",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "TutorCruncher socket",
   "author": "Samuel Colvin <s@muelcolvin.com>",
   "private": false,
