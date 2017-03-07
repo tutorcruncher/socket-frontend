@@ -2,8 +2,10 @@
 $border-radius: 3px;
 // model background colour
 $back-colour: 35;
+// TC colour
+$brand-colour: #016997;
 // highlight sections of modals
-$hightlight: #016997;
+$hightlight: $brand-colour;
 // svgs on modals
 $svg-size: 22px;
 // section on right (with image) on modals
@@ -12,5 +14,3 @@ $extra-width: 200px;
 $size-sm: 768px;
 // contact button on modals
 $button-colour: $hightlight;
-// errors
-$brand-colour: $hightlight;

@@ -54,10 +54,10 @@ export default {
     text-overflow: ellipsis;
   }
   img.tcs-thumb {
-    border-radius: $border-radius;
+    border-radius: $border-radius $border-radius 0 0;
     width: 150px;
     height: 150px;
-    margin: 0 0 5px;
+    margin: 0;
   }
   .tcs-name {
     display: block;

@@ -1,7 +1,7 @@
 import {generate_vm, tick} from './_shared'
 
 describe('modal.vue', () => {
-  it('should close on tcs-modal-mask', async function () {
+  it('should close on tcs-modal-mask', async () => {
     const vm = generate_vm()
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
 
@@ -16,7 +16,7 @@ describe('modal.vue', () => {
 })
 
 describe('con-details.vue', () => {
-  it('should render contractor details', async function () {
+  it('should render contractor details', async () => {
     const vm = generate_vm()
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
 
@@ -29,7 +29,7 @@ describe('con-details.vue', () => {
 })
 
 describe('con-details.vue', () => {
-  it('should render only five qual levels', async function () {
+  it('should render only five qual levels', async () => {
     const _vm_data = {
       contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
       config: {},
@@ -69,7 +69,7 @@ describe('con-details.vue', () => {
 })
 
 describe('con-details.vue', () => {
-  it('should render markdown', async function () {
+  it('should render markdown', async () => {
     const _vm_data = {
       contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
       config: {},

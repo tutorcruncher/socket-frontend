@@ -1,7 +1,7 @@
-import {generate_vm, tick} from './_shared'
+import {generate_vm, tick, sleep} from './_shared'
 
 describe('enquiry.vue', () => {
-  it('should render contractor details then form', async function () {
+  it('should render contractor details then form', async () => {
     const vm = generate_vm()
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     await tick()
@@ -9,6 +9,7 @@ describe('enquiry.vue', () => {
     expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
     vm.$el.querySelector('.tcs-extra button').click()
     await tick()
+    await sleep(50)  // wait for transition
     expect(vm.$el.querySelector('input').attributes['placeholder'].value).to.equal('Foobar')
     expect(vm.$el.querySelector('input').attributes['name'].value).to.equal('.first_field')
     expect(vm.$el.querySelector('textarea').attributes['placeholder'].value).to.equal('Custom Field')
@@ -17,7 +18,7 @@ describe('enquiry.vue', () => {
 })
 
 describe('enquiry.vue', () => {
-  it('should submit form', async function () {
+  it('should submit form', async () => {
     const vm = generate_vm()
     vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
 
@@ -26,6 +27,7 @@ describe('enquiry.vue', () => {
     vm.$el.querySelector('.tcs-extra button').click()
 
     await tick()
+    await sleep(50)  // wait for transition
     expect(vm.$el.querySelector('input').attributes['placeholder'].value).to.equal('Foobar')
     expect(vm.$el.querySelector('input').value).to.equal('')
     expect(vm.enquiry_data).to.deep.equal({})

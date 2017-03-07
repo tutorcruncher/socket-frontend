@@ -1,8 +1,8 @@
 {
   "name": "tutorcruncher-socket",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "TutorCruncher socket",
-  "author": "Samuel Colvin <s@muelcolvin.com>",
+  "author": "Samuel Colvin <samuel@tutorcruncher.com>",
   "private": false,
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
     "test": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
+    "test-live": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js",
     "lint": "eslint --ext .js,.vue src test/unit/specs"
   },
   "dependencies": {

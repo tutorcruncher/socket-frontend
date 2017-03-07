@@ -74,4 +74,8 @@ function tick () {
   return new Promise((resolve, reject) => Vue.nextTick(resolve))
 }
 
-export {dft_response, TestConsole, enquiry_options, vm_data, generate_vm, tick}
+function sleep (delay) {
+  return new Promise((resolve, reject) => setTimeout(resolve, delay))
+}
+
+export {dft_response, TestConsole, enquiry_options, vm_data, generate_vm, tick, sleep}

@@ -46,12 +46,17 @@
             <div class="tcs-aside tcs-md">{{ contractor.tag_line }}</div>
 
             <div class="tcs-scroll">
-              <enquiry v-if="show_enquiry" :contractor="contractor"></enquiry>
-              <con-details v-else :contractor="contractor"></con-details>
+              <transition name="tcs-squeeze" mode="out-in">
+                <enquiry v-if="show_enquiry" :contractor="contractor"></enquiry>
+                <con-details v-else :contractor="contractor"></con-details>
+              </transition>
             </div>
           </div>
         </div>
 
+        <div class="tcs-footer">
+          <a href="https://tutorcruncher.com" target="blank" class="tcs-footer">Powered by TutorCruncher</a>
+        </div>
       </div>
       <div v-else class="tcs-modal">
         <p>Could not find contractor.</p>
@@ -120,7 +125,7 @@ export default {
 .tcs-modal {
   max-width: 900px;
   margin: 6vh auto 0;
-  padding: 20px 20px 40px;
+  padding: 20px 20px 10px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
@@ -185,8 +190,8 @@ svg.tcs-svg {
   margin-right: 5px;
   @media(min-width: $size-sm) {
     .tcs-scroll {
-      max-height: calc(94vh - 180px);
       overflow-y: auto;
+      max-height: calc(94vh - 200px);
     }
   }
 }
@@ -230,6 +235,20 @@ svg.tcs-svg {
   }
 }
 
+.tcs-footer {
+  margin-top: 30px;
+  text-align: right;
+  a {
+    font-size: 12px;
+    text-decoration: none;
+    color: #999;
+    transition: all .5s ease;
+    &:hover {
+      color: $brand-colour;
+    }
+  }
+}
+
 // auto applied:
 
 .tcs-modal-trans-enter, .tcs-modal-trans-leave-active {
@@ -237,5 +256,13 @@ svg.tcs-svg {
   .tcs-modal {
     transform: translate(0, 40px);
   }
+}
+
+.tcs-squeeze-enter-active, .tcs-squeeze-leave-active {
+  transition: all .3s ease-out;
+}
+
+.tcs-squeeze-enter, .tcs-squeeze-leave-active {
+  opacity: 0;
 }
 </style>

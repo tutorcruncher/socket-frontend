@@ -1,5 +1,5 @@
 import socket from 'src/main'
-import {dft_response, TestConsole, enquiry_options} from './_shared'
+import {dft_response, TestConsole, enquiry_options, sleep} from './_shared'
 
 describe('main.js', done => {
   let server
@@ -68,7 +68,7 @@ describe('main.js', () => {
   })
   after(() => { server.restore() })
 
-  it('should show error with bad response', done => {
+  it('should show error with bad response', async () => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
@@ -76,22 +76,20 @@ describe('main.js', () => {
     let test_console = new TestConsole()
     const vm = socket('public_key', {console: test_console, v: 404})
 
-    setTimeout(() => {
-      expect(vm.error).to.not.equal(null)
-      expect(vm.error).to.contain('Error: bad response 404')
-      expect(vm.error).to.contain('response status: 404')
-      expect(vm.error).to.contain('response text:\nbadness')
-      expect(vm.error).to.not.contain('Connection error')
-      expect(test_console.log_).to.have.lengthOf(0)
-      expect(test_console.warning_).to.have.lengthOf(0)
-      expect(test_console.error_).to.have.lengthOf(1)
-      done()
-    }, 50)
+    await sleep(50)
+    expect(vm.error).to.not.equal(null)
+    expect(vm.error).to.contain('Error: bad response 404')
+    expect(vm.error).to.contain('response status: 404')
+    expect(vm.error).to.contain('response text:\nbadness')
+    expect(vm.error).to.not.contain('Connection error')
+    expect(test_console.log_).to.have.lengthOf(0)
+    expect(test_console.warning_).to.have.lengthOf(0)
+    expect(test_console.error_).to.have.lengthOf(1)
   })
 })
 
 describe('main.js', () => {
-  it('should show connection error', done => {
+  it('should show connection error', async () => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
@@ -99,12 +97,10 @@ describe('main.js', () => {
     let test_console = new TestConsole()
     const vm = socket('the-public-key', {api_root: 'http://localhost:12345678', console: test_console})
 
-    setTimeout(() => {
-      expect(vm.error).to.contain('Connection error')
-      expect(vm.error).to.contain('response status: 0')
-      expect(test_console.error_).to.have.lengthOf(1)
-      done()
-    }, 50)
+    await sleep(50)
+    expect(vm.error).to.contain('Connection error')
+    expect(vm.error).to.contain('response status: 0')
+    expect(test_console.error_).to.have.lengthOf(1)
   })
 })
 
@@ -119,7 +115,7 @@ describe('main.js', () => {
   })
   after(() => { server.restore() })
 
-  it('should get enquiry info', done => {
+  it('should get enquiry info', async () => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
@@ -127,10 +123,8 @@ describe('main.js', () => {
     const vm = socket('public-key')
     vm.get_enquiry()
 
-    setTimeout(() => {
-      expect(vm.enquiry_form_info).to.deep.equal({response: 'ok'})
-      done()
-    }, 50)
+    await sleep(50)
+    expect(vm.enquiry_form_info).to.deep.equal({response: 'ok'})
   })
 
   it('should convert text', () => {
@@ -146,7 +140,7 @@ describe('main.js', () => {
     expect(text).to.equal('Speak to foobar')
   })
 
-  it('should get contractor details', done => {
+  it('should get contractor details', async () => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
@@ -156,12 +150,10 @@ describe('main.js', () => {
     let v = vm.get_details('/foobar', 'key')
     expect(v).to.equal(true)
 
-    setTimeout(() => {
-      expect(vm.contractors_extra).to.deep.equal({key: {the: 'response'}})
-      v = vm.get_details('/foobar', 'key')
-      expect(v).to.equal(false)
-      done()
-    }, 50)
+    await sleep(50)
+    expect(vm.contractors_extra).to.deep.equal({key: {the: 'response'}})
+    v = vm.get_details('/foobar', 'key')
+    expect(v).to.equal(false)
   })
 })
 
