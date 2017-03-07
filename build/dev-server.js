@@ -41,9 +41,6 @@ app.use(devMiddleware)
 // compilation error display
 app.use(hotMiddleware)
 
-// serve mock api
-app.use('/api', express.static('./api'))
-
 devMiddleware.waitUntilValid(function () {
   console.log('> Listening at http://localhost:' + port + '\n')
 })
