@@ -1,17 +1,10 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import modal from 'src/components/modal'
 import {generate_vm} from './_shared'
 
 describe('modal.vue', () => {
   it('should close on tcs-modal-mask', done => {
-    Vue.use(VueRouter)
-    const router = new VueRouter({routes: [
-        {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
-        {path: '/:link', name: 'modal', component: modal},
-    ]})
-    const vm = generate_vm(router)
-    router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    const vm = generate_vm()
+    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.attributes['class'].value).to.contain('tcs-modal-mask')
       // this is clicking the background
@@ -26,13 +19,8 @@ describe('modal.vue', () => {
 
 describe('con-details.vue', () => {
   it('should render contractor details', done => {
-    Vue.use(VueRouter)
-    const router = new VueRouter({routes: [
-        {path: '/', name: 'index', component: {render: h => h('div')}},
-        {path: '/:link', name: 'modal', component: modal},
-    ]})
-    const vm = generate_vm(router)
-    router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    const vm = generate_vm()
+    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
       expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
@@ -45,11 +33,6 @@ describe('con-details.vue', () => {
 
 describe('con-details.vue', () => {
   it('should render only five qual levels', done => {
-    Vue.use(VueRouter)
-    const router = new VueRouter({routes: [
-        {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
-        {path: '/:link', name: 'modal', component: modal},
-    ]})
     const _vm_data = {
       contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
       config: {},
@@ -72,8 +55,8 @@ describe('con-details.vue', () => {
       }
     }
 
-    const vm = generate_vm(router, _vm_data)
-    router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    const vm = generate_vm(null, _vm_data)
+    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
       expect(vm.$el.querySelector('.tcs-skills').textContent).to.include('GCSE')
@@ -91,14 +74,9 @@ describe('con-details.vue', () => {
 
 describe('con-details.vue', () => {
   it('should render markdown', done => {
-    Vue.use(VueRouter)
-    const router = new VueRouter({routes: [
-        {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
-        {path: '/:link', name: 'modal', component: modal},
-    ]})
     const _vm_data = {
       contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
-      config: {contact_html: 'name is: {name}'},
+      config: {},
       contractors_extra: {
         'fred-bloggs': {
           extra_attributes: [{'name': 'Bio', 'value': 'I am **great**', 'type': 'text_extended'}],
@@ -106,8 +84,8 @@ describe('con-details.vue', () => {
       }
     }
 
-    const vm = generate_vm(router, _vm_data)
-    router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    const vm = generate_vm(null, _vm_data)
+    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
       expect(vm.$el.querySelector('.tcs-attr').innerHTML).to.include('I am <strong>great</strong>')
