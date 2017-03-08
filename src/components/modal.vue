@@ -70,12 +70,17 @@ export default {
 
 .tcs-modal {
   max-width: 900px;
+  box-sizing: border-box;
   margin: 6vh auto 0;
   padding: 20px 20px 10px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
   transition: all .3s ease;
+  @media(max-width: 908px) {
+    margin: 10px 4px 0;
+    padding: 10px;
+  }
 }
 
 svg.tcs-svg {

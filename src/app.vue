@@ -28,9 +28,7 @@
 </template>
 
 <script>
-export default {
-  name: 'tcs-app'
-}
+export default {}
 </script>
 
 <style lang="scss" scoped>

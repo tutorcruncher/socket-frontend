@@ -7,10 +7,10 @@
       </p>
       <form class="tcs" @submit.prevent="submit">
         <div v-for="field in visible_fields">
-          <input_ :field="field"></input_>
+          <tcs-input :field="field"></tcs-input>
         </div>
         <div v-for="field in attribute_fields">
-          <input_ :field="field" prefix="attributes"></input_>
+          <tcs-input :field="field" prefix="attributes"></tcs-input>
         </div>
         <div class="tcs-field tcs-submit">
           <button type="submit">
@@ -28,7 +28,7 @@ import input from './input.vue'
 export default {
   props: ['contractor'],
   components: {
-    'input_': input
+    'tcs-input': input
   },
   computed: {
     visible_fields: function () {

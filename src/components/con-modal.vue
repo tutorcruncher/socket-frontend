@@ -103,10 +103,8 @@ export default {
 }
 
 .tcs-content {
-  flex-grow: 1;
   padding-right: 10px;
   color: #444;
-  width: calc(100% - $extra-width);
   margin-right: 5px;
   @media(min-width: $size-sm) {
     .tcs-scroll {
@@ -120,6 +118,7 @@ export default {
   width: $extra-width;
   margin: 0 auto 20px;
   text-align: center;
+  flex-shrink: 0;
 
   img {
     height: $extra-width;

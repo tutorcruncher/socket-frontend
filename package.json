@@ -1,6 +1,6 @@
 {
   "name": "tutorcruncher-socket",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "TutorCruncher socket",
   "author": "Samuel Colvin <samuel@tutorcruncher.com>",
   "private": false,
@@ -19,6 +19,10 @@
     "test": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "testlive": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js",
     "lint": "eslint --ext .js,.vue src test/unit/specs"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
   },
   "dependencies": {
     "autoprefixer": "^6.7.6",
@@ -83,9 +87,5 @@
     "webpack-dev-middleware": "^1.10.1",
     "webpack-hot-middleware": "^2.17.1",
     "webpack-merge": "^0.14.1"
-  },
-  "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
   }
 }
