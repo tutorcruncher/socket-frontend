@@ -2,9 +2,10 @@
   <div>
     <div class="tcs-submitted" v-if="submitted" v-html="$root.get_text('enquiry_submitted_thanks', {}, true)"></div>
     <div v-else>
-      <p class="tcs">
-        {{ $root.get_text('contractor_enquiry_message', {contractor_name: contractor.name}) }}
-      </p>
+      <div v-if="contractor" class="tcs-centre" v-html="$root.get_text('contractor_enquiry_message', {contractor_name: contractor.name}, true)">
+      </div>
+      <div v-else class="tcs-centre" v-html="$root.get_text('enquiry_message', {}, true)">
+      </div>
       <form class="tcs" @submit.prevent="submit">
         <div v-for="field in visible_fields">
           <tcs-input :field="field"></tcs-input>
@@ -26,7 +27,12 @@
 import input from './input.vue'
 
 export default {
-  props: ['contractor'],
+  props: {
+    contractor: {
+      type: Object,
+      default: null,
+    },
+  },
   components: {
     'tcs-input': input
   },
@@ -50,6 +56,9 @@ export default {
       this.submitted = true
     }
   },
+  created: function () {
+    this.$root.get_enquiry()
+  },
 }
 </script>
 
@@ -61,8 +70,9 @@ form.tcs {
   max-width: 450px;
 }
 
-p.tcs {
+.tcs-centre {
   margin: 0 0 10px;
+  text-align: center;
 }
 
 .tcs-submitted {
@@ -77,7 +87,7 @@ p.tcs {
     font-size: 17px;
     padding: 10px 12px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
 
     background-color: $button-colour;
     color: white;

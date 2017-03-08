@@ -3,6 +3,7 @@ import RavenVue from 'raven-js/plugins/vue'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import app from './app'
+import enquiry from './components/enquiry'
 import grid from './components/grid'
 import con_modal from './components/con-modal'
 import {to_markdown, clean} from './utils'
@@ -12,36 +13,60 @@ Raven.config(dsn, {release: process.env.RELEASE}).addPlugin(RavenVue, Vue).insta
 
 Vue.use(VueRouter)
 
-const ConfiguredVueRouter = config => new VueRouter({
-  mode: config.router_mode,
-  routes: [
-    {
-      path: config.url_root,
-      name: 'index',
-      component: grid,
-      children: [
-        {
-          path: config.url_root + ':link',
-          name: 'modal',
-          component: con_modal,
-        }
-      ]
-    },
-  ]
-})
+const ConfiguredVueRouter = config => {
+  let routes
+  if (config.mode === 'grid') {
+    routes = [
+      {
+        path: config.url_root,
+        name: 'index',
+        component: grid,
+        children: [
+          {
+            path: config.url_root + ':link',
+            name: 'modal',
+            component: con_modal,
+          }
+        ]
+      },
+    ]
+  } else if (config.mode === 'enquiry') {
+    routes = [
+      {
+        path: config.url_root,
+        name: 'index',
+        component: enquiry,
+      },
+    ]
+  }
+  return new VueRouter({
+    mode: config.router_mode,
+    routes: routes
+  })
+}
 
 const STRINGS = {
   skills_label: 'Skills',
   contractor_enquiry_message: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
+  enquiry_message: 'Please enter your details below and we will get in touch with you directly.',
   contractor_enquiry_button: 'Contact {contractor_name}',
   contractor_details_button: 'Show Profile',
   submit_enquiry: 'Submit Enquiry',
   enquiry_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.'
 }
 
+const MODES = ['grid', 'enquiry']
+
 module.exports = function (public_key, config) {
   config = config || {}
   let error = null
+
+  if (config.mode === undefined) {
+    config.mode = 'grid'
+  } else if (!MODES.includes(config.mode)) {
+    error = `invalid mode "${config.mode}", options are: ${MODES.join(', ')}`
+    config.mode = 'grid'
+  }
 
   if (config.api_root === undefined) {
     config.api_root = process.env.SOCKET_API_URL
@@ -82,7 +107,7 @@ module.exports = function (public_key, config) {
       config: config,
       error: null,
       public_key: public_key,
-      enquiry_form_info: null,
+      enquiry_form_info: {},
       enquiry_data: {},
     },
     components: {
@@ -150,7 +175,7 @@ response text:   "${xhr.responseText}"`)
         return true
       },
       get_enquiry: function () {
-        if (this.enquiry_form_info !== null) {
+        if (Object.keys(this.enquiry_form_info).length !== 0) {
           return
         }
         let xhr = new window.XMLHttpRequest()
@@ -160,21 +185,10 @@ response text:   "${xhr.responseText}"`)
           if (xhr.status !== 200) {
             throw new Error(`bad response ${xhr.status} at "${url}"`)
           } else {
-            this.enquiry_form_info = JSON.parse(xhr.responseText)
+            this.enquiry_form_info = Object.assign({}, this.enquiry_form_info, JSON.parse(xhr.responseText))
           }
         }
         xhr.send()
-      },
-      get_text: function (name, replacements, is_markdown) {
-        let s = this.config[name]
-        for (let [k, v] of Object.entries(replacements || {})) {
-          s = s.replace('{' + k + '}', v)
-        }
-        if (is_markdown === true) {
-          return to_markdown(s)
-        } else {
-          return s
-        }
       },
       submit_enquiry: function (callback) {
         let data = JSON.stringify(clean(this.enquiry_data))
@@ -194,6 +208,17 @@ response text:   "${xhr.responseText}"`)
           }
         }
         xhr.send(data)
+      },
+      get_text: function (name, replacements, is_markdown) {
+        let s = this.config[name]
+        for (let [k, v] of Object.entries(replacements || {})) {
+          s = s.replace('{' + k + '}', v)
+        }
+        if (is_markdown === true) {
+          return to_markdown(s)
+        } else {
+          return s
+        }
       },
     }
   })

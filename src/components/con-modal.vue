@@ -78,6 +78,9 @@ export default {
       }
     }
   },
+  created: function () {
+    this.$root.get_enquiry()
+  },
 }
 </script>
 
@@ -103,6 +106,7 @@ export default {
 }
 
 .tcs-content {
+  flex-grow: 1;
   padding-right: 10px;
   color: #444;
   margin-right: 5px;

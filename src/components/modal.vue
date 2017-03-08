@@ -43,7 +43,6 @@ export default {
     title: String,
   },
   created: function () {
-    this.$root.get_enquiry()
     // TODO could do something less ugly here like hide the scroll bar at all times
     this.body_overflow_before = document.body.style.overflow
     document.body.style.overflow = 'hidden'
