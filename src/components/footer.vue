@@ -30,7 +30,6 @@ export default {}
 <style lang="scss">
 @import '../conf';
 .tcs-footer {
-  margin-top: 30px;
   text-align: right;
   a {
     font-size: 12px;
