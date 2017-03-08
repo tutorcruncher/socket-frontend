@@ -4,6 +4,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import app from './app'
 import enquiry from './components/enquiry'
+import enquiry_button from './components/enquiry-button'
+import enquiry_modal from './components/enquiry-modal'
 import grid from './components/grid'
 import con_modal from './components/con-modal'
 import {to_markdown, clean} from './utils'
@@ -14,7 +16,7 @@ Raven.config(dsn, {release: process.env.RELEASE}).addPlugin(RavenVue, Vue).insta
 Vue.use(VueRouter)
 
 const ConfiguredVueRouter = config => {
-  let routes
+  let routes = []
   if (config.mode === 'grid') {
     routes = [
       {
@@ -23,12 +25,12 @@ const ConfiguredVueRouter = config => {
         component: grid,
         children: [
           {
-            path: config.url_root + ':link',
-            name: 'modal',
+            path: config.url_root + ':link(\\d+-[\\w-]+)',
+            name: 'con-modal',
             component: con_modal,
           }
         ]
-      },
+      }
     ]
   } else if (config.mode === 'enquiry') {
     routes = [
@@ -37,6 +39,21 @@ const ConfiguredVueRouter = config => {
         name: 'index',
         component: enquiry,
       },
+    ]
+  } else if (config.mode === 'enquiry-modal') {
+    routes = [
+      {
+        path: config.url_root,
+        name: 'index',
+        component: enquiry_button,
+        children: [
+          {
+            path: config.url_root + 'enquiry',
+            name: 'enquiry-modal',
+            component: enquiry_modal,
+          }
+        ]
+      }
     ]
   }
   return new VueRouter({
@@ -52,10 +69,11 @@ const STRINGS = {
   contractor_enquiry_button: 'Contact {contractor_name}',
   contractor_details_button: 'Show Profile',
   submit_enquiry: 'Submit Enquiry',
-  enquiry_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.'
+  enquiry_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.',
+  enquiry_button: 'Get in touch',
 }
 
-const MODES = ['grid', 'enquiry']
+const MODES = ['grid', 'enquiry', 'enquiry-modal']
 
 module.exports = function (public_key, config) {
   config = config || {}
@@ -175,7 +193,7 @@ response text:   "${xhr.responseText}"`)
         return true
       },
       get_enquiry: function () {
-        if (Object.keys(this.enquiry_form_info).length !== 0) {
+        if (Object.keys(this.enquiry_form_info).length !== 0 || this._getting_enquiry_info) {
           return
         }
         let xhr = new window.XMLHttpRequest()

@@ -3,7 +3,7 @@ import {generate_vm, tick, sleep} from './_shared'
 describe('enquiry.vue', () => {
   it('should render contractor details then form', async () => {
     const vm = generate_vm()
-    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    vm.$router.push({name: 'con-modal', params: {link: '123-fred-bloggs'}})
     await tick()
     expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
     expect(vm.$el.querySelector('.tcs-aside').textContent).to.equal('hello')
@@ -20,7 +20,7 @@ describe('enquiry.vue', () => {
 describe('enquiry.vue', () => {
   it('should submit form', async () => {
     const vm = generate_vm()
-    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    vm.$router.push({name: 'con-modal', params: {link: '123-fred-bloggs'}})
 
     await tick()
     expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')

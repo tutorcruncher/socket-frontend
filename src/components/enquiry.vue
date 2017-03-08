@@ -84,19 +84,9 @@ form.tcs {
 .tcs-submit {
   text-align: right;
   button {
+    @extend .tcs-button;
     font-size: 17px;
     padding: 10px 12px;
-    border: none;
-    border-radius: 5px;
-
-    background-color: $button-colour;
-    color: white;
-    transition: all .3s ease;
-    outline: none;
-    cursor: pointer;
-    &:hover {
-      background-color: darken($button-colour, 20%);
-    }
   }
 }
 </style>

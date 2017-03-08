@@ -1,7 +1,7 @@
 <template>
   <div id="tcs-grid">
     <div v-for="contractor in contractors" class="tcs-col">
-      <router-link :to="{name: 'modal', params: {link: contractor.link}}" class="tcs-box">
+      <router-link :to="{name: 'con-modal', params: {link: contractor.link}}" class="tcs-box">
         <img :src="contractor.photo" :alt="contractor.name" class="tcs-thumb">
         <h3 class="tcs-name">{{ contractor.name }}</h3>
       </router-link>

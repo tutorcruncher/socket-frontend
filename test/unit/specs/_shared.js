@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import con_modal from 'src/components/con-modal'
 
-const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "link": "foobar"}]']
+const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "link": "123-foobar"}]']
 
 class TestConsole {
   log_ = []
@@ -32,9 +32,9 @@ const enquiry_options = {
 }
 
 const vm_data = {
-  contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
+  contractors: [{name: 'Fred Bloggs', link: '123-fred-bloggs', tag_line: 'hello'}],
   config: {},
-  contractors_extra: {'fred-bloggs': {'extra_attributes': [{'name': 'Bio', 'value': 'I am great'}]}},
+  contractors_extra: {'123-fred-bloggs': {'extra_attributes': [{'name': 'Bio', 'value': 'I am great'}]}},
   enquiry_form_info: enquiry_options,
   enquiry_data: {},
   method_calls: {},
@@ -42,7 +42,7 @@ const vm_data = {
 
 const dft_router = new VueRouter({routes: [
   {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
-  {path: '/:link', name: 'modal', component: con_modal},
+  {path: '/:link', name: 'con-modal', component: con_modal},
 ]})
 
 const generate_vm = (router, vm_data_) => {

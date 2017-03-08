@@ -10,7 +10,7 @@
         background: #eee;
         font-family: 'Open Sans', sans-serif;
       }
-      main {
+      main > div {
         background-color: white;
         max-width: 800px;
         margin: 20px auto;
@@ -20,12 +20,17 @@
   </head>
   <body>
     <main>
-      <div id="socket"></div>
+      <div id="socket1"></div>
+      <div id="socket2"></div>
     </main>
   </body>
   <script>
     socket('f8d88b6562b3434ba4ef', {
-      mode: 'enquiry',
+      element: '#socket1',
+    })
+    socket('f8d88b6562b3434ba4ef', {
+      element: '#socket2',
+      mode: 'enquiry-modal',
     })
   </script>
 </html>

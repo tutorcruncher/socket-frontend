@@ -43,18 +43,16 @@ describe('main.js', () => {
   })
   after(() => { server.restore() })
 
-  it('should download contractors', done => {
+  it('should download contractors', async () => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
     const vm = socket('public_key')
 
-    setTimeout(() => {
-      expect(vm.error).to.equal(null)
-      expect(vm.contractors).to.deep.equal([{name: 'Foobars', link: 'foobar'}])
-      done()
-    }, 50)
+    await sleep(50)
+    expect(vm.error).to.equal(null)
+    expect(vm.contractors).to.deep.equal([{name: 'Foobars', link: '123-foobar'}])
   })
 })
 

@@ -3,7 +3,7 @@ import {generate_vm, tick} from './_shared'
 describe('modal.vue', () => {
   it('should close on tcs-modal-mask', async () => {
     const vm = generate_vm()
-    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    vm.$router.push({name: 'con-modal', params: {link: '123-fred-bloggs'}})
 
     await tick()
     expect(vm.$el.attributes['class'].value).to.contain('tcs-modal-mask')
@@ -18,7 +18,7 @@ describe('modal.vue', () => {
 describe('con-details.vue', () => {
   it('should render contractor details', async () => {
     const vm = generate_vm()
-    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    vm.$router.push({name: 'con-modal', params: {link: '123-fred-bloggs'}})
 
     await tick()
     expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
@@ -31,10 +31,10 @@ describe('con-details.vue', () => {
 describe('con-details.vue', () => {
   it('should render only five qual levels', async () => {
     const _vm_data = {
-      contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
+      contractors: [{name: 'Fred Bloggs', link: '123-fred-bloggs', tag_line: 'hello'}],
       config: {},
       contractors_extra: {
-        'fred-bloggs': {
+        '123-fred-bloggs': {
           extra_attributes: [{'name': 'Bio', 'value': 'I am great'}],
           skills: [
             {
@@ -53,7 +53,7 @@ describe('con-details.vue', () => {
     }
 
     const vm = generate_vm(null, _vm_data)
-    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    vm.$router.push({name: 'con-modal', params: {link: '123-fred-bloggs'}})
 
     await tick()
     expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
@@ -71,17 +71,17 @@ describe('con-details.vue', () => {
 describe('con-details.vue', () => {
   it('should render markdown', async () => {
     const _vm_data = {
-      contractors: [{name: 'Fred Bloggs', link: 'fred-bloggs', tag_line: 'hello'}],
+      contractors: [{name: 'Fred Bloggs', link: '123-fred-bloggs', tag_line: 'hello'}],
       config: {},
       contractors_extra: {
-        'fred-bloggs': {
+        '123-fred-bloggs': {
           extra_attributes: [{'name': 'Bio', 'value': 'I am **great**', 'type': 'text_extended'}],
         },
       }
     }
 
     const vm = generate_vm(null, _vm_data)
-    vm.$router.push({name: 'modal', params: {link: 'fred-bloggs'}})
+    vm.$router.push({name: 'con-modal', params: {link: '123-fred-bloggs'}})
 
     await tick()
     expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')

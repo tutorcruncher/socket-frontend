@@ -141,20 +141,9 @@ export default {
   }
 
   button {
+    @extend .tcs-button;
     margin: 10px auto 0;
-    background-color: $button-colour;
-    color: white;
-    border-radius: 5px;
-    font-size: 17px;
-    padding: 8px 12px;
     width: 100%;
-    border: none;
-    transition: all .3s ease;
-    outline: none;
-    cursor: pointer;
-    &:hover {
-      background-color: darken($button-colour, 20%);
-    }
   }
 }
 
