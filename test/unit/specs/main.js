@@ -24,7 +24,7 @@ describe('main.js', done => {
     vm.enquiry_form_info = 'foobar'  // prevent get_enquiry making a GET request
     expect(vm.$el.parentNode.attributes['id'].value).to.equal('outer')
     // no time for get_data to be called so should be empty
-    expect(vm.contractors).to.be.empty
+    expect(vm.contractors).to.have.lengthOf(0)
 
     setTimeout(() => {
       expect(vm.contractors).to.have.lengthOf(1)

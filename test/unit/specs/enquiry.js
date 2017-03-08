@@ -49,4 +49,3 @@ describe('enquiry.vue', () => {
     expect(vm.enquiry_data).to.deep.equal({})
   })
 })
-
