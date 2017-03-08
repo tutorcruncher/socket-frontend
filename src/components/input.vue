@@ -22,7 +22,6 @@
 
 <script>
 export default {
-  name: 'input',
   props: {
     field: Object,
     prefix: {

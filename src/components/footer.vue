@@ -24,7 +24,7 @@
 </template>
 
 <script>
-export default {name: 'footer'}
+export default {}
 </script>
 
 <style lang="scss">

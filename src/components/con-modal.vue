@@ -63,12 +63,11 @@
 </template>
 
 <script>
-var con_details = require('./con-details')
-var enquiry = require('./enquiry')
-var footer = require('./footer')
+import con_details from './con-details.vue'
+import enquiry from './enquiry.vue'
+import footer from './footer.vue'
 
 export default {
-  name: 'con-modal',
   methods: {
     close: function () {
       this.$router.push({name: 'index'})
@@ -236,7 +235,7 @@ svg.tcs-svg {
 
 // auto applied:
 
-.tcs-modal-trans-enter, .tcs-modal-trans-leave-active {
+.tcs-modal-trans-enter, .tcs-modal-trans-leave-to {
   opacity: 0;
   .tcs-modal {
     transform: translate(0, 40px);
@@ -247,7 +246,7 @@ svg.tcs-svg {
   transition: all .3s ease-out;
 }
 
-.tcs-squeeze-enter, .tcs-squeeze-leave-active {
+.tcs-squeeze-enter, .tcs-squeeze-leave-to {
   opacity: 0;
   transform: translate(0, -20px);
 }

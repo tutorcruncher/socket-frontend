@@ -23,10 +23,9 @@
 </template>
 
 <script>
-var input = require('./input')
+import input from './input.vue'
 
 export default {
-  name: 'enquiry',
   props: ['contractor'],
   components: {
     'input_': input

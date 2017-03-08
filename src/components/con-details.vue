@@ -25,10 +25,9 @@
 </template>
 
 <script>
-var utils = require('../utils')
+import {to_markdown} from '../utils'
 
 export default {
-  name: 'con-details',
   methods: {
     filter_qual_levels: (skills) => {
       if (skills.length <= 5) {
@@ -37,7 +36,7 @@ export default {
         return skills.slice(0, 2).concat(['...']).concat(skills.slice(-2))
       }
     },
-    to_markdown: utils.to_markdown
+    to_markdown: to_markdown
   },
   props: ['contractor'],
   computed: {
