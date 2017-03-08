@@ -165,12 +165,15 @@ describe('main.js', () => {
     server.respondWith('/public-key/contractors', dft_response)
     server.respondWith('/public-key/enquiry',
         [200, {'Content-Type': 'application/json'}, JSON.stringify(enquiry_options)])
-    server.respondWith('POST', '/public-key/enquiry',
-        [201, {'Content-Type': 'application/json'}, '{"response": "ok"}'])
+    server.respondWith('POST', '/public-key/enquiry', (xhr, id) => {
+      let obj = JSON.parse(xhr.requestBody)
+      expect(obj).to.deep.equal({first_field: 'foobar', attributes: {foo: 'X'}})
+      xhr.respond(201, {'Content-Type': 'application/json'}, '{"response": "ok"}')
+    })
   })
   after(() => { server.restore() })
 
-  it('should post enquiry data', done => {
+  it('should post enquiry data', async () => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
@@ -178,14 +181,22 @@ describe('main.js', () => {
     const vm = socket('public-key')
     vm.get_enquiry()
 
-    setTimeout(() => {
-      vm.$set(vm.enquiry_data, 'first_field', 'foobar')
-      expect(vm.enquiry_data).to.deep.equal({first_field: 'foobar'})
+    await sleep(50)
+    vm.enquiry_data = {
+      first_field: 'foobar',
+      another_field: '',
+      attributes: {
+        foo: 'X',
+        bar: '',
+      }
+    }
+    expect(vm.enquiry_data).to.not.deep.equal({})
+    await new Promise((resolve, reject) => {
       let callback = () => {
         expect(vm.enquiry_data).to.deep.equal({})
-        done()
+        resolve()
       }
       vm.submit_enquiry(callback)
-    }, 50)
+    })
   })
 })

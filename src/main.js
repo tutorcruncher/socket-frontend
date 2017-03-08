@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 import app from './app'
 import grid from './components/grid'
 import con_modal from './components/con-modal'
-import {to_markdown} from './utils'
+import {to_markdown, clean} from './utils'
 
 let dsn = process.env.NODE_ENV === 'production' && 'https://e8143a1422274f0bbf312ed8792f4e86@sentry.io/128441'
 Raven.config(dsn, {release: process.env.RELEASE}).addPlugin(RavenVue, Vue).install()
@@ -177,7 +177,7 @@ response text:   "${xhr.responseText}"`)
         }
       },
       submit_enquiry: function (callback) {
-        let data = JSON.stringify(this.enquiry_data)
+        let data = JSON.stringify(clean(this.enquiry_data))
         let xhr = new window.XMLHttpRequest()
         let url = `${config.api_root}/${public_key}/enquiry`
         xhr.open('POST', url)
