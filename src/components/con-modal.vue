@@ -53,10 +53,7 @@
             </div>
           </div>
         </div>
-
-        <div class="tcs-footer">
-          <a href="https://tutorcruncher.com" target="blank" class="tcs-footer">Powered by TutorCruncher</a>
-        </div>
+        <tcs-footer></tcs-footer>
       </div>
       <div v-else class="tcs-modal">
         <p>Could not find contractor.</p>
@@ -68,9 +65,10 @@
 <script>
 var con_details = require('./con-details')
 var enquiry = require('./enquiry')
+var footer = require('./footer')
 
 export default {
-  name: 'tcs-modal',
+  name: 'con-modal',
   methods: {
     close: function () {
       this.$router.push({name: 'index'})
@@ -82,6 +80,7 @@ export default {
   components: {
     'con-details': con_details,
     'enquiry': enquiry,
+    'tcs-footer': footer
   },
   data: () => ({
     show_enquiry: false
@@ -235,20 +234,6 @@ svg.tcs-svg {
   }
 }
 
-.tcs-footer {
-  margin-top: 30px;
-  text-align: right;
-  a {
-    font-size: 12px;
-    text-decoration: none;
-    color: #999;
-    transition: all .5s ease;
-    &:hover {
-      color: $brand-colour;
-    }
-  }
-}
-
 // auto applied:
 
 .tcs-modal-trans-enter, .tcs-modal-trans-leave-active {
@@ -264,5 +249,6 @@ svg.tcs-svg {
 
 .tcs-squeeze-enter, .tcs-squeeze-leave-active {
   opacity: 0;
+  transform: translate(0, -20px);
 }
 </style>

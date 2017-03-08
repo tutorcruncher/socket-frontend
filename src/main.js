@@ -4,7 +4,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import app from './app'
 import grid from './components/grid'
-import modal from './components/modal'
+import con_modal from './components/con-modal'
 import {to_markdown} from './utils'
 
 let dsn = process.env.NODE_ENV === 'production' && 'https://e8143a1422274f0bbf312ed8792f4e86@sentry.io/128441'
@@ -23,7 +23,7 @@ const ConfiguredVueRouter = config => new VueRouter({
         {
           path: config.url_root + ':link',
           name: 'modal',
-          component: modal,
+          component: con_modal,
         }
       ]
     },

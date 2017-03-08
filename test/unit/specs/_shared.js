@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import modal from 'src/components/modal'
+import con_modal from 'src/components/con-modal'
 
 const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "link": "foobar"}]']
 
@@ -42,7 +42,7 @@ const vm_data = {
 
 const dft_router = new VueRouter({routes: [
   {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
-  {path: '/:link', name: 'modal', component: modal},
+  {path: '/:link', name: 'modal', component: con_modal},
 ]})
 
 const generate_vm = (router, vm_data_) => {

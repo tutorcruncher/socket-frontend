@@ -17,7 +17,7 @@
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
     "test": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
-    "test-live": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js",
+    "testlive": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js",
     "lint": "eslint --ext .js,.vue src test/unit/specs"
   },
   "dependencies": {
