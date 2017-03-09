@@ -10,14 +10,18 @@ import grid from './components/grid'
 import con_modal from './components/con-modal'
 import {to_markdown, clean, auto_url_root} from './utils'
 
-let dsn = process.env.NODE_ENV === 'production' && 'https://e8143a1422274f0bbf312ed8792f4e86@sentry.io/128441'
 let raven_config = {
   release: process.env.RELEASE,
   tags: {
     host: window.location.host,
+  },
+  shouldSendCallback: (data) => {
+    // if no culprit this a message and came from socket
+    let culprit = data.culprit || '/socket.js'
+    return culprit.indexOf('/socket.js') > 0
   }
 }
-Raven.config(dsn, raven_config).addPlugin(RavenVue, Vue).install()
+Raven.config(process.env.RAVEN_DSN, raven_config).addPlugin(RavenVue, Vue).install()
 
 Vue.use(VueRouter)
 
@@ -87,6 +91,11 @@ const ROUTER_MODES = ['hash', 'history']
 
 module.exports = function (public_key, config) {
   config = config || {}
+  Raven.setExtraContext({
+    public_key: public_key,
+    config: config,
+  })
+
   let error = null
   if (config.mode === undefined) {
     config.mode = 'grid'
@@ -135,14 +144,13 @@ module.exports = function (public_key, config) {
       config[k] = STRINGS[k]
     }
   }
-  Raven.setUserContext(config)
 
   return new Vue({
     el: config.element,
     router: ConfiguredVueRouter(config),
     render: h => h(app),
     data: {
-      grecaptcha_key: process.env.NODE_ENV === 'testing' ? null : '6LdyXRgUAAAAADUNhMVKJDXiRr6DUN8TGOgllqbt',
+      grecaptcha_key: process.env.GRECAPTCHA_KEY,
       contractors: [],
       contractors_extra: {},
       config: config,
@@ -164,7 +172,10 @@ module.exports = function (public_key, config) {
       handle_error: function (error_message) {
         this.error = error_message || 'unknown'
         config.console.error('SOCKET: ' + this.error)
-        Raven.captureException(new Error(this.error))
+        Raven.captureMessage(this.error, {
+          level: 'error',
+          fingerprint: ['{{ default }}', public_key],
+        })
       },
       get_list: function () {
         // if an error already exists show that and return
