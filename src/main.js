@@ -65,7 +65,7 @@ const ConfiguredVueRouter = config => {
 const STRINGS = {
   skills_label: 'Skills',
   contractor_enquiry_message: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
-  enquiry_message: 'Please enter your details below and we will get in touch with you directly.',
+  enquiry_message: 'Please enter your details below and we will get in touch with you shortly.',
   contractor_enquiry_button: 'Contact {contractor_name}',
   contractor_details_button: 'Show Profile',
   submit_enquiry: 'Submit Enquiry',
