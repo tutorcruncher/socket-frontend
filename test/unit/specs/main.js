@@ -19,7 +19,8 @@ describe('main.js', done => {
     outer.appendChild(el)
 
     const vm = socket('public_key', {
-      element: '#foobar'
+      element: '#foobar',
+      url_root: '/'
     })
     vm.enquiry_form_info = 'foobar'  // prevent get_enquiry making a GET request
     expect(vm.$el.parentNode.attributes['id'].value).to.equal('outer')
@@ -36,7 +37,7 @@ describe('main.js', done => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
-    const vm = socket('public_key')
+    const vm = socket('public_key', {url_root: '/'})
     vm.enquiry_form_info = 'foobar'  // prevent get_enquiry making a GET request
     vm.contractors = [{}]
     expect(vm.$el.querySelectorAll('.tcs-grid')).to.have.lengthOf(1)
@@ -48,7 +49,7 @@ describe('main.js', done => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
-    const vm = socket('public_key', {mode: 'enquiry'})
+    const vm = socket('public_key', {mode: 'enquiry', url_root: '/'})
     vm.enquiry_form_info = 'foobar'
     vm.contractors = [{}]
     expect(vm.$el.querySelectorAll('.tcs-grid')).to.have.lengthOf(0)
@@ -60,12 +61,22 @@ describe('main.js', done => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
-    const vm = socket('public_key', {mode: 'enquiry-modal'})
+    const vm = socket('public_key', {mode: 'enquiry-modal', url_root: '/'})
     vm.enquiry_form_info = 'foobar'
     vm.contractors = [{}]
     expect(vm.$el.querySelectorAll('.tcs-grid')).to.have.lengthOf(0)
     expect(vm.$el.querySelectorAll('.tcs-enquiry')).to.have.lengthOf(0)
     expect(vm.$el.querySelectorAll('.tcs-enquiry-button')).to.have.lengthOf(1)
+  })
+
+  it('should use window.location.pathname for url_root', async () => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+    const vm = socket('public_key')
+    vm.enquiry_form_info = 'foobar'
+    vm.contractors = [{}]
+    expect(vm.config.url_root).to.equal('/context.html')
   })
 })
 
@@ -84,7 +95,7 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('public_key')
+    const vm = socket('public_key', {url_root: '/'})
 
     await sleep(50)
     expect(vm.error).to.equal(null)
@@ -108,7 +119,7 @@ describe('main.js', () => {
     document.body.appendChild(el)
 
     let test_console = new TestConsole()
-    const vm = socket('public_key', {console: test_console, v: 404})
+    const vm = socket('public_key', {console: test_console, url_root: '/'})
 
     await sleep(50)
     expect(vm.error).to.not.equal(null)
@@ -129,7 +140,11 @@ describe('main.js', () => {
     document.body.appendChild(el)
 
     let test_console = new TestConsole()
-    const vm = socket('the-public-key', {api_root: 'http://localhost:12345678', console: test_console})
+    const vm = socket('the-public-key', {
+      api_root: 'http://localhost:12345678',
+      url_root: '/',
+      console: test_console,
+    })
 
     await sleep(50)
     expect(vm.error).to.contain('Connection error')
@@ -154,7 +169,7 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('public-key')
+    const vm = socket('public-key', {url_root: '/'})
     vm.get_enquiry()
 
     await sleep(50)
@@ -166,7 +181,7 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('public-key', {contractor_enquiry_button: 'Speak to {contractor_name}'})
+    const vm = socket('public-key', {contractor_enquiry_button: 'Speak to {contractor_name}', url_root: '/'})
     vm.enquiry_form_info = 'x'  // prevent get_enquiry making a GET request
     let text = vm.get_text('skills_label')
     expect(text).to.equal('Skills')
@@ -179,7 +194,7 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('public-key')
+    const vm = socket('public-key', {url_root: '/'})
     expect(vm.contractors_extra).to.deep.equal({})
     let v = vm.get_details('/foobar', 'key')
     expect(v).to.equal(true)
@@ -212,7 +227,7 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('public-key')
+    const vm = socket('public-key', {url_root: '/'})
     vm.get_enquiry()
 
     await sleep(50)

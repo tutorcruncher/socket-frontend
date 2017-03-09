@@ -92,7 +92,7 @@ module.exports = function (public_key, config) {
 
   if (config.url_root === undefined) {
     config.url_root = window.location.pathname
-  } else if (!config.url_root.startsWith('/')) {
+  } else if (config.url_root[0] !== '/') {
     config.url_root = window.location.pathname
     error = 'the "url_root" config parameter should start (and probably end) with a slash "/"'
   }
@@ -250,6 +250,9 @@ response text:   "${xhr.responseText}"`)
           return s
         }
       },
+      goto: function (name, params) {
+        this.$router.push({'name': name, params: params})
+      }
     }
   })
 }
