@@ -17,7 +17,8 @@
           </router-link>
         </div>
 
-        <slot>
+        <error v-if="$root.error"></error>
+        <slot v-else>
           Modal content.
         </slot>
 
@@ -29,6 +30,7 @@
 
 <script>
 import footer from './footer.vue'
+import error from './error.vue'
 
 export default {
   methods: {
@@ -37,7 +39,8 @@ export default {
     },
   },
   components: {
-    'tcs-footer': footer
+    'tcs-footer': footer,
+    'error': error,
   },
   props: {
     title: String,

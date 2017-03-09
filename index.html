@@ -22,6 +22,7 @@
     <main>
       <div id="socket1"></div>
       <div id="socket2"></div>
+      <div id="socket3"></div>
     </main>
   </body>
   <script>
@@ -30,6 +31,10 @@
     })
     socket('f8d88b6562b3434ba4ef', {
       element: '#socket2',
+      mode: 'enquiry',
+    })
+    socket('f8d88b6562b3434ba4ef', {
+      element: '#socket3',
       mode: 'enquiry-modal',
     })
   </script>

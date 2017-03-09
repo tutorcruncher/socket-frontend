@@ -11,7 +11,13 @@ import con_modal from './components/con-modal'
 import {to_markdown, clean, auto_url_root} from './utils'
 
 let dsn = process.env.NODE_ENV === 'production' && 'https://e8143a1422274f0bbf312ed8792f4e86@sentry.io/128441'
-Raven.config(dsn, {release: process.env.RELEASE}).addPlugin(RavenVue, Vue).install()
+let raven_config = {
+  release: process.env.RELEASE,
+  tags: {
+    host: window.location.host,
+  }
+}
+Raven.config(dsn, raven_config).addPlugin(RavenVue, Vue).install()
 
 Vue.use(VueRouter)
 
@@ -126,6 +132,7 @@ module.exports = function (public_key, config) {
       config[k] = STRINGS[k]
     }
   }
+  Raven.setUserContext(config)
 
   return new Vue({
     el: config.element,
@@ -199,7 +206,7 @@ response text:   "${xhr.responseText}"`)
         xhr.open('GET', url)
         xhr.onload = () => {
           if (xhr.status !== 200) {
-            throw new Error(`bad response ${xhr.status} at "${url}"`)
+            this.handle_error(`bad response ${xhr.status} at "${url}"`)
           } else {
             let con = JSON.parse(xhr.responseText)
             Vue.set(this.contractors_extra, link, con)
@@ -217,7 +224,11 @@ response text:   "${xhr.responseText}"`)
         xhr.open('GET', url)
         xhr.onload = () => {
           if (xhr.status !== 200) {
-            throw new Error(`bad response ${xhr.status} at "${url}"`)
+            this.handle_error(`\
+Connection error
+requested url:   "${url}"
+response status: ${xhr.status}
+response text:   "${xhr.responseText}"`)
           } else {
             this.enquiry_form_info = Object.assign({}, this.enquiry_form_info, JSON.parse(xhr.responseText))
           }
