@@ -91,9 +91,9 @@ module.exports = function (public_key, config) {
   }
 
   if (config.url_root === undefined) {
-    config.url_root = '/'
+    config.url_root = window.location.pathname
   } else if (!config.url_root.startsWith('/')) {
-    config.url_root = '/'
+    config.url_root = window.location.pathname
     error = 'the "url_root" config parameter should start (and probably end) with a slash "/"'
   }
 
@@ -104,12 +104,17 @@ module.exports = function (public_key, config) {
     config.router_mode = 'hash'
   }
 
+  if (config.console === undefined) {
+    config.console = console
+  }
+
   if (config.element === undefined) {
     config.element = '#socket'
   }
 
-  if (config.console === undefined) {
-    config.console = console
+  if (document.querySelector(config.element) === null) {
+    config.console.error(`SOCKET: page element "${config.element}" does not exist, unable to start socket view.`)
+    return
   }
 
   for (let k of Object.keys(STRINGS)) {
@@ -134,17 +139,21 @@ module.exports = function (public_key, config) {
     components: {
       app
     },
+    created: function () {
+      if (error !== null) {
+        this.handle_error(error)
+      }
+    },
     methods: {
       // get_data is called by components, eg. grid
       handle_error: function (error_message) {
         this.error = error_message || 'unknown'
-        config.console.error(this.error)
+        config.console.error('SOCKET: ' + this.error)
         Raven.captureException(new Error(this.error))
       },
       get_list: function () {
         // if an error already exists show that and return
         if (error !== null) {
-          this.handle_error(error)
           return
         }
         let xhr = new window.XMLHttpRequest()
