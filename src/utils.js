@@ -34,4 +34,10 @@ const auto_url_root = (path) => {
   return path
 }
 
-export {to_markdown, clean, auto_url_root}
+const add_script = (url) => {
+  let s = document.createElement('script')
+  s.src = url
+  document.body.appendChild(s)
+}
+
+export {to_markdown, clean, auto_url_root, add_script}

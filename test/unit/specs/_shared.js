@@ -36,6 +36,7 @@ const enquiry_options = {
 const vm_data = () => ({
   contractors: [{name: 'Fred Bloggs', link: '123-fred-bloggs', tag_line: 'hello'}],
   config: {},
+  grecaptcha_key: null,
   contractors_extra: {'123-fred-bloggs': {'extra_attributes': [{'name': 'Bio', 'value': 'I am great'}]}},
   enquiry_form_info: enquiry_options,
   enquiry_data: {},

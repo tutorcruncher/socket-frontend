@@ -68,6 +68,7 @@ const ConfiguredVueRouter = config => {
   })
 }
 
+// TODO these need a consist prefix
 const STRINGS = {
   skills_label: 'Skills',
   contractor_enquiry_message: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
@@ -75,8 +76,10 @@ const STRINGS = {
   contractor_enquiry_button: 'Contact {contractor_name}',
   contractor_details_button: 'Show Profile',
   submit_enquiry: 'Submit Enquiry',
-  enquiry_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.',
+  enquiry_submitted_thanks: 'Enquiry submitted, thank you.',
+  enquiry_modal_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.',
   enquiry_button: 'Get in touch',
+  grecaptcha_missing: 'This captcha is required',
 }
 
 const MODES = ['grid', 'enquiry', 'enquiry-modal']
@@ -139,6 +142,7 @@ module.exports = function (public_key, config) {
     router: ConfiguredVueRouter(config),
     render: h => h(app),
     data: {
+      grecaptcha_key: process.env.NODE_ENV === 'testing' ? null : '6LdyXRgUAAAAADUNhMVKJDXiRr6DUN8TGOgllqbt',
       contractors: [],
       contractors_extra: {},
       config: config,

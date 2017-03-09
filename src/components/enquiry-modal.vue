@@ -1,6 +1,6 @@
 <template>
   <modal title="Enquiry">
-    <enquiry></enquiry>
+    <enquiry :ismodal="true"></enquiry>
   </modal>
 </template>
 
