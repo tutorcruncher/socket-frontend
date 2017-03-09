@@ -42,9 +42,9 @@ export default {
       type: Object,
       default: null,
     },
-    ismodal: {
-      type: Boolean,
-      default: false,
+    mode: {
+      type: String,
+      default: 'vanilla',
     },
   },
   components: {
@@ -56,6 +56,9 @@ export default {
     },
     attribute_fields: function () {
       return this.$root.enquiry_form_info.attributes || []
+    },
+    ismodal: function () {
+      return this.mode.indexOf('modal') > -1
     }
   },
   data: () => ({
@@ -76,6 +79,7 @@ export default {
         this.$set(this.$root.enquiry_data, 'contractor', this.contractor.id)
       }
       this.$root.submit_enquiry(this.submission_complete)
+      this.$root.ga_event('enquiry-form', 'submitted', this.mode)
     },
     submission_complete: function () {
       this.submitted = true
@@ -97,6 +101,9 @@ export default {
       }
     }
     this.$root.get_enquiry()
+    if (this.mode !== 'vanilla') {
+      this.$root.ga_event('enquiry-form', 'loaded', this.mode)
+    }
   },
 }
 </script>

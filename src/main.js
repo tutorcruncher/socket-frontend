@@ -8,16 +8,16 @@ import enquiry_button from './components/enquiry-button'
 import enquiry_modal from './components/enquiry-modal'
 import grid from './components/grid'
 import con_modal from './components/con-modal'
-import {to_markdown, clean, auto_url_root} from './utils'
+import {to_markdown, clean, auto_url_root, init_ga} from './utils'
 
-let raven_config = {
+const raven_config = {
   release: process.env.RELEASE,
   tags: {
     host: window.location.host,
   },
   shouldSendCallback: (data) => {
     // if no culprit this a message and came from socket
-    let culprit = data.culprit || '/socket.js'
+    const culprit = data.culprit || '/socket.js'
     return culprit.indexOf('/socket.js') > 0
   }
 }
@@ -26,9 +26,9 @@ Raven.config(process.env.RAVEN_DSN, raven_config).addPlugin(RavenVue, Vue).insta
 Vue.use(VueRouter)
 
 const ConfiguredVueRouter = config => {
-  let routes = []
+  const routes = []
   if (config.mode === 'grid') {
-    routes = [
+    routes.push(
       {
         path: config.url_root,
         name: 'index',
@@ -41,17 +41,17 @@ const ConfiguredVueRouter = config => {
           }
         ]
       }
-    ]
+    )
   } else if (config.mode === 'enquiry') {
-    routes = [
+    routes.push(
       {
         path: config.url_root,
         name: 'index',
         component: enquiry,
       },
-    ]
+    )
   } else if (config.mode === 'enquiry-modal') {
-    routes = [
+    routes.push(
       {
         path: config.url_root,
         name: 'index',
@@ -64,7 +64,7 @@ const ConfiguredVueRouter = config => {
           }
         ]
       }
-    ]
+    )
   }
   return new VueRouter({
     mode: config.router_mode,
@@ -144,10 +144,13 @@ module.exports = function (public_key, config) {
       config[k] = STRINGS[k]
     }
   }
+  const router = ConfiguredVueRouter(config)
+
+  const ga_prefixes = init_ga(router, config)
 
   return new Vue({
     el: config.element,
-    router: ConfiguredVueRouter(config),
+    router: router,
     render: h => h(app),
     data: {
       grecaptcha_key: process.env.GRECAPTCHA_KEY,
@@ -182,8 +185,8 @@ module.exports = function (public_key, config) {
         if (error !== null) {
           return
         }
-        let xhr = new window.XMLHttpRequest()
-        let url = `${config.api_root}/${public_key}/contractors`
+        const xhr = new window.XMLHttpRequest()
+        const url = `${config.api_root}/${public_key}/contractors`
         xhr.open('GET', url)
         xhr.onload = () => {
           let contractors
@@ -217,13 +220,13 @@ response text:   "${xhr.responseText}"`)
         if (this.contractors_extra[link] !== undefined) {
           return false
         }
-        let xhr = new window.XMLHttpRequest()
+        const xhr = new window.XMLHttpRequest()
         xhr.open('GET', url)
         xhr.onload = () => {
           if (xhr.status !== 200) {
             this.handle_error(`bad response ${xhr.status} at "${url}"`)
           } else {
-            let con = JSON.parse(xhr.responseText)
+            const con = JSON.parse(xhr.responseText)
             Vue.set(this.contractors_extra, link, con)
           }
         }
@@ -234,8 +237,8 @@ response text:   "${xhr.responseText}"`)
         if (Object.keys(this.enquiry_form_info).length !== 0 || this._getting_enquiry_info) {
           return
         }
-        let xhr = new window.XMLHttpRequest()
-        let url = `${config.api_root}/${public_key}/enquiry`
+        const xhr = new window.XMLHttpRequest()
+        const url = `${config.api_root}/${public_key}/enquiry`
         xhr.open('GET', url)
         xhr.onload = () => {
           if (xhr.status !== 200) {
@@ -251,9 +254,9 @@ response text:   "${xhr.responseText}"`)
         xhr.send()
       },
       submit_enquiry: function (callback) {
-        let data = JSON.stringify(clean(this.enquiry_data))
-        let xhr = new window.XMLHttpRequest()
-        let url = `${config.api_root}/${public_key}/enquiry`
+        const data = JSON.stringify(clean(this.enquiry_data))
+        const xhr = new window.XMLHttpRequest()
+        const url = `${config.api_root}/${public_key}/enquiry`
         xhr.open('POST', url)
         xhr.onload = () => {
           if (xhr.status !== 201) {
@@ -278,6 +281,12 @@ response text:   "${xhr.responseText}"`)
           return to_markdown(s)
         } else {
           return s
+        }
+      },
+      ga_event: function (category, action, label) {
+        /* istanbul ignore next */
+        for (let prefix of ga_prefixes) {
+          window.ga(prefix + 'send', 'event', category, action, label)
         }
       },
       goto: function (name, params) {

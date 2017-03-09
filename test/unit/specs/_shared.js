@@ -72,12 +72,13 @@ function generate_vm (router, vm_data_) {
       },
       get_details: function () { this.__record_call('get_details') },
       get_enquiry: function () { this.__record_call('get_enquiry') },
-      get_text: function (name, replacements) { this.__record_call('get_text') },
+      get_text: function () { this.__record_call('get_text') },
       submit_enquiry: function (callback) {
         this.__record_call('submit_enquiry')
         this.enquiry_data = {}
         callback()
       },
+      ga_event: function () { this.__record_call('ga_event') },
     }
   })
 }

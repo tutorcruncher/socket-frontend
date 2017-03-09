@@ -31,7 +31,7 @@
 
           <div class="tcs-scroll">
             <transition name="tcs-squeeze" mode="out-in">
-              <enquiry v-if="show_enquiry" :contractor="contractor" :ismodal="true"></enquiry>
+              <enquiry v-if="show_enquiry" :contractor="contractor" mode="con-modal"></enquiry>
               <con-details v-else :contractor="contractor"></con-details>
             </transition>
           </div>
