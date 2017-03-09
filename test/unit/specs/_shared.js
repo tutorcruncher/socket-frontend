@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import con_modal from 'src/components/con-modal'
+import enquiry from 'src/components/enquiry'
+import enquiry_modal from 'src/components/enquiry-modal'
 
 const dft_response = [200, {'Content-Type': 'application/json'}, '[{"name": "Foobars", "link": "123-foobar"}]']
 
@@ -31,27 +33,36 @@ const enquiry_options = {
   ]
 }
 
-const vm_data = {
+const vm_data = () => ({
   contractors: [{name: 'Fred Bloggs', link: '123-fred-bloggs', tag_line: 'hello'}],
   config: {},
   contractors_extra: {'123-fred-bloggs': {'extra_attributes': [{'name': 'Bio', 'value': 'I am great'}]}},
   enquiry_form_info: enquiry_options,
   enquiry_data: {},
   method_calls: {},
-}
+})
 
-const dft_router = new VueRouter({routes: [
+const con_modal_router = new VueRouter({routes: [
   {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
   {path: '/:link', name: 'con-modal', component: con_modal},
 ]})
 
-const generate_vm = (router, vm_data_) => {
+const enquiry_router = new VueRouter({routes: [
+  {path: '/', name: 'index', component: enquiry},
+]})
+
+const modal_enquiry_router = new VueRouter({routes: [
+  {path: '/', name: 'index', component: {render: h => h('div', {attrs: {'class': 'index'}})}},
+  {path: '/enquiry', name: 'enquiry-modal', component: enquiry_modal},
+]})
+
+function generate_vm (router, vm_data_) {
   Vue.use(VueRouter)
   return new Vue({
     el: document.createElement('div'),
-    router: router || dft_router,
+    router: router || con_modal_router,
     render: h => h('router-view'),
-    data: vm_data_ || vm_data,
+    data: vm_data_ || vm_data(),
     methods: {
       __record_call: function (method_name) {
         if (this.hasOwnProperty('method_calls')) {
@@ -78,4 +89,14 @@ function sleep (delay) {
   return new Promise((resolve, reject) => setTimeout(resolve, delay))
 }
 
-export {dft_response, TestConsole, enquiry_options, vm_data, generate_vm, tick, sleep}
+export {
+  dft_response,
+  TestConsole,
+  enquiry_options,
+  enquiry_router,
+  modal_enquiry_router,
+  vm_data,
+  generate_vm,
+  tick,
+  sleep,
+}

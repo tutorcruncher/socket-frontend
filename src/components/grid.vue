@@ -1,5 +1,5 @@
 <template>
-  <div id="tcs-grid">
+  <div class="tcs-grid">
     <div v-for="contractor in contractors" class="tcs-col">
       <router-link :to="{name: 'con-modal', params: {link: contractor.link}}" class="tcs-box">
         <img :src="contractor.photo" :alt="contractor.name" class="tcs-thumb">
@@ -25,7 +25,7 @@ export default {
 <style lang="scss">
 @import '../conf';
 
-#tcs-grid {
+.tcs-grid {
   padding: 10px;
   display: flex;
   flex-wrap: wrap;

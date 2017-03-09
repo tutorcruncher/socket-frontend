@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tcs-enquiry">
     <div class="tcs-submitted" v-if="submitted" v-html="$root.get_text('enquiry_submitted_thanks', {}, true)"></div>
     <div v-else>
       <div v-if="contractor" class="tcs-centre" v-html="$root.get_text('contractor_enquiry_message', {contractor_name: contractor.name}, true)">
@@ -49,7 +49,9 @@ export default {
   }),
   methods: {
     submit: function () {
-      this.$set(this.$root.enquiry_data, 'contractor', this.contractor.id)
+      if (this.contractor !== null) {
+        this.$set(this.$root.enquiry_data, 'contractor', this.contractor.id)
+      }
       this.$root.submit_enquiry(this.submission_complete)
     },
     submission_complete: function () {

@@ -92,7 +92,6 @@ export default {
   margin-bottom: 10px;
   color: $hightlight;
   min-height: 28px;
-  width: 300px;
 }
 
 .tcs-body {

@@ -31,6 +31,42 @@ describe('main.js', done => {
       done()
     }, 50)
   })
+
+  it('should initialise in grid mode', async () => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+    const vm = socket('public_key')
+    vm.enquiry_form_info = 'foobar'  // prevent get_enquiry making a GET request
+    vm.contractors = [{}]
+    expect(vm.$el.querySelectorAll('.tcs-grid')).to.have.lengthOf(1)
+    expect(vm.$el.querySelectorAll('.tcs-enquiry')).to.have.lengthOf(0)
+    expect(vm.$el.querySelectorAll('.tcs-enquiry-button')).to.have.lengthOf(0)
+  })
+
+  it('should initialise in enquiry mode', async () => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+    const vm = socket('public_key', {mode: 'enquiry'})
+    vm.enquiry_form_info = 'foobar'
+    vm.contractors = [{}]
+    expect(vm.$el.querySelectorAll('.tcs-grid')).to.have.lengthOf(0)
+    expect(vm.$el.querySelectorAll('.tcs-enquiry')).to.have.lengthOf(1)
+    expect(vm.$el.querySelectorAll('.tcs-enquiry-button')).to.have.lengthOf(0)
+  })
+
+  it('should initialise in enquiry-modal mode', async () => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+    const vm = socket('public_key', {mode: 'enquiry-modal'})
+    vm.enquiry_form_info = 'foobar'
+    vm.contractors = [{}]
+    expect(vm.$el.querySelectorAll('.tcs-grid')).to.have.lengthOf(0)
+    expect(vm.$el.querySelectorAll('.tcs-enquiry')).to.have.lengthOf(0)
+    expect(vm.$el.querySelectorAll('.tcs-enquiry-button')).to.have.lengthOf(1)
+  })
 })
 
 describe('main.js', () => {

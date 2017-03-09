@@ -74,14 +74,14 @@ const STRINGS = {
 }
 
 const MODES = ['grid', 'enquiry', 'enquiry-modal']
+const ROUTER_MODES = ['hash', 'history']
 
 module.exports = function (public_key, config) {
   config = config || {}
   let error = null
-
   if (config.mode === undefined) {
     config.mode = 'grid'
-  } else if (!MODES.includes(config.mode)) {
+  } else if (MODES.indexOf(config.mode) === -1) {
     error = `invalid mode "${config.mode}", options are: ${MODES.join(', ')}`
     config.mode = 'grid'
   }
@@ -98,6 +98,9 @@ module.exports = function (public_key, config) {
   }
 
   if (config.router_mode === undefined) {
+    config.router_mode = 'hash'
+  } else if (ROUTER_MODES.indexOf(config.router_mode) === -1) {
+    error = `invalid router mode "${config.router_mode}", options are: ${ROUTER_MODES.join(', ')}`
     config.router_mode = 'hash'
   }
 
