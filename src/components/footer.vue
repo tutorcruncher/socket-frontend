@@ -40,13 +40,14 @@ export default {}
       color: $brand-colour;
       svg {
         opacity: 1;
+        transform: translate(0, 8px);
       }
     }
     svg {
       transition: all .8s ease;
       width: 25px;
       height: 25px;
-      transform: translate(0, 8px);
+      transform: translate(0px, 4px);
       opacity: 0;
       path {
         fill: $hightlight;

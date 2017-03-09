@@ -23,7 +23,7 @@ Parameters:
 | `element` | `#socket` | The id of the element created |
 | `router_mode` | `hash` | The routing mode when clicking on a tutor's profile. |
 | `mode` | `grid` | Which mode you want to use (explained below) |
-| `url_root` | `\` | The root URL of the page you are using Socket from eg. '/our-tutors/'|
+| `url_root` | `/` | The root URL of the page you are using Socket from eg. '/our-tutors/'|
 
 We use some strings within Socket that you may want to change by passing them as parameters also.
 

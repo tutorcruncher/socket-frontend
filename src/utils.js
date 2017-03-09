@@ -6,7 +6,7 @@ marked.setOptions({
   smartLists: true,
 })
 
-function to_markdown (t) {
+const to_markdown = (t) => {
   if (t === null || t === undefined) {
     return ''
   } else {
@@ -26,4 +26,12 @@ const clean = (obj) => {
   return new_obj
 }
 
-export { to_markdown, clean }
+const auto_url_root = (path) => {
+  // remove :
+  // * contractor slug
+  // * /enquiry
+  path = path.replace(/\/\d+-[\w-]+$/, '/').replace(/\/enquiry$/, '/')
+  return path
+}
+
+export {to_markdown, clean, auto_url_root}

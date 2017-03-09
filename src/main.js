@@ -8,7 +8,7 @@ import enquiry_button from './components/enquiry-button'
 import enquiry_modal from './components/enquiry-modal'
 import grid from './components/grid'
 import con_modal from './components/con-modal'
-import {to_markdown, clean} from './utils'
+import {to_markdown, clean, auto_url_root} from './utils'
 
 let dsn = process.env.NODE_ENV === 'production' && 'https://e8143a1422274f0bbf312ed8792f4e86@sentry.io/128441'
 Raven.config(dsn, {release: process.env.RELEASE}).addPlugin(RavenVue, Vue).install()
@@ -91,10 +91,14 @@ module.exports = function (public_key, config) {
   }
 
   if (config.url_root === undefined) {
-    config.url_root = window.location.pathname
-  } else if (config.url_root[0] !== '/') {
-    config.url_root = window.location.pathname
+    config.url_root = 'auto'
+  } else if (config.url_root !== 'auto' && config.url_root[0] !== '/') {
+    config.url_root = '/'
     error = 'the "url_root" config parameter should start (and probably end) with a slash "/"'
+  }
+
+  if (config.url_root === 'auto') {
+    config.url_root = auto_url_root(window.location.pathname)
   }
 
   if (config.router_mode === undefined) {
