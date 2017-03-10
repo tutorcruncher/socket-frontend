@@ -88,7 +88,23 @@ function tick () {
 }
 
 function sleep (delay) {
-  return new Promise((resolve, reject) => setTimeout(resolve, delay))
+  return new Promise((resolve, reject) => setTimeout(() => resolve(), delay))
+}
+
+function prepare_ga (log) {
+  window._tcs_ga = null
+  const ga_data = []
+  window.ga = function () {
+    ga_data.push(Array.from(arguments).join())
+    if (log) {
+      console.log('ga:', arguments)
+    }
+  }
+  return ga_data
+}
+
+function teardown_ga () {
+  delete window.ga_data
 }
 
 export {
@@ -101,4 +117,6 @@ export {
   generate_vm,
   tick,
   sleep,
+  prepare_ga,
+  teardown_ga,
 }

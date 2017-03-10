@@ -1,14 +1,18 @@
 import socket from 'src/main'
-import {dft_response, TestConsole, enquiry_options, sleep} from './_shared'
+import {dft_response, TestConsole, enquiry_options, sleep, tick, prepare_ga, teardown_ga} from './_shared'
 
-describe('main.js', done => {
+describe('main.js', () => {
   let server
   before(() => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith(dft_response)
+    prepare_ga()
   })
-  after(() => { server.restore() })
+  after(() => {
+    server.restore()
+    teardown_ga()
+  })
 
   it('should initialise with different element name', done => {
     let outer = document.createElement('div')
@@ -78,6 +82,34 @@ describe('main.js', done => {
     vm.contractors = [{}]
     expect(vm.config.url_root).to.equal('/context.html')
   })
+
+  it('should do ga', async () => {
+    // TODO currently window.ga gets contaminated by other tests if you use await sleep(50)
+    const ga_data = prepare_ga()
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+    const vm = socket('public_key', {url_root: '/'})
+    vm.enquiry_form_info = 'foobar'  // prevent get_enquiry making a GET request
+    vm.contractors.push({name: 'Fred Bloggs', link: '123-fred-bloggs', tag_line: 'hello'})
+    // ga already installed
+    expect(ga_data).to.deep.equal([
+      'create,-,auto,gridtcs', 'gridtcs.set,dimension1,grid', 'gridtcs.set,dimension2,hash', 'gridtcs.send,pageview'
+    ])
+    await tick()
+
+    expect(vm.$el.querySelector('a').attributes['href'].value).to.equal('#/123-fred-bloggs')
+
+    vm.goto('con-modal', {link: '123-fred-bloggs'})
+    await tick()
+    expect(vm.$el.querySelector('h2').textContent).to.equal('Fred Bloggs')
+
+    expect(ga_data).to.deep.equal([
+      'create,-,auto,gridtcs', 'gridtcs.set,dimension1,grid', 'gridtcs.set,dimension2,hash', 'gridtcs.send,pageview',
+      'gridtcs.set,page,/123-fred-bloggs', 'gridtcs.send,pageview', 'set,page,/123-fred-bloggs', 'send,pageview'
+    ])
+    vm.$el.querySelector('.tcs-extra button').click()
+  })
 })
 
 describe('main.js', () => {
@@ -87,8 +119,12 @@ describe('main.js', () => {
     server.autoRespond = true
     server.respondWith('/public_key/contractors', dft_response)
     server.respondWith('/public_key/enquiry', dft_response)  // to prevent errors with get_enquiry
+    prepare_ga()
   })
-  after(() => { server.restore() })
+  after(() => {
+    server.restore()
+    teardown_ga()
+  })
 
   it('should download contractors', async () => {
     let el = document.createElement('div')
@@ -110,8 +146,12 @@ describe('main.js', () => {
     server.autoRespond = true
     server.respondWith('/public_key/contractors', [404, {}, 'badness'])
     server.respondWith('/public_key/enquiry', dft_response)  // to prevent errors with get_enquiry
+    prepare_ga()
   })
-  after(() => { server.restore() })
+  after(() => {
+    server.restore()
+    teardown_ga()
+  })
 
   it('should show error with bad response', async () => {
     let el = document.createElement('div')
@@ -134,6 +174,9 @@ describe('main.js', () => {
 })
 
 describe('main.js', () => {
+  before(() => prepare_ga())
+  after(() => teardown_ga())
+
   it('should show connection error', async () => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
@@ -161,8 +204,12 @@ describe('main.js', () => {
     server.respondWith('/public-key/contractors', dft_response)
     server.respondWith('/public-key/enquiry', [200, {'Content-Type': 'application/json'}, '{"response": "ok"}'])
     server.respondWith('/foobar', [200, {'Content-Type': 'application/json'}, '{"the": "response"}'])
+    prepare_ga()
   })
-  after(() => { server.restore() })
+  after(() => {
+    server.restore()
+    teardown_ga()
+  })
 
   it('should get enquiry info', async () => {
     let el = document.createElement('div')
@@ -219,8 +266,12 @@ describe('main.js', () => {
       expect(obj).to.deep.equal({first_field: 'foobar', attributes: {foo: 'X'}})
       xhr.respond(201, {'Content-Type': 'application/json'}, '{"response": "ok"}')
     })
+    prepare_ga()
   })
-  after(() => { server.restore() })
+  after(() => {
+    server.restore()
+    teardown_ga()
+  })
 
   it('should post enquiry data', async () => {
     let el = document.createElement('div')

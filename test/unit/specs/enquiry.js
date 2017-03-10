@@ -79,7 +79,6 @@ describe('enquiry-modal.vue', () => {
   it('should render modal enquiry form', async () => {
     const vm = generate_vm(modal_enquiry_router)
     vm.$router.push({name: 'enquiry-modal'})
-    vm.$router.push({name: 'enquiry-modal'})
 
     await tick()
     expect(vm.$el.querySelector('input').attributes['placeholder'].value).to.equal('Foobar')
