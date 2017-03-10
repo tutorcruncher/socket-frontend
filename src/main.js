@@ -97,18 +97,18 @@ module.exports = function (public_key, config) {
   })
 
   let error = null
-  if (config.mode === undefined) {
+  if (!config.mode) {
     config.mode = 'grid'
   } else if (MODES.indexOf(config.mode) === -1) {
     error = `invalid mode "${config.mode}", options are: ${MODES.join(', ')}`
     config.mode = 'grid'
   }
 
-  if (config.api_root === undefined) {
+  if (!config.api_root) {
     config.api_root = process.env.SOCKET_API_URL
   }
 
-  if (config.url_root === undefined) {
+  if (!config.url_root) {
     config.url_root = 'auto'
   } else if (config.url_root !== 'auto' && config.url_root[0] !== '/') {
     config.url_root = '/'
@@ -119,18 +119,18 @@ module.exports = function (public_key, config) {
     config.url_root = auto_url_root(window.location.pathname)
   }
 
-  if (config.router_mode === undefined) {
+  if (!config.router_mode) {
     config.router_mode = 'hash'
   } else if (ROUTER_MODES.indexOf(config.router_mode) === -1) {
     error = `invalid router mode "${config.router_mode}", options are: ${ROUTER_MODES.join(', ')}`
     config.router_mode = 'hash'
   }
 
-  if (config.console === undefined) {
+  if (!config.console) {
     config.console = console
   }
 
-  if (config.element === undefined) {
+  if (!config.element) {
     config.element = '#socket'
   }
 
@@ -140,7 +140,7 @@ module.exports = function (public_key, config) {
   }
 
   for (let k of Object.keys(STRINGS)) {
-    if (config[k] === undefined) {
+    if (!config[k]) {
       config[k] = STRINGS[k]
     }
   }

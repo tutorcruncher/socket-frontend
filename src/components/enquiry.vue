@@ -69,12 +69,11 @@ export default {
   }),
   methods: {
     submit: function () {
-      let grecaptcha_response = window.grecaptcha ? window.grecaptcha.getResponse(this.grecaptcha_id) : '-'
-      if (grecaptcha_response === '') {
+      if (window.grecaptcha && !this.$root.enquiry_data.grecaptcha_response) {
         this.grecaptcha_missing = true
         return
       }
-      this.$set(this.$root.enquiry_data, 'grecaptcha_response', grecaptcha_response)
+
       if (this.contractor !== null) {
         this.$set(this.$root.enquiry_data, 'contractor', this.contractor.id)
       }
@@ -83,27 +82,36 @@ export default {
     },
     submission_complete: function () {
       this.submitted = true
-    }
-  },
-  created: function () {
+    },
     /* istanbul ignore next */
-    if (this.$root.grecaptcha_key !== null) {
-      let render_grecaptcha = () => {
+    prepare_grecaptcha: function () {
+      const grecaptcha_callback = (response) => this.$set(this.$root.enquiry_data, 'grecaptcha_response', response)
+
+      if (this.$root.grecaptcha_key === null) {
+        grecaptcha_callback('-')
+        return
+      }
+
+      const render_grecaptcha = () => {
         this.grecaptcha_id = window.grecaptcha.render(this.grecaptcha_container_id, {
-          'sitekey': this.$root.grecaptcha_key,
+          sitekey: this.$root.grecaptcha_key,
+          callback: grecaptcha_callback
         })
       }
       if (window.grecaptcha === undefined) {
         window._grecaptcha_loaded = render_grecaptcha
         add_script('https://www.google.com/recaptcha/api.js?onload=_grecaptcha_loaded&render=explicit')
       } else {
-        setTimeout(render_grecaptcha, 50)
+        render_grecaptcha()
       }
     }
+  },
+  created: function () {
     this.$root.get_enquiry()
     if (this.mode !== 'vanilla') {
       this.$root.ga_event('enquiry-form', 'loaded', this.mode)
     }
+    setTimeout(this.prepare_grecaptcha, 50)
   },
 }
 </script>
