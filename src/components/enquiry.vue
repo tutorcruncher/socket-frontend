@@ -85,7 +85,7 @@ export default {
     },
     /* istanbul ignore next */
     prepare_grecaptcha: function () {
-      const grecaptcha_callback = (response) => this.$set(this.$root.enquiry_data, 'grecaptcha_response', response)
+      const grecaptcha_callback = response => this.$set(this.$root.enquiry_data, 'grecaptcha_response', response)
 
       if (this.$root.grecaptcha_key === null) {
         grecaptcha_callback('-')
@@ -99,8 +99,8 @@ export default {
         })
       }
       if (window.grecaptcha === undefined) {
-        window._grecaptcha_loaded = render_grecaptcha
-        add_script('https://www.google.com/recaptcha/api.js?onload=_grecaptcha_loaded&render=explicit')
+        window._tcs_grecaptcha_loaded = render_grecaptcha
+        add_script('https://www.google.com/recaptcha/api.js?onload=_tcs_grecaptcha_loaded&render=explicit')
       } else {
         render_grecaptcha()
       }

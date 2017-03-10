@@ -6,7 +6,7 @@ marked.setOptions({
   smartLists: true,
 })
 
-const to_markdown = (t) => {
+const to_markdown = t => {
   if (t === null || t === undefined) {
     return ''
   } else {
@@ -14,7 +14,7 @@ const to_markdown = (t) => {
   }
 }
 
-const clean = (obj) => {
+const clean = obj => {
   let new_obj = {}
   for (let [k, v] of Object.entries(obj)) {
     if (typeof v === 'object') {
@@ -26,7 +26,7 @@ const clean = (obj) => {
   return new_obj
 }
 
-const auto_url_root = (path) => {
+const auto_url_root = path => {
   // remove :
   // * contractor slug
   // * /enquiry
@@ -34,7 +34,7 @@ const auto_url_root = (path) => {
   return path
 }
 
-const add_script = (url) => {
+const add_script = url => {
   const s = document.createElement('script')
   s.async = true
   s.src = url
@@ -44,11 +44,11 @@ const add_script = (url) => {
 /* istanbul ignore next */
 const init_ga = (router, config) => {
   const ga_prefixes = []
-  if (process.env.GA_ID === null || window._tcs_ga !== undefined) {
+  if (process.env.GA_ID === null) {
     return ga_prefixes
   }
-  window._tcs_ga = true
-  ga_prefixes.push('tcs.')
+  const tcs_ga_name = `${config.mode}-tcs`
+  ga_prefixes.push(tcs_ga_name + '.')
   if (window.ga === undefined) {
     // taken from https://developers.google.com/analytics/devguides/collection/analyticsjs/
     add_script('https://www.google-analytics.com/analytics.js')
@@ -59,18 +59,24 @@ const init_ga = (router, config) => {
   } else {
     ga_prefixes.push('')
   }
-  window.ga('create', 'UA-41117087-3', 'auto', 'tcs')
-  window.ga('tcs.set', 'dimension1', config.mode)
-  window.ga('tcs.set', 'dimension2', config.router_mode)
-  let initial_load = true
+  window.ga('create', 'UA-41117087-3', 'auto', tcs_ga_name)
+  window.ga(tcs_ga_name + '.set', 'dimension1', config.mode)
+  window.ga(tcs_ga_name + '.set', 'dimension2', config.router_mode)
 
-  router.afterEach(to => {
-    const _prefixes = initial_load ? ['tcs.'] : ga_prefixes
-    for (let prefix of _prefixes) {
-      window.ga(prefix + 'set', 'page', to.fullPath)
-      window.ga(prefix + 'send', 'pageview')
-    }
-  })
+  if (!window._tcs_ga) {
+    // we only submit router changes for one socket instance to avoid duplicate page loads
+    let initial_load = true
+    router.afterEach(to => {
+      const _prefixes = initial_load ? ['tcs.'] : ga_prefixes
+      initial_load = false
+      for (let prefix of _prefixes) {
+        window.ga(prefix + 'set', 'page', to.fullPath)
+        window.ga(prefix + 'send', 'pageview')
+      }
+    })
+  }
+  window._tcs_ga = true
+
   return ga_prefixes
 }
 

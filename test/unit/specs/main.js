@@ -49,7 +49,7 @@ describe('main.js', done => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
-    const vm = socket('public_key', {mode: 'enquiry', url_root: '/'})
+    const vm = socket('public_key', {mode: 'enquiry', url_root: '/', router_mode: 'hash'})
     vm.enquiry_form_info = 'foobar'
     vm.contractors = [{}]
     expect(vm.$el.querySelectorAll('.tcs-grid')).to.have.lengthOf(0)

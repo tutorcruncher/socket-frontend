@@ -15,7 +15,7 @@ const raven_config = {
   tags: {
     host: window.location.host,
   },
-  shouldSendCallback: (data) => {
+  shouldSendCallback: data => {
     // if no culprit this a message and came from socket
     const culprit = data.culprit || '/socket.js'
     return culprit.indexOf('/socket.js') > 0
@@ -120,7 +120,8 @@ module.exports = function (public_key, config) {
   }
 
   if (!config.router_mode) {
-    config.router_mode = 'hash'
+    // use history mode with enquiry so it doesn't add the hash
+    config.router_mode = config.mode === 'enquiry' ? 'history' : 'hash'
   } else if (ROUTER_MODES.indexOf(config.router_mode) === -1) {
     error = `invalid router mode "${config.router_mode}", options are: ${ROUTER_MODES.join(', ')}`
     config.router_mode = 'hash'
