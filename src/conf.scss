@@ -15,8 +15,7 @@ $size-sm: 768px;
 // contact button on modals
 $button-colour: $hightlight;
 
-
-.tcs-button {
+%tcs-button {
   display: inline-block;
   background-color: $button-colour;
   color: white;

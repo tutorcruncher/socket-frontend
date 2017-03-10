@@ -77,6 +77,7 @@ export default {
       if (this.contractor !== null) {
         this.$set(this.$root.enquiry_data, 'contractor', this.contractor.id)
       }
+      this.$set(this.$root.enquiry_data, 'upstream_http_referrer', document.referrer)
       this.$root.submit_enquiry(this.submission_complete)
       this.$root.ga_event('enquiry-form', 'submitted', this.mode)
     },
@@ -138,7 +139,7 @@ form.tcs {
 .tcs-submit {
   text-align: center;
   button {
-    @extend .tcs-button;
+    @extend %tcs-button;
     font-size: 17px;
     padding: 10px 12px;
   }

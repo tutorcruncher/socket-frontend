@@ -1,6 +1,6 @@
 <template>
   <div class="tcs-enquiry-modal">
-    <router-link :to="{name: 'enquiry-modal'}" class="tcs-button tcs-enquiry-button">
+    <router-link :to="{name: 'enquiry-modal'}" class="tcs-enquiry-button">
       {{ $root.config.enquiry_button }}
     </router-link>
     <router-view></router-view>
@@ -13,4 +13,8 @@ export default {}
 
 <style lang="scss">
 @import '../conf';
+
+.tcs-enquiry-button {
+  @extend %tcs-button;
+}
 </style>

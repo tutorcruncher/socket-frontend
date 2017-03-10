@@ -45,7 +45,7 @@ describe('con-modal.vue, enquiry.vue', () => {
     vm.$el.querySelector('form').dispatchEvent(new window.Event('submit'))
 
     await tick()
-    expect(vm.method_calls['submit_enquiry']).to.equal(1)
+    expect(vm.method_calls['submit_enquiry']).to.have.lengthOf(1)
     expect(vm.enquiry_data).to.deep.equal({})
   })
 })
@@ -70,7 +70,8 @@ describe('enquiry.vue', () => {
     vm.$el.querySelector('form').dispatchEvent(new window.Event('submit'))
 
     await tick()
-    expect(vm.method_calls['submit_enquiry']).to.equal(1)
+    expect(vm.method_calls['submit_enquiry']).to.have.lengthOf(1)
+    expect(vm.method_calls['submit_enquiry'][0].upstream_http_referrer).to.contain('http://localhost')
     expect(vm.enquiry_data).to.deep.equal({})
   })
 })
@@ -93,7 +94,7 @@ describe('enquiry-modal.vue', () => {
     vm.$el.querySelector('form').dispatchEvent(new window.Event('submit'))
 
     await tick()
-    expect(vm.method_calls['submit_enquiry']).to.equal(1)
+    expect(vm.method_calls['submit_enquiry']).to.have.lengthOf(1)
     expect(vm.enquiry_data).to.deep.equal({})
 
     vm.$router.push({name: 'index'})

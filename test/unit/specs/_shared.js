@@ -65,16 +65,20 @@ function generate_vm (router, vm_data_) {
     render: h => h('router-view'),
     data: vm_data_ || vm_data(),
     methods: {
-      __record_call: function (method_name) {
+      __record_call: function (method_name, extra_args) {
         if (this.hasOwnProperty('method_calls')) {
-          this.method_calls[method_name] = (this.method_calls[method_name] || 0) + 1
+          if (this.method_calls[method_name]) {
+            this.method_calls[method_name].push(extra_args || null)
+          } else {
+            this.method_calls[method_name] = [extra_args || null]
+          }
         }
       },
       get_details: function () { this.__record_call('get_details') },
       get_enquiry: function () { this.__record_call('get_enquiry') },
       get_text: function () { this.__record_call('get_text') },
       submit_enquiry: function (callback) {
-        this.__record_call('submit_enquiry')
+        this.__record_call('submit_enquiry', this.enquiry_data)
         this.enquiry_data = {}
         callback()
       },

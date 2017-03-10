@@ -140,7 +140,7 @@ export default {
   }
 
   button {
-    @extend .tcs-button;
+    @extend %tcs-button;
     margin: 10px auto 0;
     width: 100%;
   }
