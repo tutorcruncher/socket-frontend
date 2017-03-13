@@ -67,4 +67,16 @@ export default {
     padding: 0 0 3px;
   }
 }
+
+@media(max-width: 400px) {
+  .tcs-grid {
+    padding: 10px 2px;
+  }
+  .tcs-col {
+    padding: 15px 2px;
+  }
+  .tcs-box {
+    width: 140px;
+  }
+}
 </style>
