@@ -13,9 +13,6 @@
         <div v-for="field in visible_fields">
           <tcs-input :field="field"></tcs-input>
         </div>
-        <div v-for="field in attribute_fields">
-          <tcs-input :field="field" prefix="attributes"></tcs-input>
-        </div>
 
         <div :id="grecaptcha_container_id" class="grecaptcha"></div>
         <div v-if="grecaptcha_missing" class="error-msg">

@@ -84,6 +84,7 @@ const STRINGS = {
   enquiry_modal_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.',
   enquiry_button: 'Get in touch',
   grecaptcha_missing: 'This captcha is required',
+  required_message: ' (Required)',
 }
 
 const MODES = ['grid', 'enquiry', 'enquiry-modal']

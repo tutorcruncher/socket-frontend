@@ -26,11 +26,9 @@ class TestConsole {
 
 const enquiry_options = {
   visible: [
-    {field: 'first_field', type: 'text', label: 'Foobar', max_length: 255}
+    {field: 'first_field', prefix: null, type: 'text', label: 'Foobar', max_length: 255},
+    {field: 'custom_field', prefix: 'attributes', type: 'text', label: 'Custom Field', max_length: 2047},
   ],
-  attributes: [
-    {field: 'custom_field', type: 'text', label: 'Custom Field', max_length: 2047}
-  ]
 }
 
 const vm_data = () => ({

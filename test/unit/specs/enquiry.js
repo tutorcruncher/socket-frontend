@@ -11,9 +11,9 @@ describe('con-modal.vue, enquiry.vue', () => {
     await tick()
     await sleep(50)  // wait for transition
     expect(vm.$el.querySelector('input').attributes['placeholder'].value).to.equal('Foobar')
-    expect(vm.$el.querySelector('input').attributes['name'].value).to.equal('.first_field')
+    expect(vm.$el.querySelector('input').attributes['name'].value).to.equal('first_field')
     expect(vm.$el.querySelector('textarea').attributes['placeholder'].value).to.equal('Custom Field')
-    expect(vm.$el.querySelector('textarea').attributes['name'].value).to.equal('attributes.custom_field')
+    expect(vm.$el.querySelector('textarea').attributes['name'].value).to.equal('attributes-custom_field')
   })
 })
 
