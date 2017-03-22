@@ -157,6 +157,7 @@ module.exports = function (public_key, config) {
     data: {
       grecaptcha_key: process.env.GRECAPTCHA_KEY,
       contractors: [],
+      subjects: [],
       contractors_extra: {},
       config: config,
       error: null,

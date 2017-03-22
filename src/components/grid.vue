@@ -1,20 +1,31 @@
 <template>
   <div class="tcs-grid">
-    <div v-for="contractor in contractors" class="tcs-col">
-      <router-link :to="{name: 'con-modal', params: {link: contractor.link}}" class="tcs-box">
-        <img :src="contractor.photo" :alt="contractor.name" class="tcs-thumb">
-        <h3 class="tcs-name">{{ contractor.name }}</h3>
-      </router-link>
+    <div class="tcs-flex">
+      <div class="subject-select"></div>
+      <subject_select class="subject-select"></subject_select>
     </div>
-    <router-view></router-view>
+    <div class="tcs-flex">
+      <div v-for="contractor in contractors" class="tcs-col">
+        <router-link :to="{name: 'con-modal', params: {link: contractor.link}}" class="tcs-box">
+          <img :src="contractor.photo" :alt="contractor.name" class="tcs-thumb">
+          <h3 class="tcs-name">{{ contractor.name }}</h3>
+        </router-link>
+      </div>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
+import subject_select from './subject-select.vue'
+
 export default {
   created: function () {
     // called here so get_data can be passed an argument for extra pages
     this.$root.get_list()
+  },
+  components: {
+    'subject_select': subject_select,
   },
   data: function () {
     return {contractors: this.$root.contractors}
@@ -27,6 +38,13 @@ export default {
 
 .tcs-grid {
   padding: 10px;
+}
+
+.subject-select {
+  width: 50%;
+}
+
+.tcs-flex {
   display: flex;
   flex-wrap: wrap;
 }
