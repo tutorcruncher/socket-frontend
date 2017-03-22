@@ -10,7 +10,7 @@
 
     <table class="tcs-skills" v-if="contractor_extra.skills">
       <caption>
-        <h3>{{ $root.config.skills_label }}</h3>
+        <h3>{{ $root.get_text('skills_label') }}</h3>
       </caption>
       <tr v-for="skill in contractor_extra.skills">
         <th scope="row">{{ skill.subject }}</th>

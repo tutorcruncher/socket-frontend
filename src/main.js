@@ -75,8 +75,8 @@ const ConfiguredVueRouter = config => {
 // TODO these need a consist prefix
 const STRINGS = {
   skills_label: 'Skills',
-  contractor_enquiry_message: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
-  enquiry_message: 'Please enter your details below and we will get in touch with you shortly.',
+  contractor_enquiry: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
+  enquiry: 'Please enter your details below and we will get in touch with you shortly.',
   contractor_enquiry_button: 'Contact {contractor_name}',
   contractor_details_button: 'Show Profile',
   submit_enquiry: 'Submit Enquiry',
@@ -84,7 +84,8 @@ const STRINGS = {
   enquiry_modal_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.',
   enquiry_button: 'Get in touch',
   grecaptcha_missing: 'This captcha is required',
-  required_message: ' (Required)',
+  required: ' (Required)',
+  subject_filter: 'Filter by subject',
 }
 
 const MODES = ['grid', 'enquiry', 'enquiry-modal']
@@ -141,9 +142,10 @@ module.exports = function (public_key, config) {
     return
   }
 
+  config.messages = config.messages || {}
   for (let k of Object.keys(STRINGS)) {
-    if (!config[k]) {
-      config[k] = STRINGS[k]
+    if (!config.messages[k]) {
+      config.messages[k] = STRINGS[k]
     }
   }
   const router = ConfiguredVueRouter(config)
@@ -209,21 +211,32 @@ ${xhr.responseText}`)
         }
         xhr.send(data || null)
       },
-      get_contractor_list: function () {
+      request_list: function (url, data_property) {
+        this.request(url, (xhr) => {
+          let items
+          if (xhr.status !== 200) {
+            throw Error(`bad response status ${xhr.status} not 200`)
+          } else {
+            items = JSON.parse(xhr.responseText)
+          }
+          data_property.splice(0)
+          items.forEach(con => data_property.push(con))
+        })
+      },
+      get_contractor_list: function (args) {
         // if an error already exists show that and return
         if (error !== null) {
           return
         }
-        this.request(`${config.api_root}/${public_key}/contractors`, (xhr) => {
-          let contractors
-          if (xhr.status !== 200) {
-            throw Error(`bad response status ${xhr.status} not 200`)
-          } else {
-            contractors = JSON.parse(xhr.responseText)
+        let url = `${config.api_root}/${public_key}/contractors`
+        if (args) {
+          const arg_list = []
+          for (let [name, value] of Object.entries(args)) {
+            arg_list.push(encodeURIComponent(name) + '=' + encodeURIComponent(value))
           }
-          this.contractors.splice(0)
-          contractors.forEach(con => this.contractors.push(con))
-        })
+          url += '?' + arg_list.join('&')
+        }
+        this.request_list(url, this.contractors)
       },
       get_contractor_details: function (url, link) {
         if (this.contractors_extra[link] !== undefined) {
@@ -267,20 +280,11 @@ ${xhr.responseText}`)
         if (this.subjects.length > 0) {
           return
         }
-        this.request(`${config.api_root}/${public_key}/subjects`, (xhr) => {
-          let subjects
-          if (xhr.status !== 200) {
-            throw Error(`bad response status ${xhr.status} not 200`)
-          } else {
-            subjects = JSON.parse(xhr.responseText)
-          }
-          this.subjects.splice(0)
-          subjects.forEach(con => this.subjects.push(con))
-        })
+        this.request_list(`${config.api_root}/${public_key}/subjects`, this.subjects)
       },
 
       get_text: function (name, replacements, is_markdown) {
-        let s = this.config[name]
+        let s = this.config.messages[name]
         for (let [k, v] of Object.entries(replacements || {})) {
           s = s.replace('{' + k + '}', v)
         }

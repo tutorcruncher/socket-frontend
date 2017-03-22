@@ -5,9 +5,9 @@
       <div v-else v-html="$root.get_text('enquiry_submitted_thanks', {}, true)"></div>
     </div>
     <div v-else>
-      <div v-if="contractor" class="tcs-centre" v-html="$root.get_text('contractor_enquiry_message', {contractor_name: contractor.name}, true)">
+      <div v-if="contractor" class="tcs-centre" v-html="$root.get_text('contractor_enquiry', {contractor_name: contractor.name}, true)">
       </div>
-      <div v-else class="tcs-centre" v-html="$root.get_text('enquiry_message', {}, true)">
+      <div v-else class="tcs-centre" v-html="$root.get_text('enquiry', {}, true)">
       </div>
       <form class="tcs" @submit.prevent="submit">
         <div v-for="field in visible_fields">
@@ -21,7 +21,7 @@
 
         <div class="tcs-field tcs-submit">
           <button type="submit">
-            {{ $root.config.submit_enquiry }}
+            {{ $root.get_text('submit_enquiry') }}
           </button>
         </div>
       </form>

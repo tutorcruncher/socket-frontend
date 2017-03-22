@@ -4,7 +4,8 @@
                  track-by="id"
                  label="name"
                  :show-labels="false"
-                 placeholder="Filter by subject">
+                 :placeholder="$root.get_text('subject_filter')"
+                 @select="changed">
     </multiselect>
 
   </div>
@@ -18,6 +19,11 @@ export default {
     // called here so get_data can be passed an argument for extra pages
     this.$root.get_subject_list()
   },
+  methods: {
+    changed (subject) {
+      this.$root.get_contractor_list({subject: subject.id})
+    }
+  }
 }
 </script>
 

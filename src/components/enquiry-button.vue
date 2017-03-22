@@ -1,7 +1,7 @@
 <template>
   <div class="tcs-enquiry-modal">
     <router-link :to="{name: 'enquiry-modal'}" class="tcs-enquiry-button">
-      {{ $root.config.enquiry_button }}
+      {{ $root.get_text('enquiry_button') }}
     </router-link>
     <router-view></router-view>
   </div>

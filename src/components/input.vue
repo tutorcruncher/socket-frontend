@@ -49,7 +49,7 @@ export default {
       return this.field.type === 'text' && this.field.max_length > 500
     },
     label: function () {
-      return this.field.label + (this.field.required ? this.$root.get_text('required_message') : '')
+      return this.field.label + (this.field.required ? this.$root.get_text('required') : '')
     },
     name: function () {
       if (this.field.prefix) {
