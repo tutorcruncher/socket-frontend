@@ -170,14 +170,14 @@ module.exports = function (public_key, config) {
     components: {
       app
     },
-    created: function () {
+    created () {
       if (error !== null) {
         this.handle_error(error)
       }
     },
     methods: {
       // get_data is called by components, eg. grid
-      handle_error: function (error_message) {
+      handle_error (error_message) {
         this.error = error_message || 'unknown'
         config.console.error('SOCKET: ' + this.error)
         Raven.captureMessage(this.error, {
@@ -185,7 +185,7 @@ module.exports = function (public_key, config) {
           fingerprint: ['{{ default }}', public_key],
         })
       },
-      request: function (url, callback, method, data) {
+      request (url, callback, method, data) {
         const xhr = new window.XMLHttpRequest()
         xhr.open(method || 'GET', url)
         xhr.setRequestHeader('Accept', 'application/json')
@@ -211,7 +211,7 @@ ${xhr.responseText}`)
         }
         xhr.send(data || null)
       },
-      request_list: function (url, data_property) {
+      request_list (url, data_property) {
         this.request(url, (xhr) => {
           let items
           if (xhr.status !== 200) {
@@ -223,7 +223,7 @@ ${xhr.responseText}`)
           items.forEach(con => data_property.push(con))
         })
       },
-      get_contractor_list: function (args) {
+      get_contractor_list (args) {
         // if an error already exists show that and return
         if (error !== null) {
           return
@@ -238,7 +238,7 @@ ${xhr.responseText}`)
         }
         this.request_list(url, this.contractors)
       },
-      get_contractor_details: function (url, link) {
+      get_contractor_details (url, link) {
         if (this.contractors_extra[link] !== undefined) {
           return false
         }
@@ -252,7 +252,7 @@ ${xhr.responseText}`)
         })
         return true
       },
-      get_enquiry: function () {
+      get_enquiry () {
         if (Object.keys(this.enquiry_form_info).length !== 0 || this._getting_enquiry_info) {
           return
         }
@@ -264,7 +264,7 @@ ${xhr.responseText}`)
           }
         })
       },
-      submit_enquiry: function (callback) {
+      submit_enquiry (callback) {
         const data = JSON.stringify(clean(this.enquiry_data))
         const request_callback = (xhr) => {
           if (xhr.status !== 201) {
@@ -276,14 +276,14 @@ ${xhr.responseText}`)
         }
         this.request(`${config.api_root}/${public_key}/enquiry`, request_callback, 'POST', data)
       },
-      get_subject_list: function () {
+      get_subject_list () {
         if (this.subjects.length > 0) {
           return
         }
         this.request_list(`${config.api_root}/${public_key}/subjects`, this.subjects)
       },
 
-      get_text: function (name, replacements, is_markdown) {
+      get_text (name, replacements, is_markdown) {
         let s = this.config.messages[name]
         for (let [k, v] of Object.entries(replacements || {})) {
           s = s.replace('{' + k + '}', v)
@@ -294,13 +294,13 @@ ${xhr.responseText}`)
           return s
         }
       },
-      ga_event: function (category, action, label) {
+      ga_event (category, action, label) {
         /* istanbul ignore next */
         for (let prefix of ga_prefixes) {
           window.ga(prefix + 'send', 'event', category, action, label)
         }
       },
-      goto: function (name, params) {
+      goto (name, params) {
         this.$router.push({'name': name, params: params})
       }
     }

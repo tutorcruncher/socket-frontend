@@ -45,20 +45,20 @@ export default {
     field: Object,
   },
   computed: {
-    is_textarea: function () {
+    is_textarea () {
       return this.field.type === 'text' && this.field.max_length > 500
     },
-    label: function () {
+    label () {
       return this.field.label + (this.field.required ? this.$root.get_text('required') : '')
     },
-    name: function () {
+    name () {
       if (this.field.prefix) {
         return this.field.prefix + '-' + this.field.field
       } else {
         return this.field.field
       }
     },
-    value: function () {
+    value () {
       if (this.field.prefix) {
         return (this.$root.enquiry_data[this.field.prefix] || {})[this.field.field] || ''
       } else {
@@ -67,7 +67,7 @@ export default {
     }
   },
   methods: {
-    changed: function (event) {
+    changed (event) {
       if (this.field.prefix) {
         let obj = this.$root.enquiry_data[this.field.prefix] || {}
         obj[this.field.field] = this.field.type === 'checkbox' ? event.target.checked : event.target.value

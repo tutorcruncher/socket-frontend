@@ -48,13 +48,13 @@ export default {
     'tcs-input': input
   },
   computed: {
-    visible_fields: function () {
+    visible_fields () {
       return this.$root.enquiry_form_info.visible || []
     },
-    attribute_fields: function () {
+    attribute_fields () {
       return this.$root.enquiry_form_info.attributes || []
     },
-    ismodal: function () {
+    ismodal () {
       return this.mode.indexOf('modal') > -1
     }
   },
@@ -65,7 +65,7 @@ export default {
     grecaptcha_id: null,
   }),
   methods: {
-    submit: function () {
+    submit () {
       if (window.grecaptcha && !this.$root.enquiry_data.grecaptcha_response) {
         this.grecaptcha_missing = true
         return
@@ -78,11 +78,11 @@ export default {
       this.$root.submit_enquiry(this.submission_complete)
       this.$root.ga_event('enquiry-form', 'submitted', this.mode)
     },
-    submission_complete: function () {
+    submission_complete () {
       this.submitted = true
     },
     /* istanbul ignore next */
-    prepare_grecaptcha: function () {
+    prepare_grecaptcha () {
       const grecaptcha_callback = response => this.$set(this.$root.enquiry_data, 'grecaptcha_response', response)
 
       if (this.$root.grecaptcha_key === null) {
@@ -104,7 +104,7 @@ export default {
       }
     }
   },
-  created: function () {
+  created () {
     this.$root.get_enquiry()
     if (this.mode !== 'vanilla') {
       this.$root.ga_event('enquiry-form', 'loaded', this.mode)

@@ -5,15 +5,7 @@
         <div class="tcs-header">
           <h2>{{ title }}</h2>
           <router-link :to="{name: 'index'}" class="close">
-            <!--
-            this is the svg for map icon straight from
-            https://github.com/encharm/Font-Awesome-SVG-PNG/blob/master/black/svg/times.svg
-            -->
-            <svg class="tcs-svg" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1490 1322q0 40-28 68l-136 136q-28 28-68 28t-68-28l-294-294-294 294q-28 28-68
-                28t-68-28l-136-136q-28-28-28-68t28-68l294-294-294-294q-28-28-28-68t28-68l136-136q28-28 68-28t68
-                28l294 294 294-294q28-28 68-28t68 28l136 136q28 28 28 68t-28 68l-294 294 294 294q28 28 28 68z"/>
-            </svg>
+            <cross></cross>
           </router-link>
         </div>
 
@@ -31,26 +23,28 @@
 <script>
 import footer from './footer.vue'
 import error from './error.vue'
+import cross from './cross.vue'
 
 export default {
   methods: {
-    close: function () {
+    close () {
       this.$router.push({name: 'index'})
     },
   },
   components: {
     'tcs-footer': footer,
-    'error': error,
+    error: error,
+    cross: cross,
   },
   props: {
     title: String,
   },
-  created: function () {
+  created () {
     // TODO could do something less ugly here like hide the scroll bar at all times
     this.body_overflow_before = document.body.style.overflow
     document.body.style.overflow = 'hidden'
   },
-  destroyed: function () {
+  destroyed () {
     document.body.style.overflow = this.body_overflow_before
   }
 }

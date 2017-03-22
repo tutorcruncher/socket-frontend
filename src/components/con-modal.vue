@@ -51,7 +51,7 @@ import enquiry from './enquiry.vue'
 
 export default {
   methods: {
-    switch_show: function () {
+    switch_show () {
       this.show_enquiry = !this.show_enquiry
     }
   },
@@ -64,7 +64,7 @@ export default {
     show_enquiry: false
   }),
   computed: {
-    contractor: function () {
+    contractor () {
       for (let contractor of this.$root.contractors) {
         if (contractor.link === this.$route.params.link) {
           this.$root.get_contractor_details(contractor.url, contractor.link)
@@ -72,13 +72,13 @@ export default {
         }
       }
     },
-    contractor_name: function () {
+    contractor_name () {
       if (this.contractor !== undefined) {
         return this.contractor.name
       }
     }
   },
-  created: function () {
+  created () {
     this.$root.get_enquiry()
   },
 }

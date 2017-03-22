@@ -20,14 +20,14 @@
 import subject_select from './subject-select.vue'
 
 export default {
-  created: function () {
+  created () {
     // called here so get_data can be passed an argument for extra pages
     this.$root.get_contractor_list()
   },
   components: {
     'subject_select': subject_select,
   },
-  data: function () {
+  data () {
     return {contractors: this.$root.contractors}
   }
 }

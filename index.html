@@ -26,21 +26,22 @@
     </main>
   </body>
   <script>
-    var public_key = 'f8d88b6562b3434ba4ef'
+//    var public_key = 'f8d88b6562b3434ba4ef'
+    var public_key = '9c79f14df986a1ec693c'
     var api_root = null  // 'http://localhost:8000'
     socket(public_key, {
       element: '#socket1',
       api_root: api_root,
     })
-    socket(public_key, {
-      element: '#socket2',
-      mode: 'enquiry',
-      api_root: api_root,
-    })
-    socket(public_key, {
-      element: '#socket3',
-      mode: 'enquiry-modal',
-      api_root: api_root,
-    })
+//    socket(public_key, {
+//      element: '#socket2',
+//      mode: 'enquiry',
+//      api_root: api_root,
+//    })
+//    socket(public_key, {
+//      element: '#socket3',
+//      mode: 'enquiry-modal',
+//      api_root: api_root,
+//    })
   </script>
 </html>

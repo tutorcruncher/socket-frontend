@@ -40,7 +40,7 @@ export default {
   },
   props: ['contractor'],
   computed: {
-    contractor_extra: function () {
+    contractor_extra () {
       return this.$root.contractors_extra[this.$route.params.link] || {}
     },
   }

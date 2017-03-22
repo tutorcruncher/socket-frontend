@@ -118,6 +118,7 @@ describe('main.js', () => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith('/public_key/contractors', dft_response)
+    server.respondWith('/public_key/subjects', [200, {}, '[]'])
     server.respondWith('/public_key/enquiry', dft_response)  // to prevent errors with get_enquiry
     prepare_ga()
   })
@@ -145,6 +146,7 @@ describe('main.js', () => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith('/public_key/contractors', [404, {}, 'badness'])
+    server.respondWith('/public_key/subjects', [200, {}, '[]'])
     server.respondWith('/public_key/enquiry', dft_response)  // to prevent errors with get_enquiry
     prepare_ga()
   })
@@ -163,7 +165,7 @@ describe('main.js', () => {
 
     await sleep(50)
     expect(vm.error).to.not.equal(null)
-    expect(vm.error).to.contain('Error: bad response 404')
+    expect(vm.error).to.contain('Error: bad response status 404')
     expect(vm.error).to.contain('response status: 404')
     expect(vm.error).to.contain('response text:\nbadness')
     expect(vm.error).to.not.contain('Connection error')
@@ -183,7 +185,7 @@ describe('main.js', () => {
     document.body.appendChild(el)
 
     let test_console = new TestConsole()
-    const vm = socket('the-public-key', {
+    const vm = socket('public-key', {
       api_root: 'http://localhost:12345678',
       url_root: '/',
       console: test_console,
@@ -192,7 +194,7 @@ describe('main.js', () => {
     await sleep(50)
     expect(vm.error).to.contain('Connection error')
     expect(vm.error).to.contain('response status: 0')
-    expect(test_console.error_).to.have.lengthOf(1)
+    expect(test_console.error_).to.have.lengthOf(3)
   })
 })
 
@@ -203,6 +205,7 @@ describe('main.js', () => {
     server.autoRespond = true
     server.respondWith('/public-key/contractors', dft_response)
     server.respondWith('/public-key/enquiry', [200, {'Content-Type': 'application/json'}, '{"response": "ok"}'])
+    server.respondWith('/public-key/subjects', [200, {}, '[]'])
     server.respondWith('/foobar', [200, {'Content-Type': 'application/json'}, '{"the": "response"}'])
     prepare_ga()
   })
@@ -228,7 +231,10 @@ describe('main.js', () => {
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
 
-    const vm = socket('public-key', {contractor_enquiry_button: 'Speak to {contractor_name}', url_root: '/'})
+    const vm = socket('public-key', {
+      messages: {contractor_enquiry_button: 'Speak to {contractor_name}'},
+      url_root: '/',
+    })
     vm.enquiry_form_info = 'x'  // prevent get_enquiry making a GET request
     let text = vm.get_text('skills_label')
     expect(text).to.equal('Skills')
@@ -259,6 +265,7 @@ describe('main.js', () => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith('/public-key/contractors', dft_response)
+    server.respondWith('/public-key/subjects', [200, {}, '[]'])
     server.respondWith('/public-key/enquiry',
         [200, {'Content-Type': 'application/json'}, JSON.stringify(enquiry_options)])
     server.respondWith('POST', '/public-key/enquiry', (xhr, id) => {
