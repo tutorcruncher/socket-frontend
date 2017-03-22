@@ -183,28 +183,17 @@ module.exports = function (public_key, config) {
           fingerprint: ['{{ default }}', public_key],
         })
       },
-      get_list: function () {
-        // if an error already exists show that and return
-        if (error !== null) {
-          return
-        }
+      request: function (url, callback, method, data) {
         const xhr = new window.XMLHttpRequest()
-        const url = `${config.api_root}/${public_key}/contractors`
-        xhr.open('GET', url)
+        xhr.open(method || 'GET', url)
+        xhr.setRequestHeader('Accept', 'application/json')
         xhr.onload = () => {
-          let contractors
           try {
-            if (xhr.status !== 200) {
-              throw new Error(`bad response ${xhr.status} at "${url}"`)
-            } else {
-              contractors = JSON.parse(xhr.responseText)
-            }
-            this.contractors.splice(0)
-            contractors.forEach(con => this.contractors.push(con))
+            callback(xhr)
           } catch (e) {
             this.handle_error(`\
 ${e.toString()}
-requested url:   "${url}"
+requested url:   ${url}
 response status: ${xhr.status}
 response text:
 ${xhr.responseText}`)
@@ -213,68 +202,83 @@ ${xhr.responseText}`)
         xhr.onerror = () => {
           this.handle_error(`\
 Connection error
-requested url:   "${url}"
+requested url:   ${url}
 response status: ${xhr.status}
-response text:   "${xhr.responseText}"`)
+response text:   
+${xhr.responseText}`)
         }
-        xhr.send()
+        xhr.send(data || null)
       },
-      get_details: function (url, link) {
+      get_contractor_list: function () {
+        // if an error already exists show that and return
+        if (error !== null) {
+          return
+        }
+        this.request(`${config.api_root}/${public_key}/contractors`, (xhr) => {
+          let contractors
+          if (xhr.status !== 200) {
+            throw Error(`bad response status ${xhr.status} not 200`)
+          } else {
+            contractors = JSON.parse(xhr.responseText)
+          }
+          this.contractors.splice(0)
+          contractors.forEach(con => this.contractors.push(con))
+        })
+      },
+      get_contractor_details: function (url, link) {
         if (this.contractors_extra[link] !== undefined) {
           return false
         }
-        const xhr = new window.XMLHttpRequest()
-        xhr.open('GET', url)
-        xhr.onload = () => {
+        this.request(url, (xhr) => {
           if (xhr.status !== 200) {
-            this.handle_error(`bad response ${xhr.status} at "${url}"`)
+            throw Error(`bad response status ${xhr.status} not 200`)
           } else {
             const con = JSON.parse(xhr.responseText)
             Vue.set(this.contractors_extra, link, con)
           }
-        }
-        xhr.send()
+        })
         return true
       },
       get_enquiry: function () {
         if (Object.keys(this.enquiry_form_info).length !== 0 || this._getting_enquiry_info) {
           return
         }
-        const xhr = new window.XMLHttpRequest()
-        const url = `${config.api_root}/${public_key}/enquiry`
-        xhr.open('GET', url)
-        xhr.onload = () => {
+        this.request(`${config.api_root}/${public_key}/enquiry`, (xhr) => {
           if (xhr.status !== 200) {
-            this.handle_error(`\
-Connection error
-requested url:   "${url}"
-response status: ${xhr.status}
-response text:   "${xhr.responseText}"`)
+            throw Error(`bad response status ${xhr.status} not 200`)
           } else {
             this.enquiry_form_info = Object.assign({}, this.enquiry_form_info, JSON.parse(xhr.responseText))
           }
-        }
-        xhr.send()
+        })
       },
       submit_enquiry: function (callback) {
         const data = JSON.stringify(clean(this.enquiry_data))
-        const xhr = new window.XMLHttpRequest()
-        const url = `${config.api_root}/${public_key}/enquiry`
-        xhr.open('POST', url)
-        xhr.onload = () => {
+        const request_callback = (xhr) => {
           if (xhr.status !== 201) {
-            this.handle_error(`\
-Connection error
-requested url:   "${url}"
-response status: ${xhr.status}
-response text:   "${xhr.responseText}"`)
+            throw Error(`bad response status ${xhr.status} not 201`)
           } else {
             this.enquiry_data = {}
             callback()
           }
         }
-        xhr.send(data)
+        this.request(`${config.api_root}/${public_key}/enquiry`, request_callback, 'POST', data)
       },
+      get_subject_list: function () {
+        if (this.subjects.length > 0) {
+          return
+        }
+        this.request(`${config.api_root}/${public_key}/subjects`, (xhr) => {
+          let subjects
+          if (xhr.status !== 200) {
+            throw Error(`bad response status ${xhr.status} not 200`)
+          } else {
+            subjects = JSON.parse(xhr.responseText)
+          }
+          this.subjects.splice(0)
+          subjects.forEach(con => this.subjects.push(con))
+        })
+      },
+
       get_text: function (name, replacements, is_markdown) {
         let s = this.config[name]
         for (let [k, v] of Object.entries(replacements || {})) {

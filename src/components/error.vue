@@ -31,8 +31,9 @@ export default {}
 .tcs-errors {
   background-color: $brand-colour;
   color: white;
-  margin: 10px;
-  padding: 20px 30px;
+  margin: 5px;
+  padding: 10px 10px;
+  font-size: 13px;
   img {
     width: 100%;
   }
@@ -41,6 +42,8 @@ export default {}
     background-color: darken($brand-colour, 5%);
     padding: 20px 10px;
     white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 12px;
   }
   dt {
     margin: 15px 0 5px;

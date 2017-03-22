@@ -243,12 +243,12 @@ describe('main.js', () => {
 
     const vm = socket('public-key', {url_root: '/'})
     expect(vm.contractors_extra).to.deep.equal({})
-    let v = vm.get_details('/foobar', 'key')
+    let v = vm.get_contractor_details('/foobar', 'key')
     expect(v).to.equal(true)
 
     await sleep(50)
     expect(vm.contractors_extra).to.deep.equal({key: {the: 'response'}})
-    v = vm.get_details('/foobar', 'key')
+    v = vm.get_contractor_details('/foobar', 'key')
     expect(v).to.equal(false)
   })
 })

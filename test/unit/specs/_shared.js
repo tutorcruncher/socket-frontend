@@ -72,7 +72,7 @@ function generate_vm (router, vm_data_) {
           }
         }
       },
-      get_details: function () { this.__record_call('get_details') },
+      get_contractor_details: function () { this.__record_call('get_contractor_details') },
       get_enquiry: function () { this.__record_call('get_enquiry') },
       get_text: function () { this.__record_call('get_text') },
       submit_enquiry: function (callback) {

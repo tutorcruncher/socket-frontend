@@ -67,7 +67,7 @@ export default {
     contractor: function () {
       for (let contractor of this.$root.contractors) {
         if (contractor.link === this.$route.params.link) {
-          this.$root.get_details(contractor.url, contractor.link)
+          this.$root.get_contractor_details(contractor.url, contractor.link)
           return contractor
         }
       }

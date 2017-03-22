@@ -16,7 +16,7 @@ describe('grid.vue', () => {
         contractors: []
       },
       methods: {
-        get_list: function () {
+        get_contractor_list: function () {
           this.contractors.push({name: 'Fred Bloggs', link: '123-fred-bloggs', photo: 'http://path/to/img.jpg'})
         },
       }
