@@ -118,6 +118,7 @@ describe('main.js', () => {
     server = sinon.fakeServer.create()
     server.autoRespond = true
     server.respondWith('/public_key/contractors', dft_response)
+    server.respondWith('/public_key/contractors?subject=123', [200, {}, '[]'])
     server.respondWith('/public_key/subjects', [200, {}, '[]'])
     server.respondWith('/public_key/enquiry', dft_response)  // to prevent errors with get_enquiry
     prepare_ga()
@@ -127,7 +128,7 @@ describe('main.js', () => {
     teardown_ga()
   })
 
-  it('should download contractors', async () => {
+  it('get_contractor_list vanilla download', async () => {
     let el = document.createElement('div')
     el.setAttribute('id', 'socket')
     document.body.appendChild(el)
@@ -137,6 +138,24 @@ describe('main.js', () => {
     await sleep(50)
     expect(vm.error).to.equal(null)
     expect(vm.contractors).to.deep.equal([{name: 'Foobars', link: '123-foobar'}])
+  })
+
+  it('get_contractor_list subjects filtered', async () => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+
+    const vm = socket('public_key', {url_root: '/'})
+    vm.subjects = [{id: 123, name: 'Foo', link: '123-foo'}]
+    expect(vm.selected_subject_id).to.equal(null)
+    vm.$router.push({name: 'index', params: {type: 's', link: '123-foo'}})
+    await sleep(50)
+    expect(vm.error).to.equal(null)
+
+    expect(vm.contractors).to.deep.equal([])
+    expect(vm.selected_subject_id).to.equal(123)
+    vm.$router.push({name: 'index'})
+    await sleep(50)
   })
 })
 
@@ -194,7 +213,7 @@ describe('main.js', () => {
     await sleep(50)
     expect(vm.error).to.contain('Connection error')
     expect(vm.error).to.contain('response status: 0')
-    expect(test_console.error_).to.have.lengthOf(3)
+    expect(test_console.error_).to.have.lengthOf(2)
   })
 })
 
@@ -305,5 +324,52 @@ describe('main.js', () => {
       }
       vm.submit_enquiry(callback)
     })
+  })
+})
+
+describe('main.js', () => {
+  let server
+  before(() => {
+    server = sinon.fakeServer.create()
+    server.autoRespond = true
+    server.respondWith('/public-key/contractors', dft_response)
+    server.respondWith('/public-key/enquiry', [200, {'Content-Type': 'application/json'}, '{"response": "ok"}'])
+    server.respondWith('/public-key/subjects', [200, {}, '[1, 2, 3]'])
+    server.respondWith('/foobar', [200, {'Content-Type': 'application/json'}, '{"the": "response"}'])
+    prepare_ga()
+  })
+  after(() => {
+    server.restore()
+    teardown_ga()
+  })
+
+  it('get_selected_subject', async () => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+
+    const vm = socket('public-key', {url_root: '/'})
+    expect(vm.get_selected_subject()).to.equal(null)
+
+    vm.subjects = [{id: 123, name: 'Foo', link: '123-foo'}]
+    vm.selected_subject_id = 123
+    expect(vm.get_selected_subject()).to.deep.equal({id: 123, name: 'Foo', link: '123-foo'})
+  })
+
+  it('get_subject_list', async () => {
+    let el = document.createElement('div')
+    el.setAttribute('id', 'socket')
+    document.body.appendChild(el)
+
+    const vm = socket('public-key', {url_root: '/'})
+    vm.get_subject_list()
+    await sleep(50)
+    expect(vm.subjects).to.deep.equal([1, 2, 3])
+
+    vm.subjects = [{id: 1}]
+    expect(vm.subjects).to.deep.equal([{id: 1}])
+    vm.get_subject_list()
+    await sleep(50)
+    expect(vm.subjects).to.deep.equal([{id: 1}])
   })
 })

@@ -245,10 +245,6 @@ ${xhr.responseText}`)
         })
       },
       get_contractor_list () {
-        // if an error already exists show that and return
-        if (error !== null) {
-          return
-        }
         if (this.$route.name === 'index') {
           if (this.$route.params.type === 's' && this.$route.params.link) {
             this.$set(this, 'selected_subject_id', parseInt(this.$route.params.link.match(/\d+/)[0]))
