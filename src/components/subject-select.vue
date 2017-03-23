@@ -9,7 +9,7 @@
                  @select="changed">
       <div slot="carret">
         <div @mousedown.prevent="" class="multiselect__select"></div>
-        <div class="cross" @mousedown.prevent="changed()">
+        <div class="cross" @click="changed()" @mousedown.prevent>
           <cross></cross>
         </div>
       </div>

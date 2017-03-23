@@ -8,7 +8,7 @@
     </div>
     <div class="tcs-flex">
       <div v-for="contractor in contractors" class="tcs-col">
-        <router-link :to="{name: 'con-modal', params: {link: contractor.link}}" class="tcs-box">
+        <router-link v-if="contractor" :to="{name: 'con-modal', params: {link: contractor.link}}" class="tcs-box">
           <img :src="contractor.photo" :alt="contractor.name" class="tcs-thumb">
           <h3 class="tcs-name">{{ contractor.name }}</h3>
         </router-link>
@@ -32,9 +32,10 @@ export default {
     description () {
       if (this.$root.selected_subject_id) {
         const msg_id_suffix = this.$root.contractors.length === 1 ? 'single' : 'plural'
+        const subject = this.$root.get_selected_subject()
         return this.$root.get_text('subject_filter_summary_' + msg_id_suffix, {
           count: this.$root.contractors.length,
-          subject: this.$root.get_selected_subject().name,
+          subject: subject && subject.name,
         })
       }
     }
