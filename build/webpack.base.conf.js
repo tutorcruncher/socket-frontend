@@ -80,6 +80,9 @@ module.exports = {
       },
     ]
   },
+  sassLoader: {
+    includePaths: [path.join(__dirname, '../node_modules')]
+  },
   eslint: {
     formatter: require('eslint-friendly-formatter')
   }

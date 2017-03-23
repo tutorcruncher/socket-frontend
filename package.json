@@ -82,7 +82,6 @@
     "vue-loader": "^11.1.4",
     "vue-multiselect": "^2.0.0-beta.15",
     "vue-router": "^2.3.0",
-    "vue-style-loader": "^2.0.3",
     "vue-template-compiler": "^2.2.1",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.10.1",
