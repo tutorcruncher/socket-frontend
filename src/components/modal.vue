@@ -4,7 +4,7 @@
       <div class="tcs-modal" @click.stop>
         <div class="tcs-header">
           <h2>{{ title }}</h2>
-          <router-link :to="{name: 'index'}" class="close">
+          <router-link :to="index_url()" class="close">
             <cross></cross>
           </router-link>
         </div>
@@ -27,8 +27,16 @@ import cross from './cross.vue'
 
 export default {
   methods: {
+    index_url () {
+      let params
+      const subject = this.$root.get_selected_subject()
+      if (subject) {
+        params = {type: 's', link: subject.link}
+      }
+      return {name: 'index', params: params}
+    },
     close () {
-      this.$router.push({name: 'index'})
+      this.$router.push(this.index_url())
     },
   },
   components: {

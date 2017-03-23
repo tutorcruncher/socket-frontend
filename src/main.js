@@ -30,7 +30,7 @@ const ConfiguredVueRouter = config => {
   if (config.mode === 'grid') {
     routes.push(
       {
-        path: config.url_root,
+        path: config.url_root + ':type(s|q)?/:link(\\d+-[\\w-]+)?',
         name: 'index',
         component: grid,
         children: [
@@ -166,6 +166,7 @@ module.exports = function (public_key, config) {
       public_key: public_key,
       enquiry_form_info: {},
       enquiry_data: {},
+      selected_subject_id: null,
     },
     components: {
       app
@@ -173,6 +174,15 @@ module.exports = function (public_key, config) {
     created () {
       if (error !== null) {
         this.handle_error(error)
+      } else if (this.config.mode === 'grid') {
+        this.get_contractor_list()
+      }
+    },
+    watch: {
+      '$route' (to) {
+        if (this.config.mode === 'grid' && to.name === 'index') {
+          this.get_contractor_list()
+        }
       }
     },
     methods: {
@@ -223,17 +233,29 @@ ${xhr.responseText}`)
           items.forEach(con => data_property.push(con))
         })
       },
-      get_contractor_list (args) {
+      get_contractor_list () {
         // if an error already exists show that and return
         if (error !== null) {
           return
         }
-        let url = `${config.api_root}/${public_key}/contractors`
-        if (args) {
-          const arg_list = []
-          for (let [name, value] of Object.entries(args)) {
+        if (this.$route.name === 'index') {
+          if (this.$route.params.type === 's' && this.$route.params.link) {
+            this.$set(this, 'selected_subject_id', parseInt(this.$route.params.link.match(/\d+/)[0]))
+          } else {
+            this.$set(this, 'selected_subject_id', null)
+          }
+        }
+        const args = {subject: this.selected_subject_id}
+
+        const arg_list = []
+        for (let [name, value] of Object.entries(args)) {
+          if (value !== null) {
             arg_list.push(encodeURIComponent(name) + '=' + encodeURIComponent(value))
           }
+        }
+
+        let url = `${config.api_root}/${public_key}/contractors`
+        if (arg_list.length > 0) {
           url += '?' + arg_list.join('&')
         }
         this.request_list(url, this.contractors)
@@ -281,6 +303,16 @@ ${xhr.responseText}`)
           return
         }
         this.request_list(`${config.api_root}/${public_key}/subjects`, this.subjects)
+      },
+      get_selected_subject () {
+        if (this.selected_subject_id === null) {
+          return null
+        }
+        for (let subject of this.subjects) {
+          if (subject.id === this.selected_subject_id) {
+            return subject
+          }
+        }
       },
 
       get_text (name, replacements, is_markdown) {

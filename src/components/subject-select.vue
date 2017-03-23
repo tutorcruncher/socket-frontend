@@ -1,6 +1,6 @@
 <template>
   <div class="tcs-select-container">
-    <multiselect v-model="value"
+    <multiselect :value="$root.get_selected_subject()"
                  :options="$root.subjects"
                  track-by="id"
                  label="name"
@@ -9,7 +9,7 @@
                  @select="changed">
       <div slot="carret">
         <div @mousedown.prevent="" class="multiselect__select"></div>
-        <div class="cross" @mousedown.prevent="reset()">
+        <div class="cross" @mousedown.prevent="changed()">
           <cross></cross>
         </div>
       </div>
@@ -24,21 +24,15 @@ import cross from './cross.vue'
 export default {
   components: { Multiselect, cross },
   created () {
-    // called here so get_data can be passed an argument for extra pages
     this.$root.get_subject_list()
-  },
-  data () {
-    return {
-      value: null,
-    }
   },
   methods: {
     changed (subject) {
-      this.$root.get_contractor_list(subject ? {subject: subject.id} : null)
-    },
-    reset () {
-      this.value = null
-      this.changed()
+      let params
+      if (subject) {
+        params = {type: 's', link: subject.link}
+      }
+      this.$router.push({name: 'index', params: params})
     }
   }
 }
