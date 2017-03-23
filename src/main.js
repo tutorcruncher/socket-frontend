@@ -206,13 +206,17 @@ module.exports = function (public_key, config) {
           fingerprint: ['{{ default }}', public_key],
         })
       },
-      request (url, callback, method, data) {
+      request (url, callback, expected_status, method, data) {
         const xhr = new window.XMLHttpRequest()
         xhr.open(method || 'GET', url)
         xhr.setRequestHeader('Accept', 'application/json')
         xhr.onload = () => {
           try {
-            callback(xhr)
+            if (xhr.status !== (expected_status || 200)) {
+              throw Error(`bad response status ${xhr.status} not 200`)
+            } else {
+              callback(xhr)
+            }
           } catch (e) {
             this.handle_error(`\
 ${e.toString()}
@@ -234,12 +238,7 @@ ${xhr.responseText}`)
       },
       request_list (url, data_property, callback) {
         this.request(url, (xhr) => {
-          let items
-          if (xhr.status !== 200) {
-            throw Error(`bad response status ${xhr.status} not 200`)
-          } else {
-            items = JSON.parse(xhr.responseText)
-          }
+          const items = JSON.parse(xhr.responseText)
           data_property.splice(0)
           items.forEach(con => data_property.push(con))
           callback && callback(this)
@@ -278,12 +277,8 @@ ${xhr.responseText}`)
           return false
         }
         this.request(url, (xhr) => {
-          if (xhr.status !== 200) {
-            throw Error(`bad response status ${xhr.status} not 200`)
-          } else {
-            const con = JSON.parse(xhr.responseText)
-            Vue.set(this.contractors_extra, link, con)
-          }
+          const con = JSON.parse(xhr.responseText)
+          Vue.set(this.contractors_extra, link, con)
         })
         return true
       },
@@ -292,24 +287,16 @@ ${xhr.responseText}`)
           return
         }
         this.request(`${config.api_root}/${public_key}/enquiry`, (xhr) => {
-          if (xhr.status !== 200) {
-            throw Error(`bad response status ${xhr.status} not 200`)
-          } else {
-            this.enquiry_form_info = Object.assign({}, this.enquiry_form_info, JSON.parse(xhr.responseText))
-          }
+          this.enquiry_form_info = Object.assign({}, this.enquiry_form_info, JSON.parse(xhr.responseText))
         })
       },
       submit_enquiry (callback) {
         const data = JSON.stringify(clean(this.enquiry_data))
-        const request_callback = (xhr) => {
-          if (xhr.status !== 201) {
-            throw Error(`bad response status ${xhr.status} not 201`)
-          } else {
-            this.enquiry_data = {}
-            callback()
-          }
+        const request_callback = () => {
+          this.enquiry_data = {}
+          callback()
         }
-        this.request(`${config.api_root}/${public_key}/enquiry`, request_callback, 'POST', data)
+        this.request(`${config.api_root}/${public_key}/enquiry`, request_callback, 201, 'POST', data)
       },
       get_subject_list () {
         if (this.subjects.length > 0) {

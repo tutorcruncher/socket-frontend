@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import grid from 'src/components/grid'
-import {tick, sleep} from './_shared'
+import {tick} from './_shared'
 
 describe('grid.vue', () => {
   it('should render contractors', () => {
