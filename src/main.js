@@ -144,6 +144,10 @@ module.exports = function (public_key, config) {
     config.subject_filter = true
   }
 
+  if (!config.event_callback) {
+    config.event_callback = () => null
+  }
+
   if (document.querySelector(config.element) === null) {
     config.console.error(`SOCKET: page element "${config.element}" does not exist, unable to start socket view.`)
     return
@@ -228,7 +232,7 @@ ${xhr.responseText}`)
         }
         xhr.send(data || null)
       },
-      request_list (url, data_property) {
+      request_list (url, data_property, callback) {
         this.request(url, (xhr) => {
           let items
           if (xhr.status !== 200) {
@@ -238,6 +242,7 @@ ${xhr.responseText}`)
           }
           data_property.splice(0)
           items.forEach(con => data_property.push(con))
+          callback && callback(this)
         })
       },
       get_contractor_list () {
@@ -265,7 +270,8 @@ ${xhr.responseText}`)
         if (arg_list.length > 0) {
           url += '?' + arg_list.join('&')
         }
-        this.request_list(url, this.contractors)
+        const cb = (t) => this.config.event_callback('updated_contractors', t)
+        this.request_list(url, this.contractors, cb)
       },
       get_contractor_details (url, link) {
         if (this.contractors_extra[link] !== undefined) {
