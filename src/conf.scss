@@ -31,3 +31,11 @@ $button-colour: $hightlight;
     background-color: darken($button-colour, 20%);
   }
 }
+
+svg.tcs-svg {
+  width: $svg-size;
+  height: $svg-size;
+  path {
+    fill: $brand-colour;
+  }
+}

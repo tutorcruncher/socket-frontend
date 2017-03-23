@@ -10,11 +10,3 @@
 <script>
 export default {}
 </script>
-
-<style lang="scss">
-@import '../conf';
-
-.tcs-enquiry-button {
-  @extend %tcs-button;
-}
-</style>

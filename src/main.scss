@@ -1,0 +1,31 @@
+@import './conf';
+
+.tcs-button {
+  display: inline-block;
+  background-color: $button-colour;
+  color: white;
+  border-radius: 5px;
+  font-size: 17px;
+  padding: 8px 12px;
+  border: none;
+  transition: all .3s ease;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    background-color: darken($button-colour, 20%);
+  }
+}
+
+@import './styles/con-details';
+@import './styles/con-modal';
+@import './styles/cross';
+@import './styles/enquiry';
+@import './styles/enquiry-button';
+@import './styles/enquiry-modal';
+@import './styles/error';
+@import './styles/footer';
+@import './styles/grid';
+@import './styles/input';
+@import './styles/modal';
+@import './styles/subject-select';

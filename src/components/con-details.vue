@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="con-details">
     <div class="tcs-md" v-html="to_markdown(contractor.primary_description)"></div>
 
     <div class="tcs-attr" v-for="attr in contractor_extra.extra_attributes">
@@ -46,56 +46,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-@import '../conf';
-
-.tcs-md {
-  p {
-    margin: 0 0 10px;
-    font-size: 16px;
-    line-height: 18px;
-  }
-}
-
-h3 {
-  margin-top: 12px;
-  margin-bottom: 4px;
-  font-size: 24px;
-  font-weight: 400;
-}
-
-table.tcs-skills {
-  border: none;
-  &, th, td, tr {
-    background-color: inherit;
-  }
-  caption {
-    text-align: left;
-  }
-  th, td {
-    padding: 0;
-    font-size: 15px;
-  }
-  tr {
-    height: 25px;
-  }
-  th {
-    text-align: left;
-    padding-right: 10px;
-    vertical-align: top;
-  }
-  td {
-    display: flex;
-    flex-wrap: wrap;
-    span {
-      white-space: nowrap;
-      padding: 3px 3px;
-      margin: 0 2px 2px;
-      color: white;
-      background: $hightlight;
-      border-radius: 3px;
-    }
-  }
-}
-</style>

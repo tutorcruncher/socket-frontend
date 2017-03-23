@@ -26,34 +26,3 @@
 <script>
 export default {}
 </script>
-
-<style lang="scss">
-@import '../conf';
-.tcs-footer {
-  text-align: right;
-  a {
-    font-size: 12px;
-    text-decoration: none;
-    color: #999;
-    transition: all .8s ease;
-    &:hover {
-      color: $brand-colour;
-      svg {
-        opacity: 1;
-        transform: translate(0, 8px);
-      }
-    }
-    svg {
-      transition: all .8s ease;
-      width: 25px;
-      height: 25px;
-      transform: translate(0px, 4px);
-      opacity: 0;
-      path {
-        fill: $hightlight;
-      }
-    }
-
-  }
-}
-</style>

@@ -1,0 +1,5 @@
+@import '../conf';
+
+.tcs-enquiry-button {
+  @extend %tcs-button;
+}

@@ -9,6 +9,7 @@ import enquiry_modal from './components/enquiry-modal'
 import grid from './components/grid'
 import con_modal from './components/con-modal'
 import {to_markdown, clean, auto_url_root, init_ga} from './utils'
+import './main.scss'
 
 const raven_config = {
   release: process.env.RELEASE,

@@ -29,7 +29,6 @@ module.exports = {
     },
     build_dir: prod_build_dir,
     public_path: prod_public_path,
-    css_source_map: false,
     build_deets: `\
 /* 
   TutorCruncher socket frontend, Copyright (c) 2017 TutorCruncher ltd.
@@ -55,7 +54,6 @@ module.exports = {
     },
     port: 5000,
     build_dir: path.resolve(__dirname, 'dev'),
-    css_source_map: true,
     public_path: '/',
   },
   test: {
@@ -68,7 +66,6 @@ module.exports = {
       GA_ID: 'null',
     },
     build_dir: path.resolve(__dirname, 'dist-test'),
-    css_source_map: true,
     public_path: '/',
   }
 }

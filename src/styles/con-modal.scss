@@ -1,0 +1,71 @@
+@import '../conf';
+
+.tcs-aside {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: $hightlight;
+  min-height: 28px;
+}
+
+.tcs-body {
+  max-height: calc(94vh - 140px);
+  overflow-y: auto;
+  @media(min-width: $size-sm) {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+  }
+}
+
+.tcs-content {
+  flex-grow: 1;
+  padding-right: 10px;
+  color: #444;
+  margin-right: 5px;
+  @media(min-width: $size-sm) {
+    .tcs-scroll {
+      overflow-y: auto;
+      max-height: calc(94vh - 200px);
+    }
+  }
+}
+
+.tcs-extra {
+  width: $extra-width;
+  margin: 0 auto 20px;
+  text-align: center;
+  flex-shrink: 0;
+
+  img {
+    height: $extra-width;
+    border-radius: 4px;
+    display: block;
+    margin: auto;
+  }
+
+  .tcs-location {
+    margin: 10px 0;
+    span {
+      padding-top: 4px;
+      vertical-align: top;
+      font-weight: 500;
+    }
+  }
+
+  button {
+    @extend %tcs-button;
+    margin: 10px auto 0;
+    width: 100%;
+  }
+}
+
+// auto applied:
+
+.tcs-squeeze-enter-active, .tcs-squeeze-leave-active {
+  transition: all .3s ease-out;
+}
+
+.tcs-squeeze-enter, .tcs-squeeze-leave-to {
+  opacity: 0;
+  transform: translate(0, -20px);
+}

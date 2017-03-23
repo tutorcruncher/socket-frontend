@@ -1,6 +1,5 @@
 var path = require('path')
 var config = require('../config')
-var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
 
 var current_conf = config.build
@@ -22,7 +21,7 @@ module.exports = {
   },
   devtool: 'source-map',
   resolve: {
-    extensions: ['', '.js', '.vue', '.json'],
+    extensions: ['', '.js', '.vue', '.scss'],
     fallback: [path.join(__dirname, '../node_modules')],
     alias: {
       'src': path.resolve(__dirname, '../src'),
@@ -74,18 +73,14 @@ module.exports = {
       {
         test: /\/main\.js$/,
         loaders: ['expose-loader?socket', 'babel']
-      }
+      },
+      {
+        test: /\.scss$/,
+        loaders: ['style-loader', 'css-loader', 'sass-loader']
+      },
     ]
   },
   eslint: {
     formatter: require('eslint-friendly-formatter')
-  },
-  vue: {
-    loaders: utils.cssLoaders(current_conf.css_source_map),
-    postcss: [
-      require('autoprefixer')({
-        browsers: ['last 2 versions']
-      })
-    ]
   }
 }
