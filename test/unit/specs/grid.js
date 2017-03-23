@@ -13,12 +13,14 @@ describe('grid.vue', () => {
       router: router,
       render: (h) => h(grid),
       data: {
-        contractors: []
+        contractors: [{name: 'Fred Bloggs', link: '123-fred-bloggs', photo: 'http://path/to/img.jpg'}],
+        subjects: [],
       },
       methods: {
-        get_contractor_list: function () {
-          this.contractors.push({name: 'Fred Bloggs', link: '123-fred-bloggs', photo: 'http://path/to/img.jpg'})
-        },
+        get_contractor_list: () => null,
+        get_subject_list: () => null,
+        get_selected_subject: () => null,
+        get_text: () => null,
       }
     })
     expect(vm.$el.querySelector('h3').textContent).to.equal('Fred Bloggs')

@@ -63,7 +63,7 @@ function generate_vm (router, vm_data_) {
     render: h => h('router-view'),
     data: vm_data_ || vm_data(),
     methods: {
-      __record_call: function (method_name, extra_args) {
+      __record_call (method_name, extra_args) {
         if (this.hasOwnProperty('method_calls')) {
           if (this.method_calls[method_name]) {
             this.method_calls[method_name].push(extra_args || null)
@@ -72,15 +72,19 @@ function generate_vm (router, vm_data_) {
           }
         }
       },
-      get_contractor_details: function () { this.__record_call('get_contractor_details') },
-      get_enquiry: function () { this.__record_call('get_enquiry') },
-      get_text: function () { this.__record_call('get_text') },
-      submit_enquiry: function (callback) {
+      get_contractor_details () { this.__record_call('get_contractor_details') },
+      get_enquiry () { this.__record_call('get_enquiry') },
+      get_text () { this.__record_call('get_text') },
+      submit_enquiry (callback) {
         this.__record_call('submit_enquiry', this.enquiry_data)
         this.enquiry_data = {}
         callback()
       },
-      ga_event: function () { this.__record_call('ga_event') },
+      ga_event () { this.__record_call('ga_event') },
+      get_selected_subject () {
+        this.__record_call('get_selected_subject')
+        return null
+      }
     }
   })
 }
