@@ -15,6 +15,7 @@ describe('grid.vue', () => {
       data: {
         contractors: [{name: 'Fred Bloggs', link: '123-fred-bloggs', photo: 'http://path/to/img.jpg'}],
         subjects: [],
+        config: {subject_filter: true},
       },
       methods: {
         get_contractor_list: () => null,

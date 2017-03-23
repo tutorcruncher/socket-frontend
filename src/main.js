@@ -87,6 +87,8 @@ const STRINGS = {
   grecaptcha_missing: 'This captcha is required',
   required: ' (Required)',
   subject_filter: 'Filter by subject',
+  subject_filter_summary_single: '{subject}: showing 1 result',
+  subject_filter_summary_plural: '{subject}: showing {count} results',
 }
 
 const MODES = ['grid', 'enquiry', 'enquiry-modal']
@@ -136,6 +138,10 @@ module.exports = function (public_key, config) {
 
   if (!config.element) {
     config.element = '#socket'
+  }
+
+  if (config.subject_filter === undefined) {
+    config.subject_filter = true
   }
 
   if (document.querySelector(config.element) === null) {

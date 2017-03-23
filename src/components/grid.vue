@@ -1,8 +1,10 @@
 <template>
   <div class="tcs-grid">
-    <div class="tcs-flex">
-      <div class="subject-select"></div>
+    <div v-if="$root.config.subject_filter">
       <subject_select class="subject-select"></subject_select>
+      <div class="tcs-summary">
+        {{ description }}
+      </div>
     </div>
     <div class="tcs-flex">
       <div v-for="contractor in contractors" class="tcs-col">
@@ -23,8 +25,19 @@ export default {
   components: { subject_select },
   data () {
     // very weird but this works, while $root.contractors used directly in the template above sometimes gives
-    // an array containing one empty object: [object{}]
+    // an array containing one empty object: [object{}] and therefore fails
     return {contractors: this.$root.contractors}
+  },
+  computed: {
+    description () {
+      if (this.$root.selected_subject_id) {
+        const msg_id_suffix = this.$root.contractors.length === 1 ? 'single' : 'plural'
+        return this.$root.get_text('subject_filter_summary_' + msg_id_suffix, {
+          count: this.$root.contractors.length,
+          subject: this.$root.get_selected_subject().name,
+        })
+      }
+    }
   }
 }
 </script>

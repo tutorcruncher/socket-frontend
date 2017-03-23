@@ -6,6 +6,23 @@
 
 .subject-select {
   width: 50%;
+  margin: 0 0 0 auto;
+  padding: 0 2px;
+  box-sizing: border-box;
+}
+
+.tcs-summary {
+  padding: 5px 2px;
+  text-align: right;
+  font-size: 13px;
+  color: #666;
+  min-height: 18px;
+}
+
+@media(max-width: 600px) {
+  .subject-select {
+    width: 100%;
+  }
 }
 
 .tcs-flex {
@@ -51,6 +68,9 @@
 }
 
 @media(max-width: 400px) {
+  .subject-select {
+    width: 100%;
+  }
   .tcs-grid {
     padding: 10px 2px;
   }
