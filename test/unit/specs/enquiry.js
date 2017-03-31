@@ -37,9 +37,19 @@ describe('con-modal.vue, enquiry.vue', () => {
     vm.$el.querySelector('textarea').value = 'X'
     vm.$el.querySelector('textarea').dispatchEvent(new window.Event('input'))
 
+    vm.$el.querySelector('select').options[2].selected = true
+    vm.$el.querySelector('select').dispatchEvent(new window.Event('input'))
+
     await tick()
     expect(vm.$el.querySelector('input').value).to.equal('the new value')
-    expect(vm.enquiry_data).to.deep.equal({first_field: 'the new value', attributes: {custom_field: 'X'}})
+    console.log(vm.enquiry_data)
+    expect(vm.enquiry_data).to.deep.equal({
+      first_field: 'the new value',
+      attributes: {
+        custom_field: 'X',
+        select_test: 'v2'
+      }
+    })
 
     expect(vm.method_calls['submit_enquiry']).to.equal(undefined)
     vm.$el.querySelector('form').dispatchEvent(new window.Event('submit'))

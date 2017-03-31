@@ -18,6 +18,7 @@
     <label v-else-if="field.type === 'select'">
       {{ label }}
       <select :name="name" :required="field.required" @input="changed">
+        <option value="">---------</option>
         <option v-for="choice in field.choices" :value="choice.value" :selected="choice.value === value">
           {{ choice.display_name }}
         </option>
@@ -40,7 +41,10 @@
 </template>
 
 <script>
+import Multiselect from 'vue-multiselect'
+
 export default {
+  components: { Multiselect },
   props: {
     field: Object,
   },

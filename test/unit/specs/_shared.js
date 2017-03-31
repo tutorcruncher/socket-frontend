@@ -28,6 +28,25 @@ const enquiry_options = {
   visible: [
     {field: 'first_field', prefix: null, type: 'text', label: 'Foobar', max_length: 255},
     {field: 'custom_field', prefix: 'attributes', type: 'text', label: 'Custom Field', max_length: 2047},
+    {
+      field: 'select_test',
+      choices: [
+        {
+          display_name: 'v1',
+          value: 'v1'
+        },
+        {
+          display_name: 'v2',
+          value: 'v2'
+        }
+      ],
+      help_text: 'xxx',
+      label: 'Select Test',
+      prefix: 'attributes',
+      required: true,
+      sort_index: 1000,
+      type: 'select'
+    },
   ],
 }
 
