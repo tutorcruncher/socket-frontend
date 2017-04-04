@@ -100,6 +100,7 @@ function generate_vm (router, vm_data_) {
         callback()
       },
       ga_event () { this.__record_call('ga_event') },
+      grecaptcha_callback (r) { this.__record_call('grecaptcha_callback', r) },
       get_selected_subject () {
         this.__record_call('get_selected_subject')
         return null
