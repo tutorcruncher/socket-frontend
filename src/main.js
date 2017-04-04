@@ -67,6 +67,7 @@ const ConfiguredVueRouter = config => {
       }
     )
   }
+  console.debug('setting routes:', routes)
   return new VueRouter({
     mode: config.router_mode,
     routes: routes
@@ -101,6 +102,18 @@ module.exports = function (public_key, config) {
     config: config,
   })
 
+  if (!config.console) {
+    config.console = console
+    if (!window.localStorage.tcs_enable_debug) {
+      if (!window.tcs_debug_log) {
+        window.tcs_debug_log = []
+      }
+      console.debug = function () {
+        window.tcs_debug_log.push(Array.from(arguments).join())
+      }
+    }
+  }
+
   let error = null
   if (!config.mode) {
     config.mode = 'grid'
@@ -132,10 +145,6 @@ module.exports = function (public_key, config) {
     config.router_mode = 'hash'
   }
 
-  if (!config.console) {
-    config.console = console
-  }
-
   if (!config.element) {
     config.element = '#socket'
   }
@@ -162,6 +171,8 @@ module.exports = function (public_key, config) {
   const router = ConfiguredVueRouter(config)
 
   const ga_prefixes = init_ga(router, config)
+
+  console.debug('using config:', config)
 
   const v = new Vue({
     el: config.element,
@@ -191,7 +202,8 @@ module.exports = function (public_key, config) {
       }
     },
     watch: {
-      '$route' (to) {
+      '$route' (to, from) {
+        console.debug(`route change ${from.path} to ${to.path}`, from, to)
         if (this.config.mode === 'grid' && to.name === 'index') {
           this.get_contractor_list()
         }
@@ -209,9 +221,11 @@ module.exports = function (public_key, config) {
       },
       request (url, callback, expected_status, method, data) {
         const xhr = new window.XMLHttpRequest()
-        xhr.open(method || 'GET', url)
+        method = method || 'GET'
+        xhr.open(method, url)
         xhr.setRequestHeader('Accept', 'application/json')
         xhr.onload = () => {
+          console.debug(`request ${method} ${url} > ${xhr.status}`, data, xhr)
           try {
             if (xhr.status !== (expected_status || 200)) {
               throw Error(`bad response status ${xhr.status} not 200`)
@@ -326,6 +340,7 @@ ${xhr.responseText}`)
       ga_event (category, action, label) {
         /* istanbul ignore next */
         for (let prefix of ga_prefixes) {
+          console.debug('ga sending event', prefix, category, action, label)
           window.ga(prefix + 'send', 'event', category, action, label)
         }
       },
@@ -357,7 +372,6 @@ ${xhr.responseText}`)
   }
 
   window._tcs_grecaptcha_loaded = () => {
-    console.log('_tcs_grecaptcha_loaded', window.socket_view)
     for (let v of window.socket_view) {
       v.render_grecaptcha()
     }
