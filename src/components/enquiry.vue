@@ -14,7 +14,7 @@
           <tcs-input :field="field"></tcs-input>
         </div>
 
-        <div :id="grecaptcha_container_id" class="grecaptcha"></div>
+        <div :id="$root.grecaptcha_container_id" class="grecaptcha"></div>
         <div v-if="grecaptcha_missing" class="error-msg">
           {{ $root.get_text('grecaptcha_missing') }}
         </div>
@@ -61,8 +61,6 @@ export default {
   data: () => ({
     submitted: false,
     grecaptcha_missing: false,
-    grecaptcha_container_id: 'grecaptcha_' + Math.random().toString(36).substring(2, 10),
-    grecaptcha_id: null,
   }),
   methods: {
     submit () {
@@ -83,24 +81,15 @@ export default {
     },
     /* istanbul ignore next */
     prepare_grecaptcha () {
-      const grecaptcha_callback = response => this.$set(this.$root.enquiry_data, 'grecaptcha_response', response)
-
       if (this.$root.grecaptcha_key === null) {
-        grecaptcha_callback('-')
+        this.$root.grecaptcha_callback('-')
         return
       }
 
-      const render_grecaptcha = () => {
-        this.grecaptcha_id = window.grecaptcha.render(this.grecaptcha_container_id, {
-          sitekey: this.$root.grecaptcha_key,
-          callback: grecaptcha_callback
-        })
-      }
       if (window.grecaptcha === undefined) {
-        window._tcs_grecaptcha_loaded = render_grecaptcha
         add_script('https://www.google.com/recaptcha/api.js?onload=_tcs_grecaptcha_loaded&render=explicit')
       } else {
-        render_grecaptcha()
+        this.$root.render_grecaptcha()
       }
     }
   },

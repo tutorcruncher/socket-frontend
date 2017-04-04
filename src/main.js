@@ -163,7 +163,7 @@ module.exports = function (public_key, config) {
 
   const ga_prefixes = init_ga(router, config)
 
-  return new Vue({
+  const v = new Vue({
     el: config.element,
     router: router,
     render: h => h(app),
@@ -178,6 +178,7 @@ module.exports = function (public_key, config) {
       enquiry_form_info: {},
       enquiry_data: {},
       selected_subject_id: null,
+      grecaptcha_container_id: 'grecaptcha_' + Math.random().toString(36).substring(2, 10),
     },
     components: {
       app
@@ -328,9 +329,38 @@ ${xhr.responseText}`)
           window.ga(prefix + 'send', 'event', category, action, label)
         }
       },
+      grecaptcha_callback (response) {
+        Vue.set(this.enquiry_data, 'grecaptcha_response', response)
+      },
+      render_grecaptcha () {
+        const el = document.getElementById(this.grecaptcha_container_id)
+        if (el && el.childElementCount === 0) {
+          console.debug('rendering grecaptcha')
+          window.grecaptcha.render(this.grecaptcha_container_id, {
+            sitekey: this.grecaptcha_key,
+            callback: this.grecaptcha_callback
+          })
+        } else {
+          console.debug('not rendering grecaptcha', el)
+        }
+      },
+
       goto (name, params) {
         this.$router.push({'name': name, params: params})
       }
     }
   })
+  if (window.socket_view === undefined) {
+    window.socket_view = [v]
+  } else {
+    window.socket_view.push(v)
+  }
+
+  window._tcs_grecaptcha_loaded = () => {
+    console.log('_tcs_grecaptcha_loaded', window.socket_view)
+    for (let v of window.socket_view) {
+      v.render_grecaptcha()
+    }
+  }
+  return v
 }
