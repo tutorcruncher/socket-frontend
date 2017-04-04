@@ -19,7 +19,9 @@ const raven_config = {
   shouldSendCallback: data => {
     // if no culprit this a message and came from socket
     const culprit = data.culprit || '/socket.js'
-    return culprit.indexOf('/socket.js') > 0
+    const should_send = culprit.indexOf('/socket.js') > 0
+    console.debug('sending raven error', should_send, data)
+    return should_send
   }
 }
 Raven.config(process.env.RAVEN_DSN, raven_config).addPlugin(RavenVue, Vue).install()
@@ -135,6 +137,7 @@ module.exports = function (public_key, config) {
 
   if (config.url_root === 'auto') {
     config.url_root = auto_url_root(window.location.pathname)
+    console.debug('auto generated url root:', config.url_root)
   }
 
   if (!config.router_mode) {
@@ -203,7 +206,7 @@ module.exports = function (public_key, config) {
     },
     watch: {
       '$route' (to, from) {
-        console.debug(`route change ${from.path} to ${to.path}`, from, to)
+        console.debug(`navigated from ${from.path} to ${to.path}`, from, to)
         if (this.config.mode === 'grid' && to.name === 'index') {
           this.get_contractor_list()
         }
