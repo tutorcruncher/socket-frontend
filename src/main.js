@@ -30,15 +30,16 @@ Vue.use(VueRouter)
 
 const ConfiguredVueRouter = config => {
   const routes = []
+  const url_base = config.router_mode === 'history' ? config.url_root : '/'
   if (config.mode === 'grid') {
     routes.push(
       {
-        path: config.url_root + ':type(s|q)?/:link(\\d+-[\\w-]+)?',
+        path: url_base + ':type(s|q)?/:link(\\d+-[\\w-]+)?',
         name: 'index',
         component: grid,
         children: [
           {
-            path: config.url_root + ':link(\\d+-[\\w-]+)',
+            path: url_base + ':link(\\d+-[\\w-]+)',
             name: 'con-modal',
             component: con_modal,
           }
@@ -48,7 +49,7 @@ const ConfiguredVueRouter = config => {
   } else if (config.mode === 'enquiry') {
     routes.push(
       {
-        path: config.url_root,
+        path: url_base,
         name: 'index',
         component: enquiry,
       },
@@ -56,12 +57,12 @@ const ConfiguredVueRouter = config => {
   } else if (config.mode === 'enquiry-modal') {
     routes.push(
       {
-        path: config.url_root,
+        path: url_base,
         name: 'index',
         component: enquiry_button,
         children: [
           {
-            path: config.url_root + 'enquiry',
+            path: url_base + 'enquiry',
             name: 'enquiry-modal',
             component: enquiry_modal,
           }
