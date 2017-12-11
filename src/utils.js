@@ -6,7 +6,7 @@ marked.setOptions({
   smartLists: true,
 })
 
-const to_markdown = t => {
+export const to_markdown = t => {
   if (t === null || t === undefined) {
     return ''
   } else {
@@ -14,7 +14,7 @@ const to_markdown = t => {
   }
 }
 
-const clean = obj => {
+export const clean = obj => {
   let new_obj = {}
   for (let [k, v] of Object.entries(obj)) {
     if (typeof v === 'object') {
@@ -26,7 +26,7 @@ const clean = obj => {
   return new_obj
 }
 
-const auto_url_root = path => {
+export const auto_url_root = path => {
   // remove :
   // * contractor slug
   // * /enquiry
@@ -34,14 +34,14 @@ const auto_url_root = path => {
   return path
 }
 
-const add_script = url => {
+export const add_script = url => {
   const s = document.createElement('script')
   s.async = true
   s.src = url
   document.body.appendChild(s)
 }
 
-const init_ga = (router, config) => {
+export const google_analytics = (history, config) => {
   const ga_prefixes = []
   const tcs_ga_name = `${config.mode.replace('-', '')}tcs`
   ga_prefixes.push(tcs_ga_name + '.')
@@ -65,19 +65,12 @@ const init_ga = (router, config) => {
   }
   window._tcs_ga = true
 
-  let initial_load = true
-  router.afterEach(to => {
-    // we don't submit the first router callback as this is the page load and is covered by above or their ga
-    if (!initial_load) {
-      for (let prefix of ga_prefixes) {
-        window.ga(prefix + 'set', 'page', to.fullPath)
-        window.ga(prefix + 'send', 'pageview')
-      }
+  history.listen(loc => {
+    for (let prefix of ga_prefixes) {
+      window.ga(prefix + 'set', 'page', loc.pathname)
+      window.ga(prefix + 'send', 'pageview')
     }
-    initial_load = false
   })
 
   return ga_prefixes
 }
-
-export {to_markdown, clean, auto_url_root, add_script, init_ga}

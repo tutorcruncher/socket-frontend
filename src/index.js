@@ -2,8 +2,9 @@ import Raven from 'raven-js'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './main.scss'
-import App from './App'
-import {to_markdown, clean, auto_url_root, init_ga} from './utils'
+import App from './components/App'
+import {BrowserRouter as Router} from 'react-router-dom'
+import {auto_url_root} from './utils'
 
 const raven_config = {
   release: process.env.RELEASE,
@@ -67,9 +68,8 @@ window.socket = function (public_key, config) {
     error = `invalid mode "${config.mode}", options are: ${MODES.join(', ')}`
     config.mode = 'grid'
   }
-
   if (!config.api_root) {
-    config.api_root = process.env.SOCKET_API_URL
+    config.api_root = process.env.REACT_APP_SOCKET_API_URL
   }
 
   if (!config.url_root) {
@@ -117,10 +117,9 @@ window.socket = function (public_key, config) {
     }
   }
 
-  // const ga_prefixes = init_ga(router, config)
-
   console.debug('using config:', config)
 
-  ReactDOM.render(<App />, el)
-  // return v
+  const v = ReactDOM.render(<Router><App error={error} public_key={public_key} config={config}/></Router>, el)
+  // TODO provide a better object here?
+  return v
 }
