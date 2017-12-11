@@ -1,19 +1,19 @@
 language: node_js
 
 node_js:
-- 6.9
+- 8
 
 cache:
+  yarn: true
   directories:
   - node_modules
 
 install:
-- npm install
+- yarn
 
-script:
-- npm test
-- npm run lint
-- npm run build
+- yarn lint
+- yarn test -- --coverage
+- yarn build
 
 after_success:
 - ls -lha
