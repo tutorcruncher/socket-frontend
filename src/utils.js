@@ -74,3 +74,52 @@ export const google_analytics = (history, config) => {
 
   return ga_prefixes
 }
+
+
+async function request (app, path, send_data, method, expected_statuses) {
+  let url = `${app.props.config.api_root}/${app.props.public_key}/${path}`
+
+  if (Number.isInteger(expected_statuses)) {
+    expected_statuses = [expected_statuses]
+  } else {
+    expected_statuses = expected_statuses || [200]
+  }
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    const on_error = msg => {
+      console.error('request error', msg, url, xhr)
+      reject(msg)
+      app.setStateMounted({error: msg})
+    }
+    xhr.open(method, url)
+    xhr.setRequestHeader('Accept', 'application/json')
+    xhr.onload = () => {
+      if (expected_statuses.includes(xhr.status)) {
+        resolve(JSON.parse(xhr.responseText))
+      } else {
+        on_error(`wrong response code ${xhr.status}`)
+      }
+    }
+    xhr.onerror = () => on_error(`${xhr.statusText}: ${xhr.status}`)
+    xhr.send(send_data)
+  })
+}
+
+export const requests = {
+  get: async (app, path, args) => {
+    if (args) {
+      const arg_list = []
+      for (let [name, value] of Object.entries(args)) {
+        if (value !== null) {
+          arg_list.push(encodeURIComponent(name) + '=' + encodeURIComponent(value))
+        }
+      }
+      if (arg_list.length > 0) {
+        path += '?' + arg_list.join('&')
+      }
+    }
+    return await request(app, path, null, 'GET')
+  },
+  post: async (app, path, data) => await request(app, path, data, 'POST')
+}

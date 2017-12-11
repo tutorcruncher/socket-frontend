@@ -40,20 +40,11 @@
   }
   .close {
     float: right;
-    font-size: 26px;
-    text-decoration: none;
-    color: #888 !important;
-    transition: all .3s ease;
-    padding: 5px;
-    &:hover {
-      color: black !important;
-    }
   }
 }
 
 // auto applied:
-
-.tcs-modal-trans-enter, .tcs-modal-trans-leave-to {
+.tcs-modal-trans-appear, .tcs-modal-trans-leave {
   opacity: 0;
   .tcs-modal {
     transform: translate(0, 40px);

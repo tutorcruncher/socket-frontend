@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import {Route, Switch, withRouter} from 'react-router-dom'
-import {google_analytics} from '../utils'
+import {google_analytics, requests} from '../utils'
 import Error from './Error'
 import Grid from './Grid'
-import ConModal from './ConModal'
+import ConDetails from './ConDetails'
 
 class App extends Component {
   constructor (props) {
@@ -13,14 +13,21 @@ class App extends Component {
       error: props.error,
       contractors: []
     }
-    this.request = this.request.bind(this)
     this.setStateMounted = this.setStateMounted.bind(this)
     this.get_contractors = this.get_contractors.bind(this)
+    this.requests = {
+      get: async (path, args) => requests.get(this, path, args),
+      post: async (path, data) => requests.post(this, path, data),
+    }
   }
 
   async componentDidMount () {
     this._ismounted = true
     await this.get_contractors()
+  }
+
+  componentWillUnmount () {
+    this._ismounted = false
   }
 
   setStateMounted (s) {
@@ -35,55 +42,10 @@ class App extends Component {
     //     this.$set(this, 'selected_subject_id', null)
     //   }
     // }
-    const args = {subject: null}  // TODO {subject: this.selected_subject_id}
+    // const args = {subject: this.selected_subject_id}
 
-    const contractors = await this.request('contractors', args)
+    const contractors = await this.requests.get('contractors')
     this.setStateMounted({contractors})
-  }
-
-  async request (path, data, method, expected_statuses) {
-    let url = `${this.props.config.api_root}/${this.props.public_key}/${path}`
-    method = method || 'GET'
-    let send_data = null
-    if (method === 'GET' && data) {
-      const arg_list = []
-      for (let [name, value] of Object.entries(data)) {
-        if (value !== null) {
-          arg_list.push(encodeURIComponent(name) + '=' + encodeURIComponent(value))
-        }
-      }
-      if (arg_list.length > 0) {
-        url += '?' + arg_list.join('&')
-      }
-    } else if (data) {
-      send_data = data
-    }
-
-    if (Number.isInteger(expected_statuses)) {
-      expected_statuses = [expected_statuses]
-    } else {
-      expected_statuses = expected_statuses || [200]
-    }
-
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest()
-      const on_error = msg => {
-        console.error('request error', msg, url, xhr)
-        reject(msg)
-        this.setStateMounted({error: msg})
-      }
-      xhr.open(method, url)
-      xhr.setRequestHeader('Accept', 'application/json')
-      xhr.onload = () => {
-        if (expected_statuses.includes(xhr.status)) {
-          resolve(JSON.parse(xhr.responseText))
-        } else {
-          on_error(`wrong response code ${xhr.status}`)
-        }
-      }
-      xhr.onerror = () => on_error(`${xhr.statusText}: ${xhr.status}`)
-      xhr.send(send_data)
-    })
   }
 
   render () {
@@ -96,7 +58,9 @@ class App extends Component {
 
         <Switch>
           <Route path="/:id([0-9]+):_extra" render={props => (
-            <ConModal id={props.match.params.id}/>
+            <ConDetails id={props.match.params.id}
+                        contractors={this.state.contractors}
+                        history={props.history}/>
           )}/>
         </Switch>
       </div>

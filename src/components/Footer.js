@@ -1,10 +1,10 @@
-<template>
-  <div class="tcs-footer">
-    <a href="https://tutorcruncher.com" target="blank" class="tcs-footer">
-      <!--
-      taken and modified (compressed path) from
-      https://github.com/samuelcolvin/TutorCruncher-branding/blob/master/dino-flat.svg
-      -->
+import React from 'react'
+
+// taken and modified (compressed path) from
+// https://github.com/samuelcolvin/TutorCruncher-branding/blob/master/dino-flat.svg
+const Footer = () => (
+  <div className="tcs-footer">
+    <a href="https://tutorcruncher.com" target="blank" className="tcs-footer">
       <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
         <g transform="translate(524,-293)">
           <path d="m 64,1157 c 0,-21 -1,-33 -9,-85 -5,-33 -9,-61 -9,-62 0,-4 -4,-1 -19,12 l -15,14 -53,0 -53,
@@ -21,8 +21,5 @@
       Powered by TutorCruncher
     </a>
   </div>
-</template>
-
-<script>
-export default {}
-</script>
+)
+export default Footer

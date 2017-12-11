@@ -1,12 +1,12 @@
 import React from 'react'
 
-const Error = props => (
+const Error = ({children}) => (
   <div className="tcs-errors">
     <h2>Error</h2>
     <p>
       An error occurred with TutorCruncher socket:
     </p>
-    <p className="tcs-error-content">{props.children}</p>
+    <p className="tcs-error-content">{children}</p>
     <dl>
       <dt>If you're visiting this site:</dt>
       <dd>
