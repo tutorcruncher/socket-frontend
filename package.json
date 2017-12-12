@@ -1,6 +1,6 @@
 {
   "name": "tutorcruncher-socket",
-  "version": "0.0.16",
+  "version": "1.0.0",
   "description": "TutorCruncher socket",
   "author": "Samuel Colvin <samuel@tutorcruncher.com>",
   "private": false,
@@ -16,6 +16,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "dist": "node ./dist.js",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint src",
@@ -37,6 +38,7 @@
     "react-scripts": "1.0.17",
     "react-transition-group": "1.x",
     "sass-loader": "^6.0.6",
+    "shelljs": "^0.7.8",
     "webpack": "^3.10.0"
   }
 }

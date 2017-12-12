@@ -7,7 +7,7 @@ import {BrowserRouter as Router} from 'react-router-dom'
 import {auto_url_root} from './utils'
 
 const raven_config = {
-  release: process.env.RELEASE,
+  release: process.env.REACT_APP_RELEASE,
   tags: {
     host: window.location.host,
   },
@@ -19,7 +19,7 @@ const raven_config = {
     return should_send
   }
 }
-Raven.config(process.env.RAVEN_DSN, raven_config).install()
+Raven.config(process.env.REACT_APP_RAVEN_DSN, raven_config).install()
 
 // TODO these need a consist prefix
 const STRINGS = {
