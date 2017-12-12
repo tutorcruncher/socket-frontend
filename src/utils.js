@@ -77,7 +77,10 @@ export const google_analytics = (history, config) => {
 
 
 async function request (app, path, send_data, method, expected_statuses) {
-  let url = `${app.props.config.api_root}/${app.props.public_key}/${path}`
+  let url = path
+  if (!url.startsWith('http')) {
+    url = `${app.props.config.api_root}/${app.props.public_key}/${path}`
+  }
 
   if (Number.isInteger(expected_statuses)) {
     expected_statuses = [expected_statuses]
@@ -123,3 +126,5 @@ export const requests = {
   },
   post: async (app, path, data) => await request(app, path, data, 'POST')
 }
+
+export const async_start = (f, ...args) => setTimeout(async () => f(...args), 0)
