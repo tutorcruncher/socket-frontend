@@ -55,6 +55,20 @@ export const IfElse = ({v, children}) => {
   }
 }
 
+export const Switch = ({children}) => {
+  if (children[0].props.if) {
+    return children[0]
+  }
+  console.log(children, children.slice(1, children.length - 1))
+  for (let c of children.slice(1, children.length - 1)) {
+    if (c.props.elseif || c.props.if) {
+      return c
+    }
+  }
+  return children[children.length - 1]
+}
+
+
 export const If = ({v, children}) => {
   if (v) {
     return children

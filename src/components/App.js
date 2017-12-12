@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Route, Switch, withRouter} from 'react-router-dom'
-import {google_analytics, requests, to_markdown, async_start} from '../utils'
+import {google_analytics, requests, async_start} from '../utils'
 import Error from './Error'
 import Grid from './Grid'
 import ConModal from './ConModal'
@@ -11,13 +11,17 @@ class App extends Component {
     this.ga_prefixes = google_analytics(props.history, props.config)
     this.state = {
       error: props.error,
-      contractors: []
+      contractors: [],
     }
     this.setStateMounted = this.setStateMounted.bind(this)
     this.get_contractors = this.get_contractors.bind(this)
     this.get_text = this.get_text.bind(this)
+
     this.get_contractor_details = this.get_contractor_details.bind(this)
     this.set_contractor_details = this.set_contractor_details.bind(this)
+
+    this.get_enquiry = this.get_enquiry.bind(this)
+    this.set_enquiry = this.set_enquiry.bind(this)
     this.requests = {
       get: async (path, args) => requests.get(this, path, args),
       post: async (path, data) => requests.post(this, path, data),
@@ -65,16 +69,24 @@ class App extends Component {
     this.setStateMounted({[state_ref]: await this.requests.get(url)})
   }
 
-  get_text (name, replacements, is_markdown) {
+  get_text (name, replacements) {
     let s = this.props.config.messages[name]
     for (let [k, v] of Object.entries(replacements || {})) {
       s = s.replace(`{${k}}`, v)
     }
-    if (is_markdown) {
-      return to_markdown(s)
-    } else {
-      return s
+    return s
+  }
+
+  get_enquiry () {
+    if (this.state.enquiry_form_info === undefined) {
+      async_start(this.set_enquiry)
     }
+    return this.state.enquiry_form_info
+  }
+
+  async set_enquiry () {
+    this.setStateMounted({enquiry_form_info: null})
+    this.setStateMounted({enquiry_form_info: await this.requests.get('enquiry')})
   }
 
   render () {
@@ -89,8 +101,8 @@ class App extends Component {
           <Route path="/:id([0-9]+):_extra" render={props => (
             <ConModal id={props.match.params.id}
                       contractors={this.state.contractors}
-                      get_text={this.get_text}
-                      get_contractor_details={this.get_contractor_details}
+                      root={this}
+                      config={this.props.config}
                       history={props.history}/>
           )}/>
         </Switch>

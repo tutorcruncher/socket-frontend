@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Modal from './Modal'
 import {Location, IfElse} from './Tools'
 import ConDetails from './ConDetails'
+import Enquiry from './Enquiry'
 
 class ConModal extends Component {
   constructor (props) {
@@ -16,7 +17,7 @@ class ConModal extends Component {
   get_contractor () {
     for (let contractor of this.props.contractors) {
       if (contractor.id === this.con_id) {
-        return {contractor, contractor_extra: this.props.get_contractor_details(contractor)}
+        return {contractor, contractor_extra: this.props.root.get_contractor_details(contractor)}
       }
     }
   }
@@ -44,10 +45,10 @@ class ConModal extends Component {
 
             <IfElse v={this.state.show_enquiry}>
               <button onClick={() => this.setState({show_enquiry: false})}>
-                {this.props.get_text('contractor_details_button', {contractor_name: contractor.name})}
+                {this.props.root.get_text('contractor_details_button', {contractor_name: contractor.name})}
               </button>
               <button onClick={() => this.setState({show_enquiry: true})}>
-                {this.props.get_text('contractor_enquiry_button', {contractor_name: contractor.name})}
+                {this.props.root.get_text('contractor_enquiry_button', {contractor_name: contractor.name})}
               </button>
             </IfElse>
           </div>
@@ -56,11 +57,11 @@ class ConModal extends Component {
             <div className="tcs-scroll">
               {/*<transition name="tcs-squeeze" mode="out-in">*/}
               <IfElse v={this.state.show_enquiry}>
-                <div>enquiry form</div>
+                <Enquiry contractor={contractor} root={this.props.root} config={this.props.config}/>
 
                 <ConDetails contractor={contractor}
                             contractor_extra={contractor_extra}
-                            get_text={this.props.get_text}/>
+                            get_text={this.props.root.get_text}/>
               </IfElse>
             </div>
           </div>

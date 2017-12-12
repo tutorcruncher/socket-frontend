@@ -116,10 +116,16 @@ window.socket = function (public_key, config) {
       config.messages[k] = STRINGS[k]
     }
   }
+  config.random_id = Math.random().toString(36).substring(2, 10)
+  config.grecaptcha_key = process.env.REACT_APP_GRECAPTCHA_KEY
 
   console.debug('using config:', config)
 
   const v = ReactDOM.render(<Router><App error={error} public_key={public_key} config={config}/></Router>, el)
   // TODO provide a better object here?
+
+  window._tcs_grecaptcha_loaded = () => (
+    document.dispatchEvent(new Event('_tcs_grecaptcha_loaded'))
+  )
   return v
 }
