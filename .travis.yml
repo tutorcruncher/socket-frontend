@@ -17,6 +17,7 @@ script:
 - yarn build
 
 after_success:
+- yarn dist
 - ls -lha
 - bash <(curl -s https://codecov.io/bash)
 

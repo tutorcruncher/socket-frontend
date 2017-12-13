@@ -22,9 +22,11 @@ class App extends Component {
 
     this.get_enquiry = this.get_enquiry.bind(this)
     this.set_enquiry = this.set_enquiry.bind(this)
+
+    this.ga_event = this.ga_event.bind(this)
     this.requests = {
-      get: async (path, args) => requests.get(this, path, args),
-      post: async (path, data) => requests.post(this, path, data),
+      get: async (...args) => requests.get(this, ...args),
+      post: async (...args) => requests.post(this, ...args),
     }
   }
 
@@ -87,6 +89,14 @@ class App extends Component {
   async set_enquiry () {
     this.setStateMounted({enquiry_form_info: null})
     this.setStateMounted({enquiry_form_info: await this.requests.get('enquiry')})
+  }
+
+  ga_event (category, action, label) {
+    /* istanbul ignore next */
+    for (let prefix of this.ga_prefixes) {
+      console.debug('ga sending event', prefix, category, action, label)
+      window.ga(prefix + 'send', 'event', category, action, label)
+    }
   }
 
   render () {

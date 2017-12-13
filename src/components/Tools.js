@@ -44,10 +44,11 @@ export const Location = () => (
   </svg>
 )
 
+export const If = ({v, children}) => (v ? children : <div/>)
+
 export const IfElse = ({v, children}) => {
   if (children.length !== 2) {
-    console.error(`IfElse should receive 2 children, not ${children.length}`)
-    return <div/>
+    return <div style={{color: 'red'}}>{`IfElse should receive 2 children, not ${children.length}`}</div>
   } else if (v) {
     return children[0]
   } else {
@@ -56,25 +57,13 @@ export const IfElse = ({v, children}) => {
 }
 
 export const Switch = ({children}) => {
-  if (children[0].props.if) {
-    return children[0]
-  }
-  console.log(children, children.slice(1, children.length - 1))
-  for (let c of children.slice(1, children.length - 1)) {
-    if (c.props.elseif || c.props.if) {
-      return c
+  // All but the last child of a Switch component must be "If" components
+  for (let c of children.slice(0, children.length - 1)) {
+    if (c.props.v) {
+      return c.props.children
     }
   }
   return children[children.length - 1]
-}
-
-
-export const If = ({v, children}) => {
-  if (v) {
-    return children
-  } else {
-    return <div/>
-  }
 }
 
 export const Markdown = ({content}) => (

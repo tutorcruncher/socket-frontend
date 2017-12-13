@@ -14,18 +14,6 @@ export const to_markdown = t => {
   }
 }
 
-export const clean = obj => {
-  let new_obj = {}
-  for (let [k, v] of Object.entries(obj)) {
-    if (typeof v === 'object') {
-      new_obj[k] = clean(v)
-    } else if (v !== null && v !== undefined && v !== '') {
-      new_obj[k] = v
-    }
-  }
-  return new_obj
-}
-
 export const auto_url_root = path => {
   // remove :
   // * contractor slug
@@ -75,6 +63,17 @@ export const google_analytics = (history, config) => {
   return ga_prefixes
 }
 
+const clean = obj => {
+  let new_obj = {}
+  for (let [k, v] of Object.entries(obj)) {
+    if (typeof v === 'object') {
+      new_obj[k] = clean(v)
+    } else if (v !== null && v !== undefined && v !== '') {
+      new_obj[k] = v
+    }
+  }
+  return new_obj
+}
 
 async function request (app, path, send_data, method, expected_statuses) {
   let url = path
@@ -86,6 +85,9 @@ async function request (app, path, send_data, method, expected_statuses) {
     expected_statuses = [expected_statuses]
   } else {
     expected_statuses = expected_statuses || [200]
+  }
+  if (send_data) {
+    send_data = JSON.stringify(clean(send_data))
   }
 
   return new Promise((resolve, reject) => {
@@ -99,7 +101,16 @@ async function request (app, path, send_data, method, expected_statuses) {
     xhr.setRequestHeader('Accept', 'application/json')
     xhr.onload = () => {
       if (expected_statuses.includes(xhr.status)) {
-        resolve(JSON.parse(xhr.responseText))
+        const data = JSON.parse(xhr.responseText)
+        if (expected_statuses.length === 1) {
+          resolve(data)
+        } else {
+          resolve({
+            xhr: xhr,
+            status: xhr.status,
+            data: data
+          })
+        }
       } else {
         on_error(`wrong response code ${xhr.status}`)
       }
@@ -124,7 +135,7 @@ export const requests = {
     }
     return await request(app, path, null, 'GET')
   },
-  post: async (app, path, data) => await request(app, path, data, 'POST')
+  post: async (app, path, data, expected_statuses) => await request(app, path, data, 'POST', expected_statuses || 201)
 }
 
 export const async_start = (f, ...args) => setTimeout(async () => f(...args), 0)

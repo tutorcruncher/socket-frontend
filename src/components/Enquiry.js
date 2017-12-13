@@ -8,12 +8,15 @@ class Enquiry extends Component {
     super(props)
     this.state = {
       submitted: false,
+      error: false,
       grecaptcha_missing: false,
-      grecaptcha_response: null,
+      enquiry_data: {},
     }
     this.mode = this.props.mode || 'vanilla'
     this.grecaptcha_container_id = 'grecaptcha_' + this.props.root.random_id
     this.render_grecaptcha = this.render_grecaptcha.bind(this)
+    this.submit = this.submit.bind(this)
+    this.set_enquiry_data = this.set_enquiry_data.bind(this)
   }
 
   componentDidMount () {
@@ -28,64 +31,82 @@ class Enquiry extends Component {
       add_script('https://www.google.com/recaptcha/api.js?onload=_tcs_grecaptcha_loaded&render=explicit')
       document.addEventListener('_tcs_grecaptcha_loaded', () => this.render_grecaptcha(), false)
     } else {
-      this.render_grecaptcha()
+      setTimeout(this.render_grecaptcha, 50)
     }
   }
 
-  submit () {
-    if (window.grecaptcha && !this.$root.enquiry_data.grecaptcha_response) {
-      this.grecaptcha_missing = true
+  async submit (e) {
+    e.preventDefault()
+    if (!this.state.enquiry_data.grecaptcha_response) {
+      this.setState({grecaptcha_missing: true})
       return
     }
 
-    if (this.contractor !== null) {
-      this.$set(this.$root.enquiry_data, 'contractor', this.contractor.id)
+    const enquiry_form_info = this.props.root.get_enquiry()
+    const data = Object.assign(enquiry_form_info.hidden, this.state.enquiry_data)
+    data.upstream_http_referrer = document.referrer
+    if (this.props.contractor) {
+      data.contractor = this.props.contractor.id
     }
-    this.$set(this.$root.enquiry_data, 'upstream_http_referrer', document.referrer)
-    this.$root.submit_enquiry(this.submission_complete)
-    this.$root.ga_event('enquiry-form', 'submitted', this.mode)
+
+    const r = await this.props.root.requests.post('enquiry', this.state.enquiry_data, [201, 400])
+    if (r.status === 201) {
+      this.props.root.ga_event('enquiry-form', 'submitted', this.mode)
+      this.setState({submitted: true})
+    } else {
+      console.warn('Invalid form:', r)
+      this.setState({error: true})
+    }
   }
 
   render_grecaptcha () {
     const el = document.getElementById(this.grecaptcha_container_id)
     if (el && el.childElementCount === 0) {
       console.debug('rendering grecaptcha')
-      console.log(this.props.config)
       window.grecaptcha.render(this.grecaptcha_container_id, {
         sitekey: this.props.config.grecaptcha_key,
-        callback: response => this.setState({grecaptcha_response: response})
+        callback: response => this.set_enquiry_data('grecaptcha_response', response)
       })
     } else {
-      console.debug('not rendering grecaptcha', el)
+      console.warn('not rendering grecaptcha', el)
     }
+  }
+
+  set_enquiry_data (name, value) {
+    const enq_data = Object.assign({}, this.state.enquiry_data)
+    enq_data[name] = value
+    this.setState({enquiry_data: enq_data})
   }
 
   render () {
     const enquiry_form_info = this.props.root.get_enquiry()
-    console.log(enquiry_form_info)
     const visible_fields = enquiry_form_info && enquiry_form_info.visible ? enquiry_form_info.visible : []
-    // const attribute_fields = this.$root.enquiry_form_info.attributes || []
-    const ismodal = this.mode.includes('modal')
     const get_text = this.props.root.get_text
     return (
       <div className="tcs-enquiry">
         <IfElse v={this.state.submitted}>
           <div className="tcs-submitted" v-if="submitted">
-            <IfElse v={ismodal}>
-              <Markdown content={get_text('enquiry_modal_submitted_thanks', {})}/>
-              <Markdown content={get_text('enquiry_submitted_thanks', {})}/>
-            </IfElse>
+            <Markdown content={
+              get_text(this.mode.includes('modal') ? 'enquiry_modal_submitted_thanks' : 'enquiry_submitted_thanks')
+            }/>
           </div>
-
+          {/*else:*/}
           <div>
             <IfElse v={this.props.contractor}>
               <Markdown content={get_text('contractor_enquiry', {contractor_name: this.props.contractor.name})}/>
               <Markdown content={get_text('enquiry', {})}/>
             </IfElse>
 
-            <form className="tcs" onSubmit={e => e.preventDefault()}>
+            <form className="tcs" onSubmit={this.submit}>
+              <If v={this.state.error}>
+                <div className="error-msg">Enquiry form invalid</div>
+              </If>
               {visible_fields.map((field, i) => (
-                <Input key={i} field={field} get_text={this.props.root.get_text}/>
+                <Input key={i}
+                       field={field}
+                       get_text={get_text}
+                       enquiry_data={this.state.enquiry_data}
+                       set_enquiry_data={this.set_enquiry_data}/>
               ))}
 
               <div id={this.grecaptcha_container_id} className="grecaptcha"/>
