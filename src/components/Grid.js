@@ -1,33 +1,55 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
+import Select from 'react-select'
+import 'react-select/dist/react-select.css'
+import { async_start } from '../utils'
 
 class Grid extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      description: '',
-    }
+  state = {
+    subjects: [],
+    selected_subject: '',
+  }
+  subject_change = (selected_subject) => {
+    this.setState({ selected_subject })
+    this.props.get_contractors(selected_subject && selected_subject.id)
   }
 
-  componentDidMount () {
-    // if (this.$root.selected_subject_id) {
-    //   const msg_id_suffix = this.props.contractors.length === 1 ? 'single' : 'plural'
-    //   const subject = this.$root.get_selected_subject()
-    //   return this.$root.get_text('subject_filter_summary_' + msg_id_suffix, {
-    //     count: this.$root.contractors.length,
-    //     subject: subject && subject.name,
-    //   })
-    // }
+  get_subjects = async () => {
+    if (this.state.subjects.length > 0) {
+      return
+    }
+    this.setState({subjects: await this.props.requests.get('subjects')})
+  }
+
+  async componentDidMount () {
+    async_start(this.get_subjects)
   }
 
   render () {
+    let description = ''
+    if (this.state.selected_subject) {
+      const msg_id_suffix = this.props.contractors.length === 1 ? 'single' : 'plural'
+      description = this.props.get_text('subject_filter_summary_' + msg_id_suffix, {
+        count: this.props.contractors.length,
+        subject: this.state.selected_subject.name,
+      })
+    }
     return (
       <div className="tcs-grid">
         {this.props.config.subject_filter &&
         <div>
-          {/*<subject_select className="subject-select"></subject_select>*/}
+
+          <div className="subject-select">
+            <Select
+              name="form-field-name"
+              value={this.state.selected_subject && this.state.selected_subject.id}
+              onChange={this.subject_change}
+              labelKey='name'
+              valueKey='id'
+              options={this.state.subjects}/>
+          </div>
           <div className="tcs-summary">
-            {this.state.description}
+            {description}
           </div>
         </div>
         }

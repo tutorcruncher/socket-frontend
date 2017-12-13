@@ -63,7 +63,7 @@
   opacity: 1;
   transform: translate(0, 0);
   &.leave {
-    opacity: 0.2;
+    opacity: 0;
     transform: translate(0, -10px);
   }
 }

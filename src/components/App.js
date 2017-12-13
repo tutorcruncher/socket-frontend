@@ -44,18 +44,11 @@ class App extends Component {
     this._ismounted && this.setState(s)
   }
 
-  async get_contractors () {
-    // if (this.$route.name === 'index') {
-    //   if (this.$route.params.type === 's' && this.$route.params.link) {
-    //     this.$set(this, 'selected_subject_id', parseInt(this.$route.params.link.match(/\d+/)[0]))
-    //   } else {
-    //     this.$set(this, 'selected_subject_id', null)
-    //   }
-    // }
-    // const args = {subject: this.selected_subject_id}
-
-    const contractors = await this.requests.get('contractors')
-    this.setStateMounted({contractors, got_contractors: true})
+  async get_contractors (subject_id) {
+    this.setStateMounted({
+      contractors: await this.requests.get('contractors', {subject: subject_id || null}),
+      got_contractors: true
+    })
   }
 
   get_contractor_details (con) {
@@ -106,7 +99,11 @@ class App extends Component {
     }
     return (
       <div className="tcs-app">
-        <Grid config={this.props.config} contractors={this.state.contractors}/>
+        <Grid config={this.props.config}
+              contractors={this.state.contractors}
+              get_contractors={this.get_contractors}
+              get_text={this.get_text}
+              requests={this.requests}/>
 
         <Switch>
           <Route path="/:id([0-9]+):_extra" render={props => (

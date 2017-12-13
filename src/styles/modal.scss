@@ -8,7 +8,6 @@
   width: 100%;
   height: 100%;
   background-color: rgba($back-colour, $back-colour, $back-colour, .6);
-  transition: opacity .3s ease;
 }
 
 .tcs-modal {
@@ -19,7 +18,6 @@
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
-  transition: all .3s ease;
   @media(max-width: 908px) {
     margin: 10px 4px 0;
     padding: 10px;
@@ -44,9 +42,35 @@
 }
 
 // auto applied:
-.tcs-modal-trans-appear, .tcs-modal-trans-leave {
+.tcs-modal-trans-appear {
   opacity: 0;
   .tcs-modal {
     transform: translate(0, 40px);
   }
 }
+
+.tcs-modal-trans-appear.tcs-modal-trans-appear-active {
+  opacity: 1;
+  transition: all .3s ease;
+  .tcs-modal {
+    transition: all .3s ease;
+    transform: translate(0, 0);
+  }
+}
+
+.tcs-modal-trans-leave {
+  opacity: 1;
+  transition: all .3s ease;
+  .tcs-modal {
+    transition: all .3s ease;
+    transform: translate(0, 0);
+  }
+}
+
+.tcs-modal-trans-leave.tcs-modal-trans-leave-active {
+  opacity: 0;
+  .tcs-modal {
+    transform: translate(0, 40px);
+  }
+}
+

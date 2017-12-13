@@ -89,7 +89,7 @@ function request (app, path, send_data, method, expected_statuses) {
   if (send_data) {
     send_data = JSON.stringify(clean(send_data))
   }
-
+  // await sleep(2000)
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     const on_error = msg => {
