@@ -12,6 +12,7 @@ class App extends Component {
     this.state = {
       error: props.error,
       contractors: [],
+      got_contractors: false,
     }
     this.setStateMounted = this.setStateMounted.bind(this)
     this.get_contractors = this.get_contractors.bind(this)
@@ -54,7 +55,7 @@ class App extends Component {
     // const args = {subject: this.selected_subject_id}
 
     const contractors = await this.requests.get('contractors')
-    this.setStateMounted({contractors})
+    this.setStateMounted({contractors, got_contractors: true})
   }
 
   get_contractor_details (con) {
@@ -111,6 +112,7 @@ class App extends Component {
           <Route path="/:id([0-9]+):_extra" render={props => (
             <ConModal id={props.match.params.id}
                       contractors={this.state.contractors}
+                      got_contractors={this.state.got_contractors}
                       root={this}
                       config={this.props.config}
                       history={props.history}/>

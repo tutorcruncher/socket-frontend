@@ -59,13 +59,11 @@
   }
 }
 
-// auto applied:
-
-.tcs-squeeze-enter-active, .tcs-squeeze-leave-active {
-  transition: all .3s ease-out;
-}
-
-.tcs-squeeze-enter, .tcs-squeeze-leave-to {
-  opacity: 0;
-  transform: translate(0, -20px);
+.con-modal-transition {
+  opacity: 1;
+  transform: translate(0, 0);
+  &.leave {
+    opacity: 0.2;
+    transform: translate(0, -10px);
+  }
 }

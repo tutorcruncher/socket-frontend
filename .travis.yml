@@ -14,13 +14,12 @@ install:
 script:
 - yarn lint
 - yarn test -- --coverage
-- yarn build
+- yarn dist
+- ls -lhaR dist/
 
 after_success:
 - ls -lha
 - bash <(curl -s https://codecov.io/bash)
-- yarn dist
-- ls -lhaR dist/
 
 deploy:
 # deploying to cdn.tutorcruncher.com/socket/

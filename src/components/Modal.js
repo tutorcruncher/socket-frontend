@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { CSSTransitionGroup } from 'react-transition-group'
-import {Cross, Footer}  from './Tools'
+import { Cross, Footer }  from './Tools'
 
 const stop = e => e.stopPropagation()
 

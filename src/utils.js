@@ -75,7 +75,7 @@ const clean = obj => {
   return new_obj
 }
 
-async function request (app, path, send_data, method, expected_statuses) {
+function request (app, path, send_data, method, expected_statuses) {
   let url = path
   if (!url.startsWith('http')) {
     url = `${app.props.config.api_root}/${app.props.public_key}/${path}`

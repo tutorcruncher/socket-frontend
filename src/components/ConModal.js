@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
 import Modal from './Modal'
-import {Location, IfElse} from './Tools'
+import { Location, IfElse } from './Tools'
 import ConDetails from './ConDetails'
 import Enquiry from './Enquiry'
+
+const TRANSITION_TIME = 500
 
 class ConModal extends Component {
   constructor (props) {
     super(props)
     this.con_id = parseInt(this.props.id, 10)
-    this.get_contractor = this.get_contractor.bind(this)
     this.state = {
       show_enquiry: false,
+      transition_class: ''
     }
+    this.get_contractor = this.get_contractor.bind(this)
+    this.switch_view = this.switch_view.bind(this)
   }
 
   get_contractor () {
@@ -22,7 +26,21 @@ class ConModal extends Component {
     }
   }
 
+  switch_view () {
+    this.setState({transition_class: ' leave'})
+    setTimeout(() => {
+      this.setState({show_enquiry: !this.state.show_enquiry, transition_class: ''})
+    }, TRANSITION_TIME)
+  }
+
   render () {
+    if (!this.props.got_contractors) {
+      return (
+        <Modal history={this.props.history} title=''>
+          <p>Loading...</p>
+        </Modal>
+      )
+    }
     const _con = this.get_contractor()
     if (!_con) {
       return (
@@ -44,25 +62,27 @@ class ConModal extends Component {
             </div>
 
             <IfElse v={this.state.show_enquiry}>
-              <button onClick={() => this.setState({show_enquiry: false})}>
+              <button onClick={this.switch_view}>
                 {this.props.root.get_text('contractor_details_button', {contractor_name: contractor.name})}
               </button>
-              <button onClick={() => this.setState({show_enquiry: true})}>
+              <button onClick={this.switch_view}>
                 {this.props.root.get_text('contractor_enquiry_button', {contractor_name: contractor.name})}
               </button>
             </IfElse>
           </div>
           <div className="tcs-content">
             <div className="tcs-aside tcs-md">{contractor.tag_line}</div>
-            <div className="tcs-scroll">
-              {/*<transition name="tcs-squeeze" mode="out-in">*/}
+            <div className={'tcs-scroll con-modal-transition' + this.state.transition_class}
+                 style={{transition: `all ${TRANSITION_TIME}ms ease`}}>
+
               <IfElse v={this.state.show_enquiry}>
                 <Enquiry contractor={contractor} root={this.props.root} config={this.props.config}/>
-
+              {/*else:*/}
                 <ConDetails contractor={contractor}
                             contractor_extra={contractor_extra}
                             get_text={this.props.root.get_text}/>
               </IfElse>
+
             </div>
           </div>
         </div>
@@ -71,4 +91,3 @@ class ConModal extends Component {
   }
 }
 export default ConModal
-
