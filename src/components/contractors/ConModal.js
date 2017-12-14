@@ -21,7 +21,7 @@ class ConModal extends Component {
   get_contractor () {
     for (let contractor of this.props.contractors) {
       if (contractor.id === this.con_id) {
-        return {contractor, contractor_extra: this.props.root.get_contractor_details(contractor)}
+        return {contractor, contractor_extra: this.props.get_contractor_details(contractor)}
       }
     }
   }
