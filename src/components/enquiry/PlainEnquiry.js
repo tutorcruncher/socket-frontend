@@ -6,4 +6,5 @@ const PlainEnquiry = ({root, config}) => (
     <EnquiryForm root={root} config={config}/>
   </div>
 )
+
 export default PlainEnquiry

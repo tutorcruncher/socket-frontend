@@ -90,4 +90,5 @@ class ConModal extends Component {
     )
   }
 }
+
 export default ConModal

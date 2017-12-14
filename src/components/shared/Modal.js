@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { Cross, Footer }  from './Tools'
 
-const stop = e => e.stopPropagation()
-
 class Modal extends Component {
   constructor (props) {
     super(props)
@@ -36,7 +34,7 @@ class Modal extends Component {
           transitionLeaveTimeout={200}>
         {this.state.show && (
           <div className="tcs-modal-mask" onClick={this.close}>
-            <div className="tcs-modal" onClick={stop}>
+            <div className="tcs-modal" onClick={e => e.stopPropagation()}>
               <div className="tcs-header">
                 <h2>{this.props.title}</h2>
                 <div className="close" onClick={this.close}>
