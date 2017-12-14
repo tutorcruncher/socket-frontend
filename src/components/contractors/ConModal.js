@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Modal from '../shared/Modal'
 import { Location, IfElse } from '../shared/Tools'
 import ConDetails from './ConDetails'
-import Enquiry from '../shared/Enquiry'
+import EnquiryForm from '../shared/EnquiryForm'
 
 const TRANSITION_TIME = 500
 
@@ -76,7 +76,7 @@ class ConModal extends Component {
                  style={{transition: `all ${TRANSITION_TIME}ms ease`}}>
 
               <IfElse v={this.state.show_enquiry}>
-                <Enquiry contractor={contractor} root={this.props.root} config={this.props.config}/>
+                <EnquiryForm contractor={contractor} root={this.props.root} config={this.props.config}/>
               {/*else:*/}
                 <ConDetails contractor={contractor}
                             contractor_extra={contractor_extra}

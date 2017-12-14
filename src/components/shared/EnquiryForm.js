@@ -3,7 +3,7 @@ import {add_script} from '../../utils'
 import {IfElse, If, Markdown} from './Tools'
 import Input from './Input'
 
-class Enquiry extends Component {
+class EnquiryForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -80,8 +80,13 @@ class Enquiry extends Component {
 
   render () {
     const enquiry_form_info = this.props.root.get_enquiry()
-    const visible_fields = enquiry_form_info && enquiry_form_info.visible ? enquiry_form_info.visible : []
+    const visible_fields = enquiry_form_info.visible ? enquiry_form_info.visible : []
     const get_text = this.props.root.get_text
+    const description = (
+      this.props.contractor ?
+        get_text('contractor_enquiry', {contractor_name: this.props.contractor.name}) :
+        get_text('enquiry', {})
+    )
     return (
       <div className="tcs-enquiry">
         <IfElse v={this.state.submitted}>
@@ -92,10 +97,7 @@ class Enquiry extends Component {
           </div>
           {/*else:*/}
           <div>
-            <IfElse v={this.props.contractor}>
-              <Markdown content={get_text('contractor_enquiry', {contractor_name: this.props.contractor.name})}/>
-              <Markdown content={get_text('enquiry', {})}/>
-            </IfElse>
+            <Markdown content={description}/>
 
             <form className="tcs" onSubmit={this.submit}>
               <If v={this.state.error}>
@@ -131,4 +133,4 @@ class Enquiry extends Component {
   }
 }
 
-export default Enquiry
+export default EnquiryForm

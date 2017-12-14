@@ -31,6 +31,7 @@
     var socket1 = socket(public_key, {
       element: '#socket1',
       api_root: api_root,
+      mode: 'enquiry-modal',
       event_callback: function (name, v) {
         console.log(name, v)
       }

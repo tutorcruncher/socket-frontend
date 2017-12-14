@@ -32,6 +32,7 @@ const STRINGS = {
   enquiry_submitted_thanks: 'Enquiry submitted, thank you.',
   enquiry_modal_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.',
   enquiry_button: 'Get in touch',
+  enquiry_title: 'Enquiry',
   grecaptcha_missing: 'This captcha is required',
   required: ' (Required)',
   subject_filter: 'Filter by subject',

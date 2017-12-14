@@ -3,6 +3,8 @@ import {withRouter} from 'react-router-dom'
 import {google_analytics, requests, async_start} from '../utils'
 import Error from './shared/Error'
 import Contractors from './contractors/Contractors'
+import PlainEnquiry from './enquiry/PlainEnquiry'
+import EnquiryButton from './enquiry/EnquiryButton'
 
 class App extends Component {
   constructor (props) {
@@ -36,7 +38,7 @@ class App extends Component {
     if (this.state.enquiry_form_info === null) {
       async_start(this.set_enquiry)
     }
-    return this.state.enquiry_form_info
+    return this.state.enquiry_form_info || {}
   }
 
   async set_enquiry () {
@@ -56,9 +58,12 @@ class App extends Component {
     if (this.state.error) {
       return <Error>{this.state.error}</Error>
     } else if (this.props.config.mode === 'grid') {
-      return <Contractors root={this} config={this.props.config}/>
+      return <Contractors root={this} config={this.props.config} history={this.props.history}/>
+    } else if (this.props.config.mode === 'enquiry') {
+      return <PlainEnquiry root={this} config={this.props.config}/>
     } else {
-      return <div>???</div>
+      // enquiry-modal
+      return <EnquiryButton root={this} config={this.props.config}/>
     }
   }
 }

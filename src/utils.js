@@ -95,7 +95,7 @@ function request (app, path, send_data, method, expected_statuses) {
     const on_error = msg => {
       console.error('request error', msg, url, xhr)
       reject(msg)
-      app.setStateMounted({error: msg})
+      app.setState({error: msg})
     }
     xhr.open(method, url)
     xhr.setRequestHeader('Accept', 'application/json')
@@ -139,3 +139,13 @@ export const requests = {
 }
 
 export const async_start = (f, ...args) => setTimeout(async () => f(...args), 0)
+
+export const slugify = text => (
+   text
+     .toLowerCase()
+     .replace(/\s+/g, '-')     // Replace spaces with -
+     .replace(/[^\w-]+/g, '') // Remove all non-word chars
+     .replace(/--+/g, '-')   // Replace multiple - with single -
+     .replace(/^-+/, '')       // Trim - from start of text
+     .replace(/-+$/, '')       // Trim - from end of text
+)

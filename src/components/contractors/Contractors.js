@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import {Route, Switch} from 'react-router-dom'
-import {async_start} from '../../utils'
+import {Route} from 'react-router-dom'
+import {async_start, slugify} from '../../utils'
 import Grid from './Grid'
 import ConModal from './ConModal'
 
@@ -10,19 +10,46 @@ class Contractors extends Component {
     this.state = {
       contractors: [],
       got_contractors: false,
+      subjects: [],
+      selected_subject: null,
     }
-    this.get_contractors = this.get_contractors.bind(this)
+    this.update_contractors = this.update_contractors.bind(this)
     this.get_contractor_details = this.get_contractor_details.bind(this)
     this.set_contractor_details = this.set_contractor_details.bind(this)
+    this.subject_change = this.subject_change.bind(this)
   }
 
   async componentDidMount () {
-    await this.get_contractors()
+    if (this.state.subjects.length === 0) {
+      const subjects = await this.props.root.requests.get('subjects')
+      this.setState({subjects})
+    }
+
+    await this.update_contractors()
   }
 
-  async get_contractors (subject_id) {
+  subject_change (selected_subject) {
+    if (selected_subject) {
+      this.props.history.push(`/subject/${slugify(selected_subject.name)}`)
+    } else {
+      this.props.history.push(`/`)
+    }
+    this.update_contractors(selected_subject)
+  }
+
+  async update_contractors (selected_subject) {
+    if (!selected_subject) {
+      const m = this.props.history.location.pathname.match(/subject\/([^/]+)/)
+      const subject_slug = m ? m[1] : null
+      if (subject_slug && this.state.subjects.length > 0) {
+        selected_subject = this.state.subjects.find(s => slugify(s.name) === subject_slug)
+      }
+    }
+
+    this.setState({selected_subject})
+    const sub_id = selected_subject && selected_subject.id
     this.setState({
-      contractors: await this.props.root.requests.get('contractors', {subject: subject_id || null}),
+      contractors: await this.props.root.requests.get('contractors', {subject: sub_id || null}),
       got_contractors: true
     })
   }
@@ -45,22 +72,22 @@ class Contractors extends Component {
     return (
       <div className="tcs-app">
         <Grid config={this.props.config}
+              history={this.props.history}
               contractors={this.state.contractors}
-              get_contractors={this.get_contractors}
-              get_text={this.props.root.get_text}
-              requests={this.props.root.requests}/>
+              subjects={this.state.subjects}
+              selected_subject={this.state.selected_subject}
+              subject_change={this.subject_change}
+              get_text={this.props.root.get_text}/>
 
-        <Switch>
-          <Route path="/:id([0-9]+):_extra" render={props => (
-            <ConModal id={props.match.params.id}
-                      contractors={this.state.contractors}
-                      got_contractors={this.state.got_contractors}
-                      get_contractor_details={this.get_contractor_details}
-                      root={this.props.root}
-                      config={this.props.config}
-                      history={props.history}/>
-          )}/>
-        </Switch>
+        <Route path="/:id([0-9]+):_extra" render={props => (
+          <ConModal id={props.match.params.id}
+                    contractors={this.state.contractors}
+                    got_contractors={this.state.got_contractors}
+                    get_contractor_details={this.get_contractor_details}
+                    root={this.props.root}
+                    config={this.props.config}
+                    history={props.history}/>
+        )}/>
       </div>
     )
   }
