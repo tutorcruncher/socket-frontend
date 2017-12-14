@@ -1,5 +1,5 @@
 import React from 'react'
-import {IfElse, If, Markdown} from './Tools'
+import {IfElse, If, Markdown} from '../shared/Tools'
 
 const filter_qual_levels = skills => {
   if (skills.length <= 5) {

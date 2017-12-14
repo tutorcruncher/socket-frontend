@@ -24,3 +24,4 @@ yarn-error.log*
 README-CRA.md
 test-live.html
 old-main.js
+/TODO.md

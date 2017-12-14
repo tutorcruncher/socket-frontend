@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {add_script} from '../utils'
+import {add_script} from '../../utils'
 import {IfElse, If, Markdown} from './Tools'
 import Input from './Input'
 

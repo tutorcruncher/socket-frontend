@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Modal from './Modal'
-import { Location, IfElse } from './Tools'
+import Modal from '../shared/Modal'
+import { Location, IfElse } from '../shared/Tools'
 import ConDetails from './ConDetails'
-import Enquiry from './Enquiry'
+import Enquiry from '../shared/Enquiry'
 
 const TRANSITION_TIME = 500
 

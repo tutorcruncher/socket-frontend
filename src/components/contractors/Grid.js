@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-import { async_start } from '../utils'
+import { If } from '../shared/Tools'
+import { async_start } from '../../utils'
 
 class Grid extends Component {
   state = {
     subjects: [],
-    selected_subject: '',
+    selected_subject: null,
   }
   subject_change = (selected_subject) => {
     this.setState({ selected_subject })
@@ -36,12 +37,9 @@ class Grid extends Component {
     }
     return (
       <div className="tcs-grid">
-        {this.props.config.subject_filter &&
-        <div>
-
+        <If v={this.props.config.subject_filter}>
           <div className="subject-select">
             <Select
-              name="form-field-name"
               value={this.state.selected_subject && this.state.selected_subject.id}
               onChange={this.subject_change}
               labelKey='name'
@@ -51,8 +49,8 @@ class Grid extends Component {
           <div className="tcs-summary">
             {description}
           </div>
-        </div>
-        }
+        </If>
+
         <div className="tcs-flex">
           {this.props.contractors.map((contractor, i) => (
             <div key={i} className="tcs-col">

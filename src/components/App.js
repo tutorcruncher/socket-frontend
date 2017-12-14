@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import {Route, Switch, withRouter} from 'react-router-dom'
 import {google_analytics, requests, async_start} from '../utils'
-import Error from './Error'
-import Grid from './Grid'
-import ConModal from './ConModal'
+import Error from './shared/Error'
+import Grid from './contractors/Grid'
+import ConModal from './contractors/ConModal'
 
 class App extends Component {
   constructor (props) {
@@ -13,8 +13,8 @@ class App extends Component {
       error: props.error,
       contractors: [],
       got_contractors: false,
+      enquiry_form_info: null,
     }
-    this.setStateMounted = this.setStateMounted.bind(this)
     this.get_contractors = this.get_contractors.bind(this)
     this.get_text = this.get_text.bind(this)
 
@@ -32,20 +32,11 @@ class App extends Component {
   }
 
   async componentDidMount () {
-    this._ismounted = true
     await this.get_contractors()
   }
 
-  componentWillUnmount () {
-    this._ismounted = false
-  }
-
-  setStateMounted (s) {
-    this._ismounted && this.setState(s)
-  }
-
   async get_contractors (subject_id) {
-    this.setStateMounted({
+    this.setState({
       contractors: await this.requests.get('contractors', {subject: subject_id || null}),
       got_contractors: true
     })
@@ -61,8 +52,8 @@ class App extends Component {
   }
 
   async set_contractor_details (url, state_ref) {
-    this.setStateMounted({[state_ref]: null})
-    this.setStateMounted({[state_ref]: await this.requests.get(url)})
+    this.setState({[state_ref]: null})
+    this.setState({[state_ref]: await this.requests.get(url)})
   }
 
   get_text (name, replacements) {
@@ -74,15 +65,15 @@ class App extends Component {
   }
 
   get_enquiry () {
-    if (this.state.enquiry_form_info === undefined) {
+    if (this.state.enquiry_form_info === null) {
       async_start(this.set_enquiry)
     }
     return this.state.enquiry_form_info
   }
 
   async set_enquiry () {
-    this.setStateMounted({enquiry_form_info: null})
-    this.setStateMounted({enquiry_form_info: await this.requests.get('enquiry')})
+    this.setState({enquiry_form_info: {}})
+    this.setState({enquiry_form_info: await this.requests.get('enquiry')})
   }
 
   ga_event (category, action, label) {
