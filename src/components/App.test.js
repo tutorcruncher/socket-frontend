@@ -6,7 +6,8 @@ import App from './App'
 it('renders without crashing', () => {
   const div = document.createElement('div')
   const config = {
-    mode: 'history'
+    router_mode: 'history',
+    mode: 'grid',
   }
   ReactDOM.render(<Router><App config={config}/></Router>, div)
 })
