@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { CSSTransitionGroup } from 'react-transition-group'
 import { Cross, Footer }  from './Tools'
 
 class Modal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      show: true,
+      show: false,
     }
     this.scroll_disabled = false
     this.close = this.close.bind(this)
@@ -26,6 +25,7 @@ class Modal extends Component {
     window.onwheel = this.prevent_scroll
     window.onmousewheel = document.onmousewheel = this.prevent_scroll
     window.ontouchmove  = this.prevent_scroll
+    setTimeout(() => this.setState({show: true}), 0)
   }
 
   componentWillUnmount () {
@@ -42,29 +42,22 @@ class Modal extends Component {
 
   render () {
     return (
-      <CSSTransitionGroup
-          transitionName="tcs-modal-trans"
-          transitionAppear={true}
-          transitionAppearTimeout={200}
-          transitionEnter={false}
-          transitionLeaveTimeout={200}>
-        {this.state.show && (
-          <div className="tcs-modal-mask" onClick={this.close}>
-            <div className="tcs-modal" onClick={e => e.stopPropagation()}>
-              <div className="tcs-header">
-                <h2>{this.props.title}</h2>
-                <div className="close" onClick={this.close}>
-                  <Cross/>
-                </div>
+      <div className={'tcs-modal-trans' + (this.state.show ? ' show' : '')}>
+        <div className="tcs-modal-mask" onClick={this.close}>
+          <div className="tcs-modal" onClick={e => e.stopPropagation()}>
+            <div className="tcs-header">
+              <h2>{this.props.title}</h2>
+              <div className="close" onClick={this.close}>
+                <Cross/>
               </div>
-
-              {this.props.children}
-
-              <Footer/>
             </div>
+
+            {this.props.children}
+
+            <Footer/>
           </div>
-        )}
-      </CSSTransitionGroup>
+        </div>
+      </div>
     )
   }
 }

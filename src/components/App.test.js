@@ -9,5 +9,5 @@ it('renders without crashing', () => {
     router_mode: 'history',
     mode: 'grid',
   }
-  ReactDOM.render(<Router><App config={config}/></Router>, div)
+  ReactDOM.render(<Router><App config={config} url_generator={u => u}/></Router>, div)
 })

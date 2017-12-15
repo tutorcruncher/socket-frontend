@@ -41,36 +41,17 @@
   }
 }
 
-// auto applied:
-.tcs-modal-trans-appear {
+.tcs-modal-trans {
   opacity: 0;
-  .tcs-modal {
-    transform: translate(0, 40px);
-  }
-}
-
-.tcs-modal-trans-appear.tcs-modal-trans-appear-active {
-  opacity: 1;
   transition: all .3s ease;
   .tcs-modal {
     transition: all .3s ease;
-    transform: translate(0, 0);
-  }
-}
-
-.tcs-modal-trans-leave {
-  opacity: 1;
-  transition: all .3s ease;
-  .tcs-modal {
-    transition: all .3s ease;
-    transform: translate(0, 0);
-  }
-}
-
-.tcs-modal-trans-leave.tcs-modal-trans-leave-active {
-  opacity: 0;
-  .tcs-modal {
     transform: translate(0, 40px);
   }
+  &.show {
+    opacity: 1;
+    .tcs-modal {
+      transform: translate(0, 0);
+    }
+  }
 }
-
