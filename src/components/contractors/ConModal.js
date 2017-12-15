@@ -9,6 +9,7 @@ const TRANSITION_TIME = 500
 class ConModal extends Component {
   constructor (props) {
     super(props)
+    this.con_id = parseInt(this.props.id, 10)
     this.state = {
       show_enquiry: false,
       transition_class: ''
@@ -19,7 +20,7 @@ class ConModal extends Component {
 
   get_contractor () {
     for (let contractor of this.props.contractors) {
-      if (contractor.link === this.props.con_link) {
+      if (contractor.id === this.con_id) {
         return {contractor, contractor_extra: this.props.get_contractor_details(contractor)}
       }
     }

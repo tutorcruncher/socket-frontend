@@ -31,7 +31,7 @@ class Contractors extends Component {
 
   subject_change (selected_subject) {
     if (selected_subject) {
-      this.props.history.push(this.props.root.url(`subject/${slugify(selected_subject.name)}`))
+      this.props.history.push(this.props.root.url(`subject/${selected_subject.id}-${slugify(selected_subject.name)}`))
     } else {
       this.props.history.push(this.props.root.url(''))
     }
@@ -40,10 +40,10 @@ class Contractors extends Component {
 
   async update_contractors (selected_subject) {
     if (!selected_subject) {
-      const m = this.props.history.location.pathname.match(/subject\/([^/]+)/)
-      const subject_slug = m ? m[1] : null
-      if (subject_slug && this.state.subjects.length > 0) {
-        selected_subject = this.state.subjects.find(s => slugify(s.name) === subject_slug)
+      const m = this.props.history.location.pathname.match(/subject\/(\d+)/)
+      const subject_id = m ? parseInt(m[1], 10) : null
+      if (subject_id && this.state.subjects.length > 0) {
+        selected_subject = this.state.subjects.find(s => s.id === subject_id)
       }
     }
 
@@ -84,8 +84,8 @@ class Contractors extends Component {
               subject_change={this.subject_change}
               root={this.props.root}/>
 
-        <Route path={this.props.root.url(':con([0-9]+-.+)')} render={props => (
-          <ConModal con_link={props.match.params.con}
+        <Route path={this.props.root.url(':id(\\d+):_extra')} render={props => (
+          <ConModal id={props.match.params.id}
                     contractors={this.state.contractors}
                     got_contractors={this.state.got_contractors}
                     get_contractor_details={this.get_contractor_details}
