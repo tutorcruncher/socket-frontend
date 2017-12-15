@@ -42,20 +42,18 @@ class Modal extends Component {
 
   render () {
     return (
-      <div className={'tcs-modal-trans' + (this.state.show ? ' show' : '')}>
-        <div className="tcs-modal-mask" onClick={this.close}>
-          <div className="tcs-modal" onClick={e => e.stopPropagation()}>
-            <div className="tcs-header">
-              <h2>{this.props.title}</h2>
-              <div className="close" onClick={this.close}>
-                <Cross/>
-              </div>
+      <div className={'tcs-modal-mask' + (this.state.show ? ' show' : '')} onClick={this.close}>
+        <div className="tcs-modal" onClick={e => e.stopPropagation()}>
+          <div className="tcs-header">
+            <h2>{this.props.title}</h2>
+            <div className="close" onClick={this.close}>
+              <Cross/>
             </div>
-
-            {this.props.children}
-
-            <Footer/>
           </div>
+
+          {this.props.children}
+
+          <Footer/>
         </div>
       </div>
     )
