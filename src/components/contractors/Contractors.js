@@ -22,6 +22,7 @@ class Contractors extends Component {
   async componentDidMount () {
     if (this.state.subjects.length === 0) {
       const subjects = await this.props.root.requests.get('subjects')
+      this.props.config.event_callback('get_subjects', subjects)
       this.setState({subjects})
     }
 
@@ -48,8 +49,10 @@ class Contractors extends Component {
 
     this.setState({selected_subject})
     const sub_id = selected_subject && selected_subject.id
+    const contractors = await this.props.root.requests.get('contractors', {subject: sub_id || null})
+    this.props.config.event_callback('updated_contractors', contractors)
     this.setState({
-      contractors: await this.props.root.requests.get('contractors', {subject: sub_id || null}),
+      contractors,
       got_contractors: true
     })
   }
@@ -65,7 +68,9 @@ class Contractors extends Component {
 
   async set_contractor_details (url, state_ref) {
     this.setState({[state_ref]: null})
-    this.setState({[state_ref]: await this.props.root.requests.get(url)})
+    const con_details = await this.props.root.requests.get(url)
+    this.props.config.event_callback('get_contractor_details', con_details)
+    this.setState({[state_ref]: con_details})
   }
 
   render () {

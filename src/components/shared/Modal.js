@@ -10,6 +10,7 @@ class Modal extends Component {
     }
     this.close = this.close.bind(this)
   }
+
   componentWillMount () {
     this.body_overflow_before = document.body.style.overflow
     document.body.style.overflow = 'hidden'

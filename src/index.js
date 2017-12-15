@@ -122,13 +122,28 @@ window.socket = function (public_key, config) {
 
   console.debug('using config:', config)
 
-  const Router = config.router_mode === 'history' ? BrowserRouter : HashRouter
-
-  const v = ReactDOM.render(<Router><App error={error} public_key={public_key} config={config}/></Router>, el)
-  // TODO provide a better object here?
+  const url_base = config.router_mode === 'history' ? config.url_root : '/'
+  const url_generator = (url_) => url_base + url_
 
   window._tcs_grecaptcha_loaded = () => (
     document.dispatchEvent(new Event('_tcs_grecaptcha_loaded'))
   )
-  return v
+
+  const Router = config.router_mode === 'history' ? BrowserRouter : HashRouter
+
+  const router = ReactDOM.render(<Router><App
+      error={error}
+      public_key={public_key}
+      url_generator={url_generator}
+      config={config}/></Router>, el)
+  // for external use and compatibility with old socket
+  return {
+    goto: path => {
+      if (path === 'enquiry-modal') {
+        router.history.push(url_generator('enquiry'))
+      } else {
+        router.history.push(url_generator(path))
+      }
+    }
+  }
 }

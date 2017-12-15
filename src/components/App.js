@@ -14,8 +14,7 @@ class App extends Component {
       error: props.error,
       enquiry_form_info: null,
     }
-    this.url_base = props.config.router_mode === 'history' ? props.config.url_root : '/'
-    this.url = this.url.bind(this)
+    this.url = props.url_generator
     this.get_text = this.get_text.bind(this)
 
     this.get_enquiry = this.get_enquiry.bind(this)
@@ -28,9 +27,6 @@ class App extends Component {
     }
   }
 
-  url (url_) {
-    return this.url_base + url_
-  }
 
   get_text (name, replacements) {
     let s = this.props.config.messages[name]
@@ -49,7 +45,9 @@ class App extends Component {
 
   async set_enquiry () {
     this.setState({enquiry_form_info: {}})
-    this.setState({enquiry_form_info: await this.requests.get('enquiry')})
+    const enquiry_form_info = await this.requests.get('enquiry')
+    this.props.config.event_callback('get_enquiry_data', enquiry_form_info)
+    this.setState({enquiry_form_info})
   }
 
   ga_event (category, action, label) {
