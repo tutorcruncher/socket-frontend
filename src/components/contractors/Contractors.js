@@ -84,8 +84,8 @@ class Contractors extends Component {
               subject_change={this.subject_change}
               root={this.props.root}/>
 
-        <Route path={this.props.root.url(':id([0-9]+):_extra')} render={props => (
-          <ConModal id={props.match.params.id}
+        <Route path={this.props.root.url(':con([0-9]+-.+)')} render={props => (
+          <ConModal con_link={props.match.params.con}
                     contractors={this.state.contractors}
                     got_contractors={this.state.got_contractors}
                     get_contractor_details={this.get_contractor_details}

@@ -6,18 +6,33 @@ class Modal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      show: true
+      show: true,
     }
+    this.scroll_disabled = false
     this.close = this.close.bind(this)
+    this.prevent_scroll = this.prevent_scroll.bind(this)
+  }
+
+  prevent_scroll (e) {
+    if (!this.scroll_disabled) {
+      this.scroll_disabled = true
+      document.body.style.overflow = 'hidden'
+      e.preventDefault()
+    }
   }
 
   componentWillMount () {
     this.body_overflow_before = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    window.onwheel = this.prevent_scroll
+    window.onmousewheel = document.onmousewheel = this.prevent_scroll
+    window.ontouchmove  = this.prevent_scroll
   }
 
   componentWillUnmount () {
     document.body.style.overflow = this.body_overflow_before
+    window.onwheel = null
+    window.onmousewheel = document.onmousewheel = null
+    window.ontouchmove  = null
   }
 
   close () {
