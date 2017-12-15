@@ -3,11 +3,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = function override (config, env) {
-  // compile sass
+  // remove the css loader to simplify things
+  config.module.rules[1].oneOf = config.module.rules[1].oneOf.filter(function (l) {
+    const test = l.test && l.test.toString()
+    return test !== /\.css$/
+  })
+  // compile sass, this comes first and compresses css as well as loading sass/scss
   // https://github.com/facebookincubator/create-react-app/issues/2498
-  config.module.rules[1].oneOf.splice(config.module.rules[1].oneOf.length - 1, 0,
+  config.module.rules[1].oneOf.splice(0, 0,
     {
-        test: /\.scss$/,
+        test: /\.(sass|scss|css)$/,
         use: [
           'style-loader',
           'css-loader',
