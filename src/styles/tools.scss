@@ -1,0 +1,72 @@
+@import '../conf';
+
+.tcs-footer {
+  text-align: right;
+  a {
+    font-size: 12px;
+    text-decoration: none;
+    color: #999;
+    transition: all .8s ease;
+    &:hover {
+      color: $brand-colour;
+      svg {
+        opacity: 1;
+        transform: translate(0, 8px);
+      }
+    }
+    svg {
+      transition: all .8s ease;
+      width: 25px;
+      height: 25px;
+      transform: translate(0px, 4px);
+      opacity: 0;
+      path {
+        fill: $brand-colour;
+      }
+    }
+  }
+}
+
+.tcs-errors {
+  background-color: $brand-colour;
+  color: white;
+  margin: 5px;
+  padding: 10px 10px;
+  font-size: 13px;
+  img {
+    width: 100%;
+  }
+  .tcs-error-content {
+    font-family: monospace;
+    background-color: darken($brand-colour, 5%);
+    padding: 20px 10px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 12px;
+  }
+  dt {
+    margin: 15px 0 5px;
+    font-weight: 500;
+  }
+}
+
+svg.tcs-svg {
+  width: $svg-size;
+  height: $svg-size;
+}
+
+svg.tcs-close {
+  cursor: pointer;
+  font-size: 26px;
+  text-decoration: none;
+  padding: 5px;
+  path {
+    fill: #888;
+    transition: all .5s ease;
+  }
+  &:hover {
+    path {
+      fill: black;
+    }
+  }
+}

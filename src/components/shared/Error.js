@@ -1,11 +1,12 @@
-<template>
-  <div class="tcs-errors">
+import React from 'react'
+
+const Error = ({children}) => (
+  <div className="tcs-errors">
     <h2>Error</h2>
     <p>
       An error occurred with TutorCruncher socket:
     </p>
-    <p class="tcs-error-content">{{ $root.error }}</p>
-    <p>
+    <p className="tcs-error-content">{children}</p>
     <dl>
       <dt>If you're visiting this site:</dt>
       <dd>
@@ -18,10 +19,8 @@
         support@tutorcruncher.com.
       </dd>
     </dl>
-    <img src="../assets/error.svg">
   </div>
-</template>
+)
 
-<script>
-export default {}
-</script>
+export default Error
+
