@@ -30,9 +30,9 @@ class Contractors extends Component {
 
   subject_change (selected_subject) {
     if (selected_subject) {
-      this.props.history.push(`/subject/${slugify(selected_subject.name)}`)
+      this.props.history.push(this.props.root.url(`subject/${slugify(selected_subject.name)}`))
     } else {
-      this.props.history.push(`/`)
+      this.props.history.push(this.props.root.url(''))
     }
     this.update_contractors(selected_subject)
   }
@@ -77,9 +77,9 @@ class Contractors extends Component {
               subjects={this.state.subjects}
               selected_subject={this.state.selected_subject}
               subject_change={this.subject_change}
-              get_text={this.props.root.get_text}/>
+              root={this.props.root}/>
 
-        <Route path="/:id([0-9]+):_extra" render={props => (
+        <Route path={this.props.root.url(':id([0-9]+):_extra')} render={props => (
           <ConModal id={props.match.params.id}
                     contractors={this.state.contractors}
                     got_contractors={this.state.got_contractors}

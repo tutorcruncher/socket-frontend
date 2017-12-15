@@ -14,6 +14,8 @@ class App extends Component {
       error: props.error,
       enquiry_form_info: null,
     }
+    this.url_base = props.config.router_mode === 'history' ? props.config.url_root : '/'
+    this.url = this.url.bind(this)
     this.get_text = this.get_text.bind(this)
 
     this.get_enquiry = this.get_enquiry.bind(this)
@@ -24,6 +26,10 @@ class App extends Component {
       get: async (...args) => requests.get(this, ...args),
       post: async (...args) => requests.post(this, ...args),
     }
+  }
+
+  url (url_) {
+    return this.url_base + url_
   }
 
   get_text (name, replacements) {

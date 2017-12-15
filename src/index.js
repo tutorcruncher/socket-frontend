@@ -3,7 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './main.scss'
 import App from './components/App'
-import {BrowserRouter as Router} from 'react-router-dom'
+import {BrowserRouter, HashRouter} from 'react-router-dom'
 import {auto_url_root} from './utils'
 
 const raven_config = {
@@ -121,6 +121,8 @@ window.socket = function (public_key, config) {
   config.grecaptcha_key = process.env.REACT_APP_GRECAPTCHA_KEY
 
   console.debug('using config:', config)
+
+  const Router = config.router_mode === 'history' ? BrowserRouter : HashRouter
 
   const v = ReactDOM.render(<Router><App error={error} public_key={public_key} config={config}/></Router>, el)
   // TODO provide a better object here?

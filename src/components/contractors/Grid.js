@@ -8,7 +8,7 @@ const Grid = props => {
   let description = ''
   if (props.selected_subject) {
     const msg_id_suffix = props.contractors.length === 1 ? 'single' : 'plural'
-    description = props.get_text('subject_filter_summary_' + msg_id_suffix, {
+    description = props.root.get_text('subject_filter_summary_' + msg_id_suffix, {
       count: props.contractors.length,
       subject: props.selected_subject.name,
     })
@@ -32,7 +32,7 @@ const Grid = props => {
       <div className="tcs-flex">
         {props.contractors.map((contractor, i) => (
           <div key={i} className="tcs-col">
-            <Link to={`/${contractor.link}`} className="tcs-box">
+            <Link to={props.root.url(contractor.link)} className="tcs-box">
               <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
               <h3 className="tcs-name">{contractor.name}</h3>
             </Link>

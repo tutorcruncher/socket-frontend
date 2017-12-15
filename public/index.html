@@ -30,6 +30,7 @@
     var api_root = null  // 'http://localhost:8000'
     var socket1 = socket(public_key, {
       element: '#socket1',
+      router_mode: 'history',
       api_root: api_root,
       mode: 'grid',
       event_callback: function (name, v) {
