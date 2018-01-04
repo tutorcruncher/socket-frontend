@@ -8,7 +8,7 @@ let version = `${process.env.npm_package_version}-${process.env.TRAVIS_COMMIT}`
 if (process.env.TRAVIS_TAG) {
   console.log(`detected TRAVIS_TAG "${process.env.TRAVIS_TAG}", building for release deploy.`)
   if (process.env.TRAVIS_TAG !== process.env.npm_package_version) {
-    throw `travis tag doesn't match npm_pckage_version: ${process.env.TRAVIS_TAG} vs ${process.env.npm_package_version}`
+    throw `travis tag doesn't match npm_package_version: ${process.env.TRAVIS_TAG} vs ${process.env.npm_package_version}`
   }
   prod_build_dir = path.resolve(__dirname, 'dist', process.env.npm_package_version)
   env.PUBLIC_URL = 'https://cdn.tutorcruncher.com/socket/' + process.env.npm_package_version + '/'

@@ -1,9 +1,20 @@
 @import '../conf';
 
 .tcs-footer {
-  text-align: right;
+  font-size: 12px;
+  height: 28px;
+  > span {
+    cursor: default;
+    display: inline-block;
+    margin-top: 12px;
+    color: #ccc;
+    transition: all .8s ease;
+    &:hover {
+      color: $brand-colour;
+    }
+  }
   a {
-    font-size: 12px;
+    float: right;
     text-decoration: none;
     color: #999;
     transition: all .8s ease;
