@@ -60,6 +60,7 @@ svg.tcs-close {
   font-size: 26px;
   text-decoration: none;
   padding: 5px;
+  box-sizing: content-box;
   path {
     fill: #888;
     transition: all .5s ease;
