@@ -7,6 +7,9 @@ module.exports = {
       'jsx': true
     },
   },
+  globals: {
+    enz: true,
+  },
   plugins: [
     'react'
   ],
@@ -19,7 +22,7 @@ module.exports = {
     'generator-star-spacing': 2,
     // allow debugger during development
     'no-debugger': 2,
-    'comma-dangle': 0,
+    'comma-danglcd e': 0,
     'camelcase': 0,
     'no-alert': 2,
     'space-before-function-paren': 2,
