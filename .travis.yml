@@ -13,7 +13,7 @@ install:
 
 script:
 - yarn lint
-- yarn test -- --coverage
+- yarn test --coverage
 - yarn dist
 - ls -lhaR dist/
 
