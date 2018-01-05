@@ -3,6 +3,7 @@ TutorCruncher Socket frontend
 
 [![Build Status](https://travis-ci.org/tutorcruncher/socket-frontend.svg?branch=master)](https://travis-ci.org/tutorcruncher/socket-frontend)
 [![codecov](https://codecov.io/gh/tutorcruncher/socket-frontend/branch/master/graph/badge.svg)](https://codecov.io/gh/tutorcruncher/socket-frontend)
+[![netlify](https://img.shields.io/website-up-down-green-red/http/tutorcruncher-socket-dev.netlify.com.svg?label=netlify)](https://tutorcruncher-socket-dev.netlify.com/)
 
 Javascript application for [TutorCruncher's](https://tutorcruncher.com) web integration.
  

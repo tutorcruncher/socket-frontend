@@ -23,6 +23,7 @@
   </head>
   <body>
     <main>
+      <a href="https://github.com/tutorcruncher/socket-frontend">github.com/tutorcruncher/socket-frontend</a>
       <div id="socket1"></div>
       <div id="socket2"></div>
       <div id="socket3"></div>
@@ -40,15 +41,17 @@
         console.log(name, v)
       }
     })
-   socket(public_key, {
-     element: '#socket2',
-     mode: 'enquiry',
-     api_root: api_root,
-   })
-   socket(public_key, {
-     element: '#socket3',
-     mode: 'enquiry-modal',
-     api_root: api_root,
-   })
+    socket(public_key, {
+      element: '#socket2',
+      router_mode: 'history',
+      mode: 'enquiry',
+      api_root: api_root,
+    })
+    socket(public_key, {
+      element: '#socket3',
+      router_mode: 'history',
+      mode: 'enquiry-modal',
+      api_root: api_root,
+    })
   </script>
 </html>
