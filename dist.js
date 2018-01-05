@@ -12,7 +12,7 @@ if (process.env.TRAVIS_TAG) {
   }
   prod_build_dir = path.resolve(__dirname, 'dist', process.env.npm_package_version)
   env.PUBLIC_URL = 'https://cdn.tutorcruncher.com/socket/' + process.env.npm_package_version + '/'
-  version = `${process.env.npm_package_version}`
+  version = process.env.npm_package_version
 } else if (process.env.TRAVIS_BRANCH) {
   console.log('no tag detected but on branch, building to dev/branch/')
   prod_build_dir = path.resolve(__dirname, 'dist', 'dev', process.env.TRAVIS_BRANCH || '')
