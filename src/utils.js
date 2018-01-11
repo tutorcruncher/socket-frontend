@@ -128,9 +128,14 @@ export const requests = {
   get: async (app, path, args) => {
     if (args) {
       const arg_list = []
+      const add_arg = (n, v) => arg_list.push(encodeURIComponent(n) + '=' + encodeURIComponent(v))
       for (let [name, value] of Object.entries(args)) {
-        if (value !== null) {
-          arg_list.push(encodeURIComponent(name) + '=' + encodeURIComponent(value))
+        if (Array.isArray(value)) {
+          for (let value_ of value) {
+            add_arg(name, value_)
+          }
+        } else if (value !== null && value !== undefined) {
+          add_arg(name, value)
         }
       }
       if (arg_list.length > 0) {
