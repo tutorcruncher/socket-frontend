@@ -97,7 +97,15 @@ window.socket = function (public_key, config) {
     config.element = '#socket'
   }
 
-  config.contractor_filter = config.contractor_filter || {}
+  config.contractor_filter = {}
+  if (config.labels_include) {
+    config.contractor_filter.label = config.labels_include
+    delete config.labels_include
+  }
+  if (config.labels_exclude) {
+    config.contractor_filter.label_exclude = config.labels_exclude
+    delete config.labels_exclude
+  }
 
   if (config.subject_filter === undefined) {
     config.subject_filter = true
