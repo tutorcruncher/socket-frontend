@@ -154,6 +154,7 @@ window.socket = function (public_key, config) {
       } else {
         router.history.push(url_generator(path))
       }
-    }
+    },
+    config: config,
   }
 }

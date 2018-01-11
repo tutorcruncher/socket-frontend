@@ -1,13 +1,13 @@
 const RESPONSES = {
-  'GET:https://socket.tutorcruncher.com/good/subjects': {
+  'GET:https://socket.tutorcruncher.com/good/subjects': () => ({
     status: 200,
     content: JSON.stringify([
       {'id': 29, 'name': 'English Language', 'category': 'English', 'link': '29-english-language'},
       {'id': 31, 'name': 'English Literature', 'category': 'English', 'link': '31-english-literature'},
       {'id': 61, 'name': 'Chinese', 'category': 'Languages', 'link': '61-chinese'}
     ])
-  },
-  'GET:https://socket.tutorcruncher.com/good/contractors': {
+  }),
+  'GET:https://socket.tutorcruncher.com/good/contractors': () => ({
     status: 200,
     content: JSON.stringify(
       [
@@ -36,7 +36,7 @@ const RESPONSES = {
           'distance': null
         }
       ])
-  }
+  })
 }
 
 export function MockXMLHttpRequest () {
@@ -57,9 +57,17 @@ export function MockXMLHttpRequest () {
   this.status = null
   this.statusText = null
   this.send = function (data) {
-    // console.log(`XHR ${_method}: ${_url}`)
-    const response = RESPONSES[`${_method}:${_url}`]
-    if (response) {
+    let args = null
+    if (_url.includes('?')) {
+      args = _url.substr(_url.indexOf('?') + 1, _url.length)
+      _url = _url.substr(0, _url.indexOf('?'))
+    }
+    // console.log(`XHR ${_method}: ${_url} args=${args}`)
+    const f = RESPONSES[`${_method}:${_url}`]
+    const req = {method: _method, url: _url, args}
+    global.xhr_calls.push(req)
+    if (f) {
+      const response = f(req)
       this.status = response.status
       this.responseText = response.content
       this.onload && this.onload()
@@ -70,5 +78,10 @@ export function MockXMLHttpRequest () {
 }
 
 export function tick () {
-  return new Promise(resolve => setTimeout(resolve, 0.01))
+  return new Promise(resolve => setTimeout(resolve, 0))
+}
+
+export function xhr_setup () {
+  global.xhr_calls = []
+  global.XMLHttpRequest = MockXMLHttpRequest
 }
