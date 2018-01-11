@@ -9,6 +9,7 @@ module.exports = {
   },
   globals: {
     enz: true,
+    xhr_calls: true,
   },
   plugins: [
     'react'

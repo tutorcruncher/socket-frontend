@@ -49,7 +49,8 @@ class Contractors extends Component {
 
     this.setState({selected_subject})
     const sub_id = selected_subject && selected_subject.id
-    const contractors = await this.props.root.requests.get('contractors', {subject: sub_id || null})
+    const args = Object.assign({}, this.props.config.contractor_filter, {subject: sub_id || null})
+    const contractors = await this.props.root.requests.get('contractors', args)
     this.props.config.event_callback('updated_contractors', contractors)
     this.setState({
       contractors,
