@@ -98,8 +98,8 @@ function request (app, path, send_data, method, expected_statuses) {
     const xhr = new XMLHttpRequest()
     const on_error = msg => {
       console.error('request error', msg, url, xhr)
-      reject(msg)
       app.setState({error: msg})
+      reject(msg)
     }
     xhr.open(method, url)
     xhr.setRequestHeader('Accept', 'application/json')
@@ -116,10 +116,10 @@ function request (app, path, send_data, method, expected_statuses) {
           })
         }
       } else {
-        on_error(`wrong response code ${xhr.status}`)
+        on_error(`wrong response code ${xhr.status}, Response: ${xhr.responseText.substr(0, 500)}`)
       }
     }
-    xhr.onerror = () => on_error(`${xhr.statusText}: ${xhr.status}`)
+    xhr.onerror = () => on_error(`Error requesting data ${xhr.statusText}: ${xhr.status}`)
     xhr.send(send_data)
   })
 }

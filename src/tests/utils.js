@@ -39,7 +39,7 @@ const RESPONSES = {
   })
 }
 
-export function MockXMLHttpRequest () {
+function MockXMLHttpRequest () {
   let _method, _url
   const _headers = {}
   this.open = function (method, url) {

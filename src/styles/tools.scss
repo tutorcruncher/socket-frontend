@@ -39,8 +39,6 @@
 }
 
 .tcs-errors {
-  background-color: $brand-colour;
-  color: white;
   margin: 5px;
   padding: 10px 10px;
   font-size: 13px;
@@ -49,7 +47,7 @@
   }
   .tcs-error-content {
     font-family: monospace;
-    background-color: darken($brand-colour, 5%);
+    background-color: darken(white, 5%);
     padding: 20px 10px;
     white-space: pre-wrap;
     word-wrap: break-word;

@@ -22,7 +22,7 @@ it('converts contractor filter', () => {
   div.setAttribute('id', 'socket')
   document.body.appendChild(div)
   const r = window.socket('good', {
-    // router_mode: 'history',
+    router_mode: 'history',
     mode: 'grid',
     labels_include: ['foobar'],
     labels_exclude: ['spam'],
@@ -33,5 +33,4 @@ it('converts contractor filter', () => {
     'label': ['foobar'],
     'label_exclude': ['spam'],
   })
-  // console.log(pretty_html(div.innerHTML))
 })
