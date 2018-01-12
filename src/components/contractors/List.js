@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import { Location, Markdown } from '../shared/Tools'
+import {Footer, Location, Markdown, Stars} from '../shared/Tools'
 
 export const Grid = ({contractors, root}) => (
   <div className="tcs-flex">
@@ -39,6 +39,7 @@ export const List = ({contractors, root}) => (
           </div>
 
           <div className="tcs-box-extra">
+            <Stars score={3 + Math.random() * 2} />
             <div className="tcs-location">
               <Location/>
               <span>{contractor.town}</span>
@@ -47,5 +48,6 @@ export const List = ({contractors, root}) => (
         </Link>
       </div>
     ))}
+    <Footer/>
   </div>
 )
