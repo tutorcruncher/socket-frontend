@@ -12,7 +12,7 @@ it('renders grid', () => {
   const r = window.socket('good')
   expect(r.goto).toBeTruthy()
   expect(r.config.contractor_filter).toEqual({})
-  expect(div.querySelectorAll('.tcs-grid').length).toBe(1)
+  expect(div.querySelectorAll('.tcs-contractors').length).toBe(1)
   // console.log(pretty_html(div.innerHTML))
 })
 

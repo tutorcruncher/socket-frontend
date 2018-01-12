@@ -61,13 +61,13 @@ class App extends Component {
   render () {
     if (this.state.error) {
       return <Error>{this.state.error}</Error>
-    } else if (this.props.config.mode === 'grid') {
-      return <Contractors root={this} config={this.props.config} history={this.props.history}/>
     } else if (this.props.config.mode === 'enquiry') {
       return <PlainEnquiry root={this} config={this.props.config}/>
-    } else {
-      // enquiry-modal
+    } else if (this.props.config.mode === 'enquiry-modal') {
       return <EnquiryButton root={this} config={this.props.config}/>
+    } else {
+      // grid or list
+      return <Contractors root={this} config={this.props.config} history={this.props.history}/>
     }
   }
 }

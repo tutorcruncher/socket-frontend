@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import {Route} from 'react-router-dom'
 import {async_start, slugify} from '../../utils'
-import Grid from './Grid'
+import {If} from '../shared/Tools'
+import {Grid, List} from './List'
 import ConModal from './ConModal'
+import SelectSubjects from './SelectSubjects'
 
 class Contractors extends Component {
   constructor (props) {
@@ -75,15 +77,17 @@ class Contractors extends Component {
   }
 
   render () {
+    const DisplayComponent = this.props.config.mode === 'grid' ? Grid : List
     return (
-      <div className="tcs-app">
-        <Grid config={this.props.config}
-              history={this.props.history}
-              contractors={this.state.contractors}
-              subjects={this.state.subjects}
-              selected_subject={this.state.selected_subject}
-              subject_change={this.subject_change}
-              root={this.props.root}/>
+      <div className="tcs-app tcs-contractors">
+        <If v={this.props.config.subject_filter}>
+          <SelectSubjects get_text={this.props.root.get_text}
+                          contractors={this.state.contractors}
+                          subjects={this.state.subjects}
+                          selected_subject={this.state.selected_subject}
+                          subject_change={this.subject_change}/>
+        </If>
+        <DisplayComponent contractors={this.state.contractors} url={this.props.root.url}/>
 
         <Route path={this.props.root.url(':id(\\d+):_extra')} render={props => (
           <ConModal id={props.match.params.id}

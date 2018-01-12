@@ -40,7 +40,7 @@ const STRINGS = {
   subject_filter_summary_plural: '{subject}: showing {count} results',
 }
 
-const MODES = ['grid', 'enquiry', 'enquiry-modal']
+const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']
 const ROUTER_MODES = ['hash', 'history']
 
 window.socket = function (public_key, config) {
