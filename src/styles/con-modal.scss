@@ -1,12 +1,5 @@
 @import '../conf';
 
-.tcs-aside {
-  font-size: 22px;
-  margin-bottom: 10px;
-  color: $highlight;
-  min-height: 28px;
-}
-
 .tcs-body {
   max-height: calc(94vh - 140px);
   overflow-y: auto;
@@ -41,15 +34,6 @@
     border-radius: 4px;
     display: block;
     margin: auto;
-  }
-
-  .tcs-location {
-    margin: 10px 0;
-    span {
-      padding-top: 4px;
-      vertical-align: top;
-      font-weight: 500;
-    }
   }
 
   button {

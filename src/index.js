@@ -38,6 +38,7 @@ const STRINGS = {
   subject_filter: 'Filter by subject',
   subject_filter_summary_single: '{subject}: showing 1 result',
   subject_filter_summary_plural: '{subject}: showing {count} results',
+  view_profile: 'View Profile',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']

@@ -87,7 +87,7 @@ class Contractors extends Component {
                           selected_subject={this.state.selected_subject}
                           subject_change={this.subject_change}/>
         </If>
-        <DisplayComponent contractors={this.state.contractors} url={this.props.root.url}/>
+        <DisplayComponent contractors={this.state.contractors} root={this.props.root}/>
 
         <Route path={this.props.root.url(':id(\\d+):_extra')} render={props => (
           <ConModal id={props.match.params.id}

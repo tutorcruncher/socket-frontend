@@ -27,6 +27,7 @@
       <div id="socket1"></div>
       <div id="socket2"></div>
       <div id="socket3"></div>
+      <div id="socket4"></div>
     </main>
   </body>
   <script>
@@ -46,11 +47,17 @@
     socket(public_key, {
       element: '#socket2',
       router_mode: 'history',
+      api_root: api_root,
+      mode: 'list',
+    })
+    socket(public_key, {
+      element: '#socket3',
+      router_mode: 'history',
       mode: 'enquiry',
       api_root: api_root,
     })
     socket(public_key, {
-      element: '#socket3',
+      element: '#socket4',
       router_mode: 'history',
       mode: 'enquiry-modal',
       api_root: api_root,

@@ -1,3 +1,5 @@
+@import '../conf';
+
 .tcs-contractors {
   padding: 10px;
 }
@@ -21,5 +23,45 @@
   }
   .tcs-contractors {
     padding: 10px 2px;
+  }
+}
+
+.tcs-box {
+  text-decoration: none;
+  user-select: none;
+  h3.tcs-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    padding: 0 0 3px;
+  }
+  img.tcs-thumb {
+    border-radius: $border-radius;
+    width: 150px;
+    height: 150px;
+    margin: 0;
+  }
+}
+
+.tcs-aside {
+  font-size: 20px;
+  margin-bottom: 10px;
+  max-height: 28px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tcs-location {
+  text-align: center;
+  margin: 5px 0;
+  span {
+    padding-top: 4px;
+    vertical-align: top;
+    font-weight: 500;
+  }
+  .tcs-svg {
+    fill: $location-fill;
   }
 }

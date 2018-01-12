@@ -11,43 +11,31 @@
 .tcs-flex {
   display: flex;
   flex-wrap: wrap;
+  .tcs-box {
+    display: block;
+    border-radius: $border-radius;
+    background-color: #005377;
+    color: white;
+    width: 150px;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
+    user-select: none;
+  }
+  h3.tcs-name {
+    display: block;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  img.tcs-thumb {
+    border-radius: $border-radius $border-radius 0 0;
+  }
 }
 
 .tcs-col {
   flex-grow: 1;
   padding: 10px 15px 20px;
-}
-
-.tcs-box {
-  border-radius: $border-radius;
-  display: block;
-  background-color: #005377;
-  color: white;
-  text-decoration: none;
-  width: 150px;
-  margin: 0 auto;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
-  user-select: none;
-  h3 {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  img.tcs-thumb {
-    border-radius: $border-radius $border-radius 0 0;
-    width: 150px;
-    height: 150px;
-    margin: 0;
-  }
-  .tcs-name {
-    display: block;
-    width: 100%;
-    font-size: 15px;
-    font-weight: 500;
-    margin: 0;
-    padding: 0 0 3px;
-  }
 }
 
 @media(max-width: 400px) {
