@@ -36,8 +36,7 @@
     margin: auto;
   }
 
-  button {
-    @extend %tcs-button;
+  .tcs-button {
     margin: 10px auto 0;
     width: 100%;
   }
@@ -46,7 +45,7 @@
 .con-modal-transition {
   opacity: 1;
   transform: translate(0, 0);
-  &.leave {
+  &.in-trans {
     opacity: 0;
     transform: translate(0, -10px);
   }

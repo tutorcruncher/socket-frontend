@@ -20,12 +20,11 @@ export const List = ({contractors, root}) => (
     {contractors.map((contractor, i) => (
       <div key={i}>
         <Link to={root.url(contractor.link)} className="tcs-box">
-          <div>
+          <div className="tcs-image-col">
             <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
-            <div className="tcs-location">
-              <Location/>
-              <span>{contractor.town}</span>
-            </div>
+            <button className="tcs-button">
+              {root.get_text('view_profile')}
+            </button>
           </div>
 
           <div className="tcs-info">
@@ -40,10 +39,10 @@ export const List = ({contractors, root}) => (
           </div>
 
           <div className="tcs-box-extra">
-            <div className="tcs-shim"/>
-            <button>
-              {root.get_text('view_profile')}
-            </button>
+            <div className="tcs-location">
+              <Location/>
+              <span>{contractor.town}</span>
+            </div>
           </div>
         </Link>
       </div>

@@ -1,23 +1,34 @@
 @import '../conf';
-$box-height: 220px;
+$box-height: 186px;
+
 .tcs-list {
   .tcs-box {
+    box-sizing: content-box;
     color: #444;
     display: flex;
-    padding: 10px 0;
-    border-bottom: 1px solid #ccc;
-    max-height: $box-height;
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+    height: $box-height;
     //border: 1px dashed black;
   }
-  h3.tcs-name {
-    font-size: 26px;
+  .tcs-image-col {
+    flex: 0 0 $dft-image-size;
   }
+  .tcs-button {
+    width: 100%;
+    border-radius: 0 0 $border-radius $border-radius;
+    height: $box-height - $dft-image-size;
+  }
+
   .tcs-info {
     max-width: 480px;
     padding: 0 10px;
   }
-  // height of title and tag line and tcs-box padding
-  $other-height: 100px;
+  h3.tcs-name {
+    font-size: 26px;
+  }
+  // height of title and tag line
+  $other-height: 80px;
   .tcs-primary-description {
     color: #888;
     overflow: hidden;
@@ -26,8 +37,8 @@ $box-height: 220px;
   }
   .tcs-fadeout {
     position: relative;
-    bottom: 60px;
-    height: 60px;
+    bottom: 40px;
+    height: 40px;
     width: 100%;
     background: linear-gradient(
                     rgba(255, 255, 255, 0) 0%,
@@ -36,18 +47,6 @@ $box-height: 220px;
   }
 
   .tcs-box-extra {
-    flex: 0 0 140px;
-    .tcs-shim {
-      height: 150px;
-    }
-  }
-
-  .tcs-location, button {
-    height: 40px;
-  }
-  button {
-    @extend %tcs-button;
-    margin: 0;
-    width: 100%;
+    flex: 0 0 150px;
   }
 }

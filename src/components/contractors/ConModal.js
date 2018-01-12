@@ -12,7 +12,7 @@ class ConModal extends Component {
     this.con_id = parseInt(this.props.id, 10)
     this.state = {
       show_enquiry: false,
-      transition_class: ''
+      transition_class: '',
     }
     this.get_contractor = this.get_contractor.bind(this)
     this.switch_view = this.switch_view.bind(this)
@@ -27,7 +27,7 @@ class ConModal extends Component {
   }
 
   switch_view () {
-    this.setState({transition_class: ' leave'})
+    this.setState({transition_class: ' in-trans'})
     setTimeout(() => {
       this.setState({show_enquiry: !this.state.show_enquiry, transition_class: ''})
     }, TRANSITION_TIME)
@@ -62,10 +62,10 @@ class ConModal extends Component {
             </div>
 
             <IfElse v={this.state.show_enquiry}>
-              <button onClick={this.switch_view}>
+              <button className="tcs-button" onClick={this.switch_view}>
                 {this.props.root.get_text('contractor_details_button', {contractor_name: contractor.name})}
               </button>
-              <button onClick={this.switch_view}>
+              <button className="tcs-button" onClick={this.switch_view}>
                 {this.props.root.get_text('contractor_enquiry_button', {contractor_name: contractor.name})}
               </button>
             </IfElse>
@@ -73,7 +73,7 @@ class ConModal extends Component {
           <div className="tcs-content">
             <div className="tcs-aside tcs-md">{contractor.tag_line}</div>
             <div className={'tcs-scroll con-modal-transition' + this.state.transition_class}
-                 style={{transition: `all ${TRANSITION_TIME}ms ease`}}>
+                 style={{transition: `all ${TRANSITION_TIME}ms ease-in-out`}}>
 
               <IfElse v={this.state.show_enquiry}>
                 <EnquiryForm contractor={contractor} root={this.props.root} config={this.props.config}/>

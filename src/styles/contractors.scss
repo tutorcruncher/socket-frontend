@@ -37,10 +37,11 @@
     padding: 0 0 3px;
   }
   img.tcs-thumb {
-    border-radius: $border-radius;
-    width: 150px;
-    height: 150px;
+    border-radius: $border-radius $border-radius 0 0;
+    width: $dft-image-size;
+    height: $dft-image-size;
     margin: 0;
+    display: block;
   }
 }
 
