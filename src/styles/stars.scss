@@ -1,0 +1,26 @@
+@import '../conf';
+
+.tcs-stars {
+  text-align: center;
+  line-height: 16px;
+  margin-bottom: 4px;
+  .tcs-comment {
+    margin-top: 2px;
+    display: inline-block;
+    padding: 3px 6px;
+    color: #888;
+  }
+}
+
+div.__react_component_tooltip.type-dark {
+  background-color: $highlight;
+  padding: 5px 15px;
+  opacity: 0;
+  transition: opacity .4s ease, visibility .3s ease;
+  &.show {
+    opacity: 1;
+  }
+  &:after {
+    border-top-color: $highlight !important;
+  }
+}

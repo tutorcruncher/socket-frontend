@@ -3,6 +3,7 @@ import Modal from '../shared/Modal'
 import { Location, IfElse } from '../shared/Tools'
 import ConDetails from './ConDetails'
 import EnquiryForm from '../shared/EnquiryForm'
+import Stars from './Stars'
 
 const TRANSITION_TIME = 500
 
@@ -55,6 +56,8 @@ class ConModal extends Component {
         <div className="tcs-body">
           <div className="tcs-extra">
             <img src={contractor.photo} alt={contractor.name}/>
+
+            <Stars contractor={contractor} root={this.props.root}/>
 
             <div className="tcs-location">
               <Location/>
