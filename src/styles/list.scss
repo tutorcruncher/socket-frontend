@@ -5,41 +5,38 @@ $box-height: 186px;
   .tcs-box {
     box-sizing: content-box;
     color: #444;
-    display: flex;
     padding: 15px 0;
     border-bottom: 1px solid #ddd;
-    height: $box-height;
+    display: grid;
+    grid-template-columns: $dft-image-size auto 180px;
     //border: 1px dashed black;
-  }
-  .tcs-image-col {
-    flex: 0 0 $dft-image-size;
   }
   .tcs-button {
     width: 100%;
     border-radius: 0 0 $border-radius $border-radius;
-    height: $box-height - $dft-image-size;
   }
 
   .tcs-info {
-    max-width: 480px;
+    min-width: 0;
     padding: 0 10px;
   }
   h3.tcs-name {
     font-size: 26px;
   }
-  // height of title and tag line
-  $other-height: 80px;
   .tcs-primary-description {
     color: #888;
     overflow: hidden;
     text-overflow: ellipsis;
-    height: $box-height - $other-height;
+    display: grid;
+    grid-template-rows: 70px 40px;
+  }
+  .tcs-md {
+    grid-column: 1;
+    grid-row: 1 / span 2;
   }
   .tcs-fadeout {
-    position: relative;
-    bottom: 40px;
-    height: 40px;
-    width: 100%;
+    grid-column: 1;
+    grid-row: 2;
     background: linear-gradient(
                     rgba(255, 255, 255, 0) 0%,
                     rgba(255, 255, 255, 1) 100%
@@ -47,6 +44,10 @@ $box-height: 186px;
   }
 
   .tcs-box-extra {
-    flex: 0 0 150px;
+    display: grid;
+    grid-template-rows: 100px 1fr auto;
+    .tcs-stars {
+      grid-row: span 2;
+    }
   }
 }

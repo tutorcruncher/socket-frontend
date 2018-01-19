@@ -39,6 +39,7 @@ const STRINGS = {
   subject_filter_summary_single: '{subject}: showing 1 result',
   subject_filter_summary_plural: '{subject}: showing {count} results',
   view_profile: 'View Profile',
+  review_hours: '({hours} hours)',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']

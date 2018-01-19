@@ -53,6 +53,7 @@ class Contractors extends Component {
     const sub_id = selected_subject && selected_subject.id
     const args = Object.assign({}, this.props.config.contractor_filter, {subject: sub_id || null})
     const contractors = await this.props.root.requests.get('contractors', args)
+    contractors.reverse()
     this.props.config.event_callback('updated_contractors', contractors)
     this.setState({
       contractors,
