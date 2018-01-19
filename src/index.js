@@ -142,7 +142,7 @@ window.socket = async function (public_key, config) {
     try {
       company_options = await get_company_options(public_key, config)
     } catch(e) {
-        error = e
+        error = e.toString()
       company_options = {
         display_mode: 'grid',
         router_mode: 'hash',
