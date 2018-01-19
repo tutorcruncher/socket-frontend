@@ -13,10 +13,12 @@
       * {
         box-sizing: border-box;  /* bootstrap does this on most sites. */
       }
-      main > div {
-        background-color: white;
+      main {
         max-width: 800px;
         margin: 20px auto;
+      }
+      main > div {
+        background-color: white;
         border: 1px solid #aaa;
       }
     </style>
@@ -24,9 +26,13 @@
   <body>
     <main>
       <a href="https://github.com/tutorcruncher/socket-frontend">github.com/tutorcruncher/socket-frontend</a>
+      <p>mode defined by options:</p>
       <div id="socket1"></div>
+      <p>Grid mode:</p>
       <div id="socket2"></div>
+      <p>Enquiry:</p>
       <div id="socket3"></div>
+      <p>Enquiry Modal:</p>
       <div id="socket4"></div>
     </main>
   </body>
@@ -37,18 +43,17 @@
       element: '#socket1',
       router_mode: 'history',
       api_root: api_root,
+    })
+    socket(public_key, {
+      element: '#socket2',
+      router_mode: 'history',
+      api_root: api_root,
       mode: 'grid',
       labels_include: [],
       labels_exclude: [],
       event_callback: function (name, v) {
         console.log(name, v)
       }
-    })
-    socket(public_key, {
-      element: '#socket2',
-      router_mode: 'history',
-      api_root: api_root,
-      mode: 'list',
     })
     socket(public_key, {
       element: '#socket3',

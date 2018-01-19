@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import './main.scss'
 import App from './components/App'
 import {BrowserRouter, HashRouter} from 'react-router-dom'
-import {auto_url_root} from './utils'
+import {auto_url_root, get_company_options} from './utils'
 
 const raven_config = {
   release: process.env.REACT_APP_RELEASE,
@@ -45,7 +45,7 @@ const STRINGS = {
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']
 const ROUTER_MODES = ['hash', 'history']
 
-window.socket = function (public_key, config) {
+window.socket = async function (public_key, config) {
   config = config || {}
   Raven.setExtraContext({
     public_key: public_key,
@@ -64,9 +64,10 @@ window.socket = function (public_key, config) {
     }
   }
 
+  let options_required = false
   let error = null
   if (!config.mode) {
-    config.mode = 'grid'
+    options_required = true
   } else if (MODES.indexOf(config.mode) === -1) {
     error = `invalid mode "${config.mode}", options are: ${MODES.join(', ')}`
     config.mode = 'grid'
@@ -89,7 +90,11 @@ window.socket = function (public_key, config) {
 
   if (!config.router_mode) {
     // use history mode with enquiry so it doesn't add the hash
-    config.router_mode = config.mode === 'enquiry' ? 'history' : 'hash'
+    if (config.mode === 'enquiry') {
+      config.router_mode = 'history'
+    } else {
+      options_required = true
+    }
   } else if (ROUTER_MODES.indexOf(config.router_mode) === -1) {
     error = `invalid router mode "${config.router_mode}", options are: ${ROUTER_MODES.join(', ')}`
     config.router_mode = 'hash'
@@ -131,6 +136,22 @@ window.socket = function (public_key, config) {
   }
   config.random_id = Math.random().toString(36).substring(2, 10)
   config.grecaptcha_key = process.env.REACT_APP_GRECAPTCHA_KEY
+
+  if (options_required) {
+    let company_options
+    try {
+      company_options = await get_company_options(public_key, config)
+    } catch(e) {
+        error = e
+      company_options = {
+        display_mode: 'grid',
+        router_mode: 'hash',
+      }
+    }
+    console.debug('company options:', company_options)
+    config.mode = config.mode || company_options.display_mode
+    config.router_mode = config.router_mode || company_options.router_mode
+  }
 
   console.debug('using config:', config)
 
