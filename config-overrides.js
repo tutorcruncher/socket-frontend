@@ -51,8 +51,8 @@ module.exports = function override (config, env) {
     config.plugins.splice(2, 0,
       new HtmlWebpackPlugin({
         inject: true,
-        template: path.resolve(__dirname, 'public', 'simple.html'),
-        filename: 'simple.html'
+        template: path.resolve(__dirname, 'public', 'simple/index.html'),
+        filename: 'simple/index.html'
       })
     )
   }

@@ -75,11 +75,12 @@ class Contractors extends Component {
     })
     const contractors = await this.props.root.requests.get('contractors', args)
     this.props.config.event_callback('updated_contractors', contractors)
-    this.setState({
+    this.setState({contractors: []})
+    setTimeout(() => this.setState({
       contractors,
+      got_contractors: true,
       more_pages: contractors.length === this.props.config.pagination,
-      got_contractors: true
-    })
+    }), 0)
   }
 
   get_contractor_details (con) {
@@ -102,7 +103,7 @@ class Contractors extends Component {
     const DisplayComponent = this.props.config.mode === 'grid' ? Grid : List
     return (
       <div className="tcs-app tcs-contractors">
-        <If v={this.props.config.subject_filter}>
+        <If v={this.state.got_contractors && this.props.config.subject_filter}>
           <SelectSubjects get_text={this.props.root.get_text}
                           contractors={this.state.contractors}
                           subjects={this.state.subjects}
@@ -110,6 +111,11 @@ class Contractors extends Component {
                           subject_change={this.subject_change}/>
         </If>
         <DisplayComponent contractors={this.state.contractors} root={this.props.root}/>
+        <If v={this.state.got_contractors && this.state.contractors.length === 0}>
+          <div className="tcs-no-contractors">
+            {this.props.root.get_text('no_tutors_found')}
+          </div>
+        </If>
 
         <If v={this.state.page > 1 || this.state.more_pages}>
           <div className="tcs-pagination">

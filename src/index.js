@@ -41,6 +41,7 @@ const STRINGS = {
   review_hours: '({hours} hours)',
   previous: 'Previous',
   next: 'Next',
+  no_tutors_found: 'No more tutors found',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']

@@ -10,6 +10,9 @@ $box-height: 186px;
     display: grid;
     grid-template-columns: $dft-image-size auto 180px;
     //border: 1px dashed black;
+    &:last-child {
+      border-bottom: none;
+    }
   }
   .tcs-button {
     width: 100%;

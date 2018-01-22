@@ -1,17 +1,37 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
 import {Location, Markdown} from '../shared/Tools'
 import Stars from './Stars'
 
+class AnimateLink extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {show: false}
+  }
+
+  async componentDidMount () {
+    setTimeout(() => this.setState({show: true}), this.props.delay || 0)
+  }
+
+  render () {
+    const extra_classes = this.props.className ? this.props.className + ' ' : ''
+    return (
+      <Link to={this.props.to} className={extra_classes + 'tcs-animate-entry' + (this.state.show ? ' show' : '')}>
+        {this.props.children}
+      </Link>
+    )
+  }
+}
+
 export const Grid = ({contractors, root}) => (
   <div className="tcs-flex">
     {contractors.map((contractor, i) => (
-      <div key={i} className="tcs-col">
-        <Link to={root.url(contractor.link)} className="tcs-item tcs-box">
+      <AnimateLink key={i} delay={i * 50} to={root.url(contractor.link)} className="tcs-col">
+        <div className="tcs-item tcs-box">
           <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
           <h3 className="tcs-name">{contractor.name}</h3>
-        </Link>
-      </div>
+        </div>
+      </AnimateLink>
     ))}
   </div>
 )
@@ -19,7 +39,7 @@ export const Grid = ({contractors, root}) => (
 export const List = ({contractors, root}) => (
   <div className="tcs-list">
     {contractors.map((contractor, i) => (
-      <Link key={i} to={root.url(contractor.link)} className="tcs-item">
+      <AnimateLink key={i} delay={i * 80} to={root.url(contractor.link)} className="tcs-item">
         <div className="tcs-image-col tcs-box">
           <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
           <button className="tcs-button">
@@ -46,7 +66,7 @@ export const List = ({contractors, root}) => (
             <span>{contractor.town}</span>
           </div>
         </div>
-      </Link>
+      </AnimateLink>
     ))}
   </div>
 )

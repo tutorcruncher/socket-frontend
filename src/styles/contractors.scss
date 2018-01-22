@@ -45,6 +45,21 @@
   }
 }
 
+.tcs-animate-entry {
+  opacity: 0;
+  transition: all .5s ease;
+  &.show {
+    opacity: 1;
+  }
+}
+
+.tcs-no-contractors {
+  display: flex;
+  justify-content: center;
+  color: #aaa;
+  padding: 0 0 8px;
+}
+
 $pagination-radius: 4px;
 .tcs-pagination {
   display: flex;
