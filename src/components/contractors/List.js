@@ -16,7 +16,7 @@ class AnimateLink extends Component {
   render () {
     const extra_classes = this.props.className ? this.props.className + ' ' : ''
     return (
-      <Link to={this.props.to} className={extra_classes + 'tcs-animate-entry' + (this.state.show ? ' show' : '')}>
+      <Link to={this.props.to} className={extra_classes + 'tcs-animate-entry' + (this.state.show ? ' tcs-show' : '')}>
         {this.props.children}
       </Link>
     )

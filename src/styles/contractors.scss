@@ -48,7 +48,7 @@
 .tcs-animate-entry {
   opacity: 0;
   transition: all .5s ease;
-  &.show {
+  &.tcs-show {
     opacity: 1;
   }
 }
