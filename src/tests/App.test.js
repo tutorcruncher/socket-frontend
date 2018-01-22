@@ -12,6 +12,7 @@ it('shows tutors', async () => {
     router_mode: 'history',
     api_root: 'https://socket.tutorcruncher.com',
     mode: 'grid',
+    messages: {no_tutors_found: 'xx'},
     event_callback: () => null,
   }
   const wrapper = enz.mount(<Router><App config={config} public_key={'good'} url_generator={u => u}/></Router>)
@@ -22,9 +23,9 @@ it('shows tutors', async () => {
   expect(xhr_calls[1]).toEqual({
     method: 'GET',
     url: 'https://socket.tutorcruncher.com/good/contractors',
-    args: null
+    args: 'page=1'
   })
-  expect(wrapper.find('.tcs-col').length).toBe(2)
+  expect(wrapper.find('.tcs-item').length).toBe(2)
 })
 
 it('with con filter', async () => {
@@ -32,6 +33,7 @@ it('with con filter', async () => {
     router_mode: 'history',
     api_root: 'https://socket.tutorcruncher.com',
     mode: 'grid',
+    messages: {no_tutors_found: 'xx'},
     contractor_filter: {
       label: ['foobar'],
       label_exclude: ['spam'],
@@ -45,7 +47,7 @@ it('with con filter', async () => {
   expect(xhr_calls[1]).toEqual({
     method: 'GET',
     url: 'https://socket.tutorcruncher.com/good/contractors',
-    args: 'label=foobar&label_exclude=spam'
+    args: 'label=foobar&label_exclude=spam&page=1'
   })
-  expect(wrapper.find('.tcs-col').length).toBe(2)
+  expect(wrapper.find('.tcs-item').length).toBe(2)
 })

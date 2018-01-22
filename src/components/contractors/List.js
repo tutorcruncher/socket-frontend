@@ -40,7 +40,7 @@ export const List = ({contractors, root}) => (
   <div className="tcs-list">
     {contractors.map((contractor, i) => (
       <AnimateLink key={i} delay={i * 80} to={root.url(contractor.link)} className="tcs-item">
-        <div className="tcs-image-col tcs-box">
+        <div className="tcs-image-col">
           <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
           <button className="tcs-button">
             {root.get_text('view_profile')}

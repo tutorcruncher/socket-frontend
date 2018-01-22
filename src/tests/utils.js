@@ -78,7 +78,7 @@ function MockXMLHttpRequest () {
 }
 
 export function tick () {
-  return new Promise(resolve => setTimeout(resolve, 0))
+  return new Promise(resolve => setTimeout(resolve, 50))
 }
 
 export function xhr_setup () {
