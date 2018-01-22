@@ -27,8 +27,8 @@
 }
 
 .tcs-item {
-  text-decoration: none;
-  user-select: none;
+  text-decoration: none !important;
+  user-select: none !important;
   h3.tcs-name {
     white-space: nowrap;
     overflow: hidden;
