@@ -46,8 +46,35 @@ $box-height: 186px;
 
 .tcs-list-extra {
   display: grid;
-  grid-template-rows: 100px 1fr auto;
+  grid-template-rows: auto 1fr;
   .tcs-stars {
     grid-row: span 2;
+  }
+}
+
+@media(max-width: 600px) {
+  .tcs-list {
+    .tcs-item {
+      grid-template-columns: $dft-image-size auto;
+    }
+    .tcs-primary-description {
+      display: none;
+    }
+    h3.tcs-name {
+      font-size: 20px;
+    }
+    .tcs-aside {
+      font-size: 16px;
+    }
+  }
+  .tcs-image-col {
+    grid-row: 1 / span 2;
+  }
+
+  .tcs-list-extra {
+    grid-template-rows: auto;
+    .tcs-stars {
+      grid-row: span 1;
+    }
   }
 }
