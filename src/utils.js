@@ -17,10 +17,12 @@ export const to_markdown = t => {
 export const auto_url_root = path => {
   // remove :
   // * /subject/.*
+  // * /page/.*
   // * contractor slug
   // * /enquiry
   path = path
     .replace(/\/subject\/\d+-[^/]+$/, '/')
+    .replace(/\/page\/\d+-[^/]+$/, '/')
     .replace(/\/\d+-[^/]+$/, '/')
     .replace(/\/enquiry$/, '/')
   return path
@@ -77,6 +79,30 @@ const clean = obj => {
     }
   }
   return new_obj
+}
+
+export function get_company_options (public_key, config) {
+  const url = `${config.api_root}/${public_key}/options`
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    const on_error = msg => {
+      console.error('request error', msg, url, xhr)
+      reject(msg)
+    }
+    xhr.open('GET', url)
+    xhr.setRequestHeader('Accept', 'application/json')
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText)
+        resolve(data)
+      } else {
+        on_error(`wrong response code ${xhr.status}, Response: ${xhr.responseText.substr(0, 500)}`)
+      }
+    }
+    xhr.onerror = () => on_error(`Error requesting data ${xhr.statusText}: ${xhr.status}`)
+    xhr.send()
+  })
 }
 
 function request (app, path, send_data, method, expected_statuses) {

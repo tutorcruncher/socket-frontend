@@ -120,7 +120,7 @@ class EnquiryForm extends Component {
               </If>
 
               <div className="tcs-field tcs-submit">
-                <button type="submit">
+                <button className="tcs-button" type="submit">
                   {this.props.root.get_text('submit_enquiry')}
                 </button>
               </div>

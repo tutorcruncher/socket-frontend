@@ -4,7 +4,7 @@
   display: inline-block;
   background-color: $button-colour;
   color: white;
-  border-radius: 5px;
+  border-radius: 4px;
   font-size: 17px;
   padding: 8px 12px;
   border: none;
@@ -20,9 +20,11 @@
 @import './styles/con-details';
 @import './styles/con-modal';
 @import './styles/enquiry';
-@import './styles/enquiry-button';
+@import './styles/stars';
 @import './styles/tools';
+@import './styles/contractors';
 @import './styles/grid';
+@import './styles/list';
 @import './styles/input';
 @import './styles/modal';
 @import './styles/subject-select';

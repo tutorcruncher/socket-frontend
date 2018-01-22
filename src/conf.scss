@@ -6,6 +6,8 @@ $back-colour: 35;
 $brand-colour: #016997;
 // highlight sections of modals
 $highlight: $brand-colour;
+// ligher, greyer variant of $brand-colour
+$location-fill: #6f9aad;
 // svgs on modals
 $svg-size: 22px;
 // section on right (with image) on modals
@@ -14,20 +16,5 @@ $extra-width: 200px;
 $size-sm: 768px;
 // contact button on modals
 $button-colour: $highlight;
-
-%tcs-button {
-  display: inline-block;
-  background-color: $button-colour;
-  color: white;
-  border-radius: 5px;
-  font-size: 17px;
-  padding: 8px 12px;
-  border: none;
-  transition: all .3s ease;
-  outline: none;
-  cursor: pointer;
-  text-decoration: none;
-  &:hover {
-    background-color: darken($button-colour, 20%);
-  }
-}
+// size used for images in grid and list view
+$dft-image-size: 150px;

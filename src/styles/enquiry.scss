@@ -18,8 +18,7 @@ form.tcs {
 
 .tcs-submit {
   text-align: center;
-  button {
-    @extend %tcs-button;
+  .tcs-button {
     font-size: 17px;
     padding: 10px 12px;
   }

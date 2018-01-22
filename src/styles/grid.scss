@@ -1,16 +1,5 @@
 @import '../conf';
 
-.tcs-grid {
-  padding: 10px;
-}
-
-.subject-select {
-  width: 50%;
-  margin: 0 0 0 auto;
-  padding: 0 2px;
-  box-sizing: border-box;
-}
-
 .tcs-summary {
   padding: 5px 2px 0;
   text-align: right;
@@ -19,15 +8,26 @@
   min-height: 18px;
 }
 
-@media(max-width: 600px) {
-  .subject-select {
-    width: 100%;
-  }
-}
-
 .tcs-flex {
   display: flex;
   flex-wrap: wrap;
+  .tcs-item {
+    display: block;
+    border-radius: $border-radius;
+    background-color: #005377;
+    color: white;
+    width: 150px;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
+    user-select: none;
+  }
+  h3.tcs-name {
+    display: block;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 500;
+  }
 }
 
 .tcs-col {
@@ -35,49 +35,11 @@
   padding: 10px 15px 20px;
 }
 
-.tcs-box {
-  border-radius: $border-radius;
-  display: block;
-  background-color: #005377;
-  color: white;
-  text-decoration: none;
-  width: 150px;
-  margin: 0 auto;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
-  user-select: none;
-  h3 {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  img.tcs-thumb {
-    border-radius: $border-radius $border-radius 0 0;
-    width: 150px;
-    height: 150px;
-    margin: 0;
-  }
-  .tcs-name {
-    display: block;
-    width: 100%;
-    font-size: 15px;
-    font-weight: 500;
-    margin: 0;
-    padding: 0 0 3px;
-  }
-}
-
 @media(max-width: 400px) {
-  .subject-select {
-    width: 100%;
-  }
-  .tcs-grid {
-    padding: 10px 2px;
-  }
   .tcs-col {
     padding: 10px 2px 20px;
   }
-  .tcs-box {
+  .tcs-item {
     width: 140px;
   }
 }

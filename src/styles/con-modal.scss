@@ -1,12 +1,5 @@
 @import '../conf';
 
-.tcs-aside {
-  font-size: 22px;
-  margin-bottom: 10px;
-  color: $highlight;
-  min-height: 28px;
-}
-
 .tcs-body {
   max-height: calc(94vh - 140px);
   overflow-y: auto;
@@ -43,17 +36,11 @@
     margin: auto;
   }
 
-  .tcs-location {
-    margin: 10px 0;
-    span {
-      padding-top: 4px;
-      vertical-align: top;
-      font-weight: 500;
-    }
+  .tcs-stars {
+    margin-top: 10px;
   }
 
-  button {
-    @extend %tcs-button;
+  .tcs-button {
     margin: 10px auto 0;
     width: 100%;
   }
@@ -62,7 +49,7 @@
 .con-modal-transition {
   opacity: 1;
   transform: translate(0, 0);
-  &.leave {
+  &.in-trans {
     opacity: 0;
     transform: translate(0, -10px);
   }
