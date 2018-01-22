@@ -21,7 +21,6 @@ const raven_config = {
 }
 Raven.config(process.env.REACT_APP_RAVEN_DSN, raven_config).install()
 
-// TODO these need a consist prefix
 const STRINGS = {
   skills_label: 'Skills',
   contractor_enquiry: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
@@ -40,6 +39,8 @@ const STRINGS = {
   subject_filter_summary_plural: '{subject}: showing {count} results',
   view_profile: 'View Profile',
   review_hours: '({hours} hours)',
+  previous: 'Previous',
+  next: 'Next',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']
@@ -128,6 +129,7 @@ window.socket = async function (public_key, config) {
     return
   }
 
+  config.pagination = config.pagination || 100
   config.messages = config.messages || {}
   for (let k of Object.keys(STRINGS)) {
     if (!config.messages[k]) {
@@ -156,7 +158,7 @@ window.socket = async function (public_key, config) {
   console.debug('using config:', config)
 
   const url_base = config.router_mode === 'history' ? config.url_root : '/'
-  const url_generator = (url_) => url_base + url_
+  const url_generator = (url_) => url_base + (url_ || '')
 
   window._tcs_grecaptcha_loaded = () => (
     document.dispatchEvent(new Event('_tcs_grecaptcha_loaded'))

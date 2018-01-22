@@ -17,10 +17,12 @@ export const to_markdown = t => {
 export const auto_url_root = path => {
   // remove :
   // * /subject/.*
+  // * /page/.*
   // * contractor slug
   // * /enquiry
   path = path
     .replace(/\/subject\/\d+-[^/]+$/, '/')
+    .replace(/\/page\/\d+-[^/]+$/, '/')
     .replace(/\/\d+-[^/]+$/, '/')
     .replace(/\/enquiry$/, '/')
   return path

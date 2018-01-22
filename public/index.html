@@ -40,10 +40,11 @@
   <script>
     var public_key = '9c79f14df986a1ec693c'  // '61e9d8d03109e44d7c67'
     var api_root = null  // 'https://socket-beta.tutorcruncher.com' 'http://localhost:8000'
-    window.socket = socket(public_key, {
+    window.socket1 = socket(public_key, {
       element: '#socket1',
       router_mode: 'history',
       api_root: api_root,
+      pagination: 8,
     })
     socket(public_key, {
       element: '#socket2',

@@ -45,6 +45,31 @@
   }
 }
 
+$pagination-radius: 4px;
+.tcs-pagination {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 0;
+  .tcs-previous, .tcs-next {
+    display: inline-block;
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-decoration: none !important;
+    color: $brand-colour;
+  }
+  .tcs-previous {
+    border-right: 0;
+    border-radius: $pagination-radius 0 0 $pagination-radius;
+  }
+  .tcs-next {
+    border-radius: 0 $pagination-radius $pagination-radius 0;
+  }
+  .tcs-disable {
+    pointer-events: none;
+    color: #888;
+  }
+}
+
 .tcs-aside {
   font-size: 20px;
   margin-bottom: 10px;

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import {Footer, Location, Markdown} from '../shared/Tools'
+import {Location, Markdown} from '../shared/Tools'
 import Stars from './Stars'
 
 export const Grid = ({contractors, root}) => (
@@ -20,7 +20,7 @@ export const List = ({contractors, root}) => (
   <div className="tcs-list">
     {contractors.map((contractor, i) => (
       <Link key={i} to={root.url(contractor.link)} className="tcs-item">
-        <div className="tcs-image-col">
+        <div className="tcs-image-col tcs-box">
           <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
           <button className="tcs-button">
             {root.get_text('view_profile')}
@@ -48,6 +48,5 @@ export const List = ({contractors, root}) => (
         </div>
       </Link>
     ))}
-    <Footer/>
   </div>
 )
