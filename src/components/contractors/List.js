@@ -7,7 +7,7 @@ export const Grid = ({contractors, root}) => (
   <div className="tcs-flex">
     {contractors.map((contractor, i) => (
       <div key={i} className="tcs-col">
-        <Link to={root.url(contractor.link)} className="tcs-box">
+        <Link to={root.url(contractor.link)} className="tcs-item tcs-box">
           <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
           <h3 className="tcs-name">{contractor.name}</h3>
         </Link>
@@ -19,7 +19,7 @@ export const Grid = ({contractors, root}) => (
 export const List = ({contractors, root}) => (
   <div className="tcs-list">
     {contractors.map((contractor, i) => (
-      <Link key={i} to={root.url(contractor.link)} className="tcs-box">
+      <Link key={i} to={root.url(contractor.link)} className="tcs-item">
         <div className="tcs-image-col">
           <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
           <button className="tcs-button">
@@ -38,7 +38,7 @@ export const List = ({contractors, root}) => (
           </div>
         </div>
 
-        <div className="tcs-box-extra">
+        <div className="tcs-list-extra">
           <Stars contractor={contractor} root={root}/>
 
           <div className="tcs-location">

@@ -2,7 +2,7 @@
 $box-height: 186px;
 
 .tcs-list {
-  .tcs-box {
+  .tcs-item {
     box-sizing: content-box;
     color: #444;
     padding: 15px 0;
@@ -42,12 +42,12 @@ $box-height: 186px;
                     rgba(255, 255, 255, 1) 100%
     );
   }
+}
 
-  .tcs-box-extra {
-    display: grid;
-    grid-template-rows: 100px 1fr auto;
-    .tcs-stars {
-      grid-row: span 2;
-    }
+.tcs-list-extra {
+  display: grid;
+  grid-template-rows: 100px 1fr auto;
+  .tcs-stars {
+    grid-row: span 2;
   }
 }

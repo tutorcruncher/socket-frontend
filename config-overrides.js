@@ -48,6 +48,13 @@ module.exports = function override (config, env) {
         filename: 'foobar/index.html'
       })
     )
+    config.plugins.splice(2, 0,
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: path.resolve(__dirname, 'public', 'simple.html'),
+        filename: 'simple.html'
+      })
+    )
   }
   // console.dir(config, { depth: 10, colors: true })
   return config

@@ -11,7 +11,7 @@
 .tcs-flex {
   display: flex;
   flex-wrap: wrap;
-  .tcs-box {
+  .tcs-item {
     display: block;
     border-radius: $border-radius;
     background-color: #005377;
@@ -39,7 +39,7 @@
   .tcs-col {
     padding: 10px 2px 20px;
   }
-  .tcs-box {
+  .tcs-item {
     width: 140px;
   }
 }
