@@ -39,23 +39,15 @@ module.exports = function override (config, env) {
         })
       )
     }
-  } else {
-    // add another output file at localhost:3000/foobar/
-    config.plugins.splice(2, 0,
-      new HtmlWebpackPlugin({
-        inject: true,
-        template: path.resolve(__dirname, 'public', 'index.html'),
-        filename: 'foobar/index.html'
-      })
-    )
-    config.plugins.splice(2, 0,
-      new HtmlWebpackPlugin({
-        inject: true,
-        template: path.resolve(__dirname, 'public', 'simple/index.html'),
-        filename: 'simple/index.html'
-      })
-    )
   }
+  // add another output file at /simple/
+  config.plugins.splice(2, 0,
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: path.resolve(__dirname, 'public', 'simple/index.html'),
+      filename: 'simple/index.html'
+    })
+  )
   // console.dir(config, { depth: 10, colors: true })
   return config
 }
