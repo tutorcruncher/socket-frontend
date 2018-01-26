@@ -61,14 +61,18 @@ class EnquiryForm extends Component {
 
   render_grecaptcha () {
     const el = document.getElementById(this.grecaptcha_container_id)
-    if (el && el.childElementCount === 0) {
-      console.debug('rendering grecaptcha')
-      window.grecaptcha.render(this.grecaptcha_container_id, {
-        sitekey: this.props.config.grecaptcha_key,
-        callback: response => this.set_enquiry_data('grecaptcha_response', response)
-      })
+    if (el) {
+      if (el.childElementCount > 0) {
+        console.debug(`${this.grecaptcha_container_id} already has a grecaptcha, not rendering`, el)
+      } else {
+        console.debug('rendering grecaptcha')
+        window.grecaptcha.render(this.grecaptcha_container_id, {
+          sitekey: this.props.config.grecaptcha_key,
+          callback: response => this.set_enquiry_data('grecaptcha_response', response)
+        })
+      }
     } else {
-      console.warn('not rendering grecaptcha', el)
+      console.warn(`${this.grecaptcha_container_id} doesn't exist, not rendering`, el)
     }
   }
 
