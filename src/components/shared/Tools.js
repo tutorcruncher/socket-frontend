@@ -15,7 +15,7 @@ export const Cross = () => (
 // https://github.com/tutorcruncher/TutorCruncher-branding/blob/master/dino-flat.svg
 export const Footer = () => (
   <div className="tcs-footer">
-    <span>v{process.env.REACT_APP_RELEASE ? process.env.REACT_APP_RELEASE : '-'}</span>
+    <span>v{process.env.REACT_APP_RELEASE}</span>
     <a href="https://tutorcruncher.com" target="blank" className="tcs-footer">
       <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
         <g transform="translate(524,-293)">

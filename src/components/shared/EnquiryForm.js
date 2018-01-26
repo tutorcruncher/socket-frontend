@@ -13,7 +13,7 @@ class EnquiryForm extends Component {
       enquiry_data: {},
     }
     this.mode = this.props.mode || 'vanilla'
-    this.grecaptcha_container_id = 'grecaptcha_' + this.props.root.random_id
+    this.grecaptcha_container_id = 'grecaptcha_' + this.props.config.random_id
     this.render_grecaptcha = this.render_grecaptcha.bind(this)
     this.submit = this.submit.bind(this)
     this.set_enquiry_data = this.set_enquiry_data.bind(this)
