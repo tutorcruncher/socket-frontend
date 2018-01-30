@@ -37,7 +37,9 @@ class Modal extends Component {
 
   close () {
     this.setState({show: false})
-    setTimeout(() => this.props.history.goBack(), 200)
+    const h = this.props.history
+    const next_url = this.props.last_url ? this.props.last_url : h.location.pathname.replace(/\/[^/]+$/, '')
+    setTimeout(() => h.push(next_url), 200)
   }
 
   render () {

@@ -16,6 +16,7 @@ class Contractors extends Component {
       more_pages: false,
       subjects: [],
       selected_subject: null,
+      last_url: null,
     }
     this.update_contractors = this.update_contractors.bind(this)
     this.get_contractor_details = this.get_contractor_details.bind(this)
@@ -52,7 +53,9 @@ class Contractors extends Component {
   }
 
   subject_change (selected_subject) {
-    this.props.history.push(this.subject_url(selected_subject))
+    const url = this.subject_url(selected_subject)
+    this.props.history.push(url)
+    this.setState({last_url: url})
     this.update_contractors(selected_subject)
   }
 
@@ -135,6 +138,7 @@ class Contractors extends Component {
         </If>
         <Route path={this.props.root.url(':id(\\d+):_extra')} render={props => (
           <ConModal id={props.match.params.id}
+                    last_url={this.state.last_url}
                     contractors={this.state.contractors}
                     got_contractors={this.state.got_contractors}
                     get_contractor_details={this.get_contractor_details}
