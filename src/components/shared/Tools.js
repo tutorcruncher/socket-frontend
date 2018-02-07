@@ -57,16 +57,6 @@ export const IfElse = ({v, children}) => {
   }
 }
 
-export const Switch = ({children}) => {
-  // All but the last child of a Switch component must be "If" components
-  for (let c of children.slice(0, children.length - 1)) {
-    if (c.props.v) {
-      return c.props.children
-    }
-  }
-  return children[children.length - 1]
-}
-
 export const Markdown = ({content}) => (
   <div className="tcs-md" dangerouslySetInnerHTML={{__html: to_markdown(content)}}/>
 )
