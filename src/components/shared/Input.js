@@ -89,12 +89,23 @@ const DatetimeInput = ({field, name, value, field_label, on_change}) => {
   )
 }
 
+const IntegerInput = ({field, name, value, field_label, on_change}) => (
+  <input type="number"
+         step="1"
+         name={name}
+         placeholder={field_label}
+         required={field.required}
+         value={value}
+         onChange={on_change}/>
+)
+
 const INPUT_LOOKUP = {
   'text': TextInput,
   'checkbox': Checkbox,
   'select': Select,
   'date': DateInput,
   'datetime': DatetimeInput,
+  'integer': IntegerInput,
 }
 
 class Input extends Component {
