@@ -72,13 +72,15 @@ const DatetimeInput = ({field, name, value, field_label, on_change}) => {
   return (
     <label>
       {field_label}
-      <div className="tcs-datetime">
+      <div>
         <input type="date"
+               className="tcs-datetime tcs-date"
                name={name + '-date'}
                required={required}
                value={render_values.date}
                onChange={on_change_}/>
         <input type="time"
+               className="tcs-datetime tcs-time"
                step="300"
                name={name + '-time'}
                required={required}
