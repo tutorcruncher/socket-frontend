@@ -43,4 +43,13 @@ $border-colour: #66afe9;
       display: none;
     }
   }
+  .tcs-datetime input {
+    width: calc(50% - 5px);
+   &:first-child {
+     margin-right: 5px
+   }
+   &:last-child {
+     margin-left: 5px;
+   }
+  }
 }
