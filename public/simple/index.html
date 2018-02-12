@@ -32,6 +32,8 @@
     </main>
   </body>
   <script>
-    window.socket = socket('9c79f14df986a1ec693c')
+    var public_key = '9c79f14df986a1ec693c'
+    var api_root = null  // 'https://socket-beta.tutorcruncher.com' 'http://localhost:8000'
+    window.socket = socket(public_key, {api_root: api_root})
   </script>
 </html>

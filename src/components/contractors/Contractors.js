@@ -76,7 +76,13 @@ class Contractors extends Component {
       pagination: this.props.config.pagination,
       page: page,
     })
-    const contractors = await this.props.root.requests.get('contractors', args)
+    const data = await this.props.root.requests.get('contractors', args)
+    let contractors
+    if (Array.isArray(data)) {
+      contractors = data
+    } else {
+      contractors = data.results
+    }
     this.props.config.event_callback('updated_contractors', contractors)
     this.setState({contractors: []})
     setTimeout(() => this.setState({
