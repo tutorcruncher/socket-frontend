@@ -1,0 +1,81 @@
+//@import './vue-multiselect/dist/vue-multiselect.min';
+@import '../conf';
+
+.multiselect__select {
+  cursor: default;
+  right: 16px;
+}
+
+.multiselect__option--highlight {
+  background: $brand-colour;
+}
+
+.multiselect__option--selected.multiselect__option--highlight {
+  background: darken($brand-colour, 10%);
+}
+
+//.cross {
+//  position: absolute;
+//  top: 1px;
+//  right: 1px;
+//  margin: 5px 4px;
+//  padding: 4px 4px;
+//  cursor: pointer;
+//  z-index: 10;
+//  svg.tcs-svg {
+//    transition: all .4s ease;
+//    opacity: 0.5;
+//    width: 18px;
+//    height: 18px;
+//  }
+//  &:hover {
+//    svg.tcs-svg {
+//      opacity: 1;
+//    }
+//  }
+//}
+
+.tcs-filters-container {
+  display: flex;
+}
+
+.tcs-contractor-filter {
+  width: 50%;
+  padding: 0 2px;
+  box-sizing: border-box;
+}
+
+.tcs-location-filter {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  height: 36px;
+}
+
+.tcs-location-input {
+  width: calc(100% - 30px);
+  border: none;
+  padding: 8px;
+  font-size: 16px;
+  outline: none !important;
+  &::placeholder {
+    color: #aaa;
+  }
+}
+.tcs-location-clear {
+  padding: 6px;
+  width: 30px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #999;
+  cursor: pointer;
+  &:hover {
+    color: #666;
+  }
+}
+
+@media(max-width: 600px) {
+  .tcs-contractor-filter {
+    width: 100%;
+  }
+}

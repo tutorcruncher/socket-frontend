@@ -4,23 +4,7 @@
   padding: 10px;
 }
 
-.subject-select {
-  width: 50%;
-  margin: 0 0 0 auto;
-  padding: 0 2px;
-  box-sizing: border-box;
-}
-
-@media(max-width: 600px) {
-  .subject-select {
-    width: 100%;
-  }
-}
-
 @media(max-width: 400px) {
-  .subject-select {
-    width: 100%;
-  }
   .tcs-contractors {
     padding: 10px 2px;
   }

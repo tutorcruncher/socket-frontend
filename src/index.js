@@ -34,9 +34,10 @@ const STRINGS = {
   enquiry_title: 'Enquiry',
   grecaptcha_missing: 'This captcha is required',
   required: ' (Required)',
-  subject_filter: 'Filter by subject',
+  subject_filter_placeholder: 'Select a Subject...',
   subject_filter_summary_single: '{subject}: showing 1 result',
   subject_filter_summary_plural: '{subject}: showing {count} results',
+  location_input_placeholder: 'Enter your Address or Postal code...',
   view_profile: 'View Profile',
   review_hours: '({hours} hours)',
   previous: 'Previous',
@@ -118,6 +119,10 @@ window.socket = async function (public_key, config) {
 
   if (config.subject_filter === undefined) {
     config.subject_filter = true
+  }
+
+  if (config.location_input === undefined) {
+    config.location_input = true
   }
 
   if (!config.event_callback) {
