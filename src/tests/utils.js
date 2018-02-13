@@ -9,8 +9,8 @@ const RESPONSES = {
   }),
   'GET:https://socket.tutorcruncher.com/good/contractors': () => ({
     status: 200,
-    content: JSON.stringify(
-      [
+    content: JSON.stringify({
+      'results': [
         {
           'id': 213386,
           'url': 'https://socket.tutorcruncher.com/9c79f14df986a1ec693c/contractors/213386',
@@ -35,7 +35,24 @@ const RESPONSES = {
           'photo': 'https://socket.tutorcruncher.com/media/9c79f14df986a1ec693c/213385.thumb.jpg',
           'distance': null
         }
-      ])
+      ]
+    })
+  }),
+  'GET:https://socket.tutorcruncher.com/good/options': () => ({
+    status: 200,
+    content: JSON.stringify({
+      name: 'Demo Branch',
+      name_display: 'first_name_initial',
+      show_stars: true,
+      display_mode: 'list',
+      router_mode: 'hash',
+      show_hours_reviewed: true,
+      show_labels: true,
+      show_location_search: true,
+      show_subject_filter: true,
+      sort_on: 'name',
+      pagination: 10,
+    })
   })
 }
 
@@ -84,4 +101,31 @@ export function tick () {
 export function xhr_setup () {
   global.xhr_calls = []
   global.XMLHttpRequest = MockXMLHttpRequest
+}
+
+// taken directly from index.js
+export const STRINGS = {
+  skills_label: 'Skills',
+  contractor_enquiry: 'Please enter your details below to enquire about tutoring with {contractor_name}.',
+  enquiry: 'Please enter your details below and we will get in touch with you shortly.',
+  contractor_enquiry_button: 'Contact {contractor_name}',
+  contractor_details_button: 'Show Profile',
+  submit_enquiry: 'Submit Enquiry',
+  enquiry_submitted_thanks: 'Enquiry submitted, thank you.',
+  enquiry_modal_submitted_thanks: 'Enquiry submitted, thank you.\n\nYou can now close this window.',
+  enquiry_button: 'Get in touch',
+  enquiry_title: 'Enquiry',
+  grecaptcha_missing: 'This captcha is required',
+  required: ' (Required)',
+  subject_filter_placeholder: 'Select a subject...',
+  subject_filter_summary_single: '{subject}: showing 1 result',
+  subject_filter_summary_plural: '{subject}: showing {count} results',
+  location_input_placeholder: 'Enter your address or zip/postal code...',
+  view_profile: 'View Profile',
+  review_hours: '({hours} hours)',
+  previous: 'Previous',
+  next: 'Next',
+  no_tutors_found: 'No more tutors found',
+  no_tutors_found_loc: 'No more tutors found near this location',
+  distance_away: '{distance}km away',
 }

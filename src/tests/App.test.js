@@ -1,7 +1,7 @@
 import React from 'react'
 import {BrowserRouter as Router} from 'react-router-dom'
 import App from '../components/App'
-import { xhr_setup, tick } from './utils'
+import { xhr_setup, tick, STRINGS } from './utils'
 
 beforeEach(() => {
   xhr_setup()
@@ -12,7 +12,7 @@ it('shows tutors', async () => {
     router_mode: 'history',
     api_root: 'https://socket.tutorcruncher.com',
     mode: 'grid',
-    messages: {no_tutors_found: 'xx'},
+    messages: STRINGS,
     event_callback: () => null,
   }
   const wrapper = enz.mount(<Router><App config={config} public_key={'good'} url_generator={u => u}/></Router>)
@@ -33,7 +33,7 @@ it('with con filter', async () => {
     router_mode: 'history',
     api_root: 'https://socket.tutorcruncher.com',
     mode: 'grid',
-    messages: {no_tutors_found: 'xx'},
+    messages: STRINGS,
     contractor_filter: {
       label: ['foobar'],
       label_exclude: ['spam'],
