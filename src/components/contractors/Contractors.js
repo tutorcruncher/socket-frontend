@@ -87,10 +87,10 @@ class Contractors extends Component {
     const args = Object.assign({}, this.props.config.contractor_filter, {
       subject: selected_subject ? selected_subject.id : null,
       pagination: this.props.config.pagination,
+      sort: this.props.config.sort_on,
       page: page,
       location: location_str,
     })
-    console.log(args)
     const contractor_response = await this.props.root.requests.get('contractors', args)
     this.props.config.event_callback('updated_contractors', contractor_response)
     this.setState({contractor_response: {results: []}})
@@ -132,13 +132,13 @@ class Contractors extends Component {
         <If v={this.state.contractor_response}>
           <div className="tcs-filters-container">
             <LocationInput get_text={this.props.root.get_text}
-                           show={this.props.config.location_input}
+                           show={this.props.config.show_location_search}
                            loc_raw={this.state.location_str}
                            loc_change={this.location_change}
                            submit={this.submit_location}/>
 
             <SubjectSelect get_text={this.props.root.get_text}
-                           show={this.props.config.subject_filter}
+                           show={this.props.config.show_subject_filter}
                            subjects={this.state.subjects}
                            selected_subject={this.state.selected_subject}
                            subject_change={this.subject_change}/>

@@ -14,41 +14,25 @@
   background: darken($brand-colour, 10%);
 }
 
-//.cross {
-//  position: absolute;
-//  top: 1px;
-//  right: 1px;
-//  margin: 5px 4px;
-//  padding: 4px 4px;
-//  cursor: pointer;
-//  z-index: 10;
-//  svg.tcs-svg {
-//    transition: all .4s ease;
-//    opacity: 0.5;
-//    width: 18px;
-//    height: 18px;
-//  }
-//  &:hover {
-//    svg.tcs-svg {
-//      opacity: 1;
-//    }
-//  }
-//}
-
 .tcs-filters-container {
   display: flex;
 }
 
 .tcs-contractor-filter {
   width: 50%;
-  padding: 0 2px;
   box-sizing: border-box;
 }
 
+.Select {
+  margin-left: 4px;
+}
+
 .tcs-location-filter {
+  margin-right: 4px;
   border-radius: 4px;
   border: 1px solid #ccc;
   height: 36px;
+  padding: 0 2px;
 }
 
 .tcs-location-input {

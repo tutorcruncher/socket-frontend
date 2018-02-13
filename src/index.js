@@ -69,11 +69,8 @@ window.socket = async function (public_key, config) {
     }
   }
 
-  let options_required = false
   let error = null
-  if (!config.mode) {
-    options_required = true
-  } else if (MODES.indexOf(config.mode) === -1) {
+  if (config.mode && MODES.indexOf(config.mode) === -1) {
     error = `invalid mode "${config.mode}", options are: ${MODES.join(', ')}`
     config.mode = 'grid'
   }
@@ -97,8 +94,6 @@ window.socket = async function (public_key, config) {
     // use history mode with enquiry so it doesn't add the hash
     if (config.mode === 'enquiry') {
       config.router_mode = 'history'
-    } else {
-      options_required = true
     }
   } else if (ROUTER_MODES.indexOf(config.router_mode) === -1) {
     error = `invalid router mode "${config.router_mode}", options are: ${ROUTER_MODES.join(', ')}`
@@ -119,14 +114,6 @@ window.socket = async function (public_key, config) {
     delete config.labels_exclude
   }
 
-  if (config.subject_filter === undefined) {
-    config.subject_filter = true
-  }
-
-  if (config.location_input === undefined) {
-    config.location_input = true
-  }
-
   if (!config.event_callback) {
     config.event_callback = () => null
   }
@@ -137,7 +124,6 @@ window.socket = async function (public_key, config) {
     return
   }
 
-  config.pagination = config.pagination || 100
   config.messages = config.messages || {}
   for (let k of Object.keys(STRINGS)) {
     if (!config.messages[k]) {
@@ -147,20 +133,31 @@ window.socket = async function (public_key, config) {
   config.random_id = Math.random().toString(36).substring(2, 10)
   config.grecaptcha_key = process.env.REACT_APP_GRECAPTCHA_KEY
 
-  if (options_required) {
-    let company_options
-    try {
-      company_options = await get_company_options(public_key, config)
-    } catch(e) {
-        error = e.toString()
-      company_options = {
-        display_mode: 'grid',
-        router_mode: 'hash',
-      }
+  let company_options
+  try {
+    company_options = await get_company_options(public_key, config)
+  } catch(e) {
+    error = e.toString()
+    // these are the default values
+    company_options = {
+      display_mode: 'grid',
+      pagination: 100,
+      router_mode: 'hash',
+      show_hours_reviewed: true,
+      show_labels: true,
+      show_location_search: true,
+      show_stars: true,
+      show_subject_filter: true,
+      sort_on: 'name',
     }
-    console.debug('company options:', company_options)
-    config.mode = config.mode || company_options.display_mode
-    config.router_mode = config.router_mode || company_options.router_mode
+  }
+
+  company_options.mode = company_options.display_mode
+  console.debug('company options:', company_options)
+  for (let [k, v] of Object.entries(company_options)) {
+    if (config[k] === undefined) {
+      config[k] = v
+    }
   }
 
   console.debug('using config:', config)
