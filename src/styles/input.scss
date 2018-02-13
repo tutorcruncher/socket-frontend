@@ -40,7 +40,7 @@ $border-radius: 5px;
   }
   .help-text {
     font-size: 14px;
-    color: #888;
+    color: $grey-text;
     &.muted {
       display: none;
     }

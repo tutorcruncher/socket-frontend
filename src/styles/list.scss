@@ -27,7 +27,7 @@ $box-height: 186px;
     font-size: 26px;
   }
   .tcs-primary-description {
-    color: #888;
+    color: $grey-text;
     overflow: hidden;
     text-overflow: ellipsis;
     display: grid;
@@ -53,6 +53,10 @@ $box-height: 186px;
   .tcs-stars {
     grid-row: span 2;
   }
+}
+
+.tcs-distance {
+  text-align: center;
 }
 
 @media(max-width: 600px) {

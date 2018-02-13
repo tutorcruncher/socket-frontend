@@ -68,7 +68,7 @@ svg.tcs-close {
   padding: 5px;
   box-sizing: content-box;
   path {
-    fill: #888;
+    fill: $grey-text;
     transition: all .5s ease;
   }
   &:hover {

@@ -34,15 +34,17 @@ const STRINGS = {
   enquiry_title: 'Enquiry',
   grecaptcha_missing: 'This captcha is required',
   required: ' (Required)',
-  subject_filter_placeholder: 'Select a Subject...',
+  subject_filter_placeholder: 'Select a subject...',
   subject_filter_summary_single: '{subject}: showing 1 result',
   subject_filter_summary_plural: '{subject}: showing {count} results',
-  location_input_placeholder: 'Enter your Address or Postal code...',
+  location_input_placeholder: 'Enter your address or zip/postal code...',
   view_profile: 'View Profile',
   review_hours: '({hours} hours)',
   previous: 'Previous',
   next: 'Next',
   no_tutors_found: 'No more tutors found',
+  no_tutors_found_loc: 'No more tutors found near this location',
+  distance_away: '{distance}km away',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']

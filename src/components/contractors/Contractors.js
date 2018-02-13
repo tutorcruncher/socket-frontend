@@ -152,7 +152,7 @@ class Contractors extends Component {
           root={this.props.root}/>
         <If v={this.state.contractor_response && this.state.contractor_response.count === 0}>
           <div className="tcs-no-contractors">
-            {this.props.root.get_text('no_tutors_found')}
+            {this.props.root.get_text(this.state.location_str === null ? 'no_tutors_found' : 'no_tutors_found_loc')}
           </div>
         </If>
 
