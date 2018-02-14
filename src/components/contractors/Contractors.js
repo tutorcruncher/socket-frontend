@@ -117,14 +117,28 @@ class Contractors extends Component {
   }
 
   render () {
-    let description = ''
     const con_count = this.state.contractor_response && this.state.contractor_response.count
-    if (con_count && this.state.selected_subject) {
-      const msg_id_suffix = con_count === 1 ? 'single' : 'plural'
-      description = this.props.root.get_text('subject_filter_summary_' + msg_id_suffix, {
-        count: con_count,
-        subject: this.state.selected_subject.name,
-      })
+    const location_pretty = (
+      this.state.contractor_response &&
+      this.state.contractor_response.location &&
+      this.state.contractor_response.location.pretty
+    )
+
+    let description = ''
+    if (con_count) {
+      const description_prefix = []
+      if (location_pretty) {
+        description_prefix.push(location_pretty)
+      }
+      if (this.state.selected_subject) {
+        description_prefix.push(this.state.selected_subject.name)
+      }
+      if (description_prefix.length > 0) {
+        description = this.props.root.get_text('filter_summary_' + (con_count === 1 ? 'single' : 'plural'), {
+          count: con_count,
+          prefix: description_prefix.join('; '),
+        })
+      }
     }
     const DisplayComponent = this.props.config.mode === 'grid' ? Grid : List
     return (
@@ -152,7 +166,9 @@ class Contractors extends Component {
           root={this.props.root}/>
         <If v={this.state.contractor_response && this.state.contractor_response.count === 0}>
           <div className="tcs-no-contractors">
-            {this.props.root.get_text(this.state.location_str === null ? 'no_tutors_found' : 'no_tutors_found_loc')}
+            {this.props.root.get_text(
+              this.state.location_str === null ? 'no_tutors_found' : 'no_tutors_found_loc', {location_pretty}
+            )}
           </div>
         </If>
 

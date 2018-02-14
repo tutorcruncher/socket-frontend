@@ -1,6 +1,5 @@
 import React from 'react'
 import Select from 'react-select'
-import 'react-select/dist/react-select.css'
 import {If} from '../shared/Tools'
 
 export const SubjectSelect = ({get_text, show, subjects, selected_subject, subject_change}) => {

@@ -1,4 +1,4 @@
-//@import './vue-multiselect/dist/vue-multiselect.min';
+@import 'react-select/dist/react-select.min';
 @import '../conf';
 
 .multiselect__select {
@@ -41,6 +41,7 @@
   padding: 8px;
   font-size: 16px;
   outline: none !important;
+  line-height: 1;
   &::placeholder {
     color: #aaa;
   }
