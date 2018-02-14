@@ -4,19 +4,19 @@ import {async_start, slugify} from '../../utils'
 import {If} from '../shared/Tools'
 import {Grid, List} from './List'
 import ConModal from './ConModal'
-import SelectSubjects from './SelectSubjects'
+import {SubjectSelect, LocationInput} from './Filters'
 
 class Contractors extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      contractors: [],
-      got_contractors: false,
+      contractor_response: null,
       page: 1,
       more_pages: false,
       subjects: [],
       selected_subject: null,
       last_url: null,
+      location_str: null,
     }
     this.update_contractors = this.update_contractors.bind(this)
     this.get_contractor_details = this.get_contractor_details.bind(this)
@@ -24,6 +24,8 @@ class Contractors extends Component {
     this.subject_url = this.subject_url.bind(this)
     this.page_url = this.page_url.bind(this)
     this.subject_change = this.subject_change.bind(this)
+    this.location_change = this.location_change.bind(this)
+    this.submit_location = this.submit_location.bind(this)
   }
 
   async componentDidMount () {
@@ -59,13 +61,24 @@ class Contractors extends Component {
     this.update_contractors(selected_subject)
   }
 
-  async update_contractors (selected_subject) {
+  location_change (loc) {
+    this.setState({location_str: loc})
+  }
+
+  submit_location (location_str) {
+    this.update_contractors(this.state.selected_subject, location_str)
+  }
+
+  async update_contractors (selected_subject, location_str) {
     if (!selected_subject) {
       const m = this.props.history.location.pathname.match(/subject\/(\d+)/)
       const subject_id = m ? parseInt(m[1], 10) : null
       if (subject_id && this.state.subjects.length > 0) {
         selected_subject = this.state.subjects.find(s => s.id === subject_id)
       }
+    }
+    if (location_str === undefined) {
+      location_str = this.state.location_str
     }
 
     const m = this.props.history.location.pathname.match(/page\/(\d+)/)
@@ -74,21 +87,16 @@ class Contractors extends Component {
     const args = Object.assign({}, this.props.config.contractor_filter, {
       subject: selected_subject ? selected_subject.id : null,
       pagination: this.props.config.pagination,
+      sort: this.props.config.sort_on,
       page: page,
+      location: location_str,
     })
-    const data = await this.props.root.requests.get('contractors', args)
-    let contractors
-    if (Array.isArray(data)) {
-      contractors = data
-    } else {
-      contractors = data.results
-    }
-    this.props.config.event_callback('updated_contractors', contractors)
-    this.setState({contractors: []})
+    const contractor_response = await this.props.root.requests.get('contractors', args)
+    this.props.config.event_callback('updated_contractors', contractor_response)
+    this.setState({contractor_response: {results: []}})
     setTimeout(() => this.setState({
-      contractors,
-      got_contractors: true,
-      more_pages: contractors.length === this.props.config.pagination,
+      contractor_response,
+      more_pages: contractor_response.count > contractor_response.results.length,
     }), 0)
   }
 
@@ -109,20 +117,42 @@ class Contractors extends Component {
   }
 
   render () {
+    let description = ''
+    const con_count = this.state.contractor_response && this.state.contractor_response.count
+    if (con_count && this.state.selected_subject) {
+      const msg_id_suffix = con_count === 1 ? 'single' : 'plural'
+      description = this.props.root.get_text('subject_filter_summary_' + msg_id_suffix, {
+        count: con_count,
+        subject: this.state.selected_subject.name,
+      })
+    }
     const DisplayComponent = this.props.config.mode === 'grid' ? Grid : List
     return (
       <div className="tcs-app tcs-contractors">
-        <If v={this.state.got_contractors && this.props.config.subject_filter}>
-          <SelectSubjects get_text={this.props.root.get_text}
-                          contractors={this.state.contractors}
-                          subjects={this.state.subjects}
-                          selected_subject={this.state.selected_subject}
-                          subject_change={this.subject_change}/>
+        <If v={this.state.contractor_response}>
+          <div className="tcs-filters-container">
+            <LocationInput get_text={this.props.root.get_text}
+                           show={this.props.config.show_location_search}
+                           loc_raw={this.state.location_str}
+                           loc_change={this.location_change}
+                           submit={this.submit_location}/>
+
+            <SubjectSelect get_text={this.props.root.get_text}
+                           show={this.props.config.show_subject_filter}
+                           subjects={this.state.subjects}
+                           selected_subject={this.state.selected_subject}
+                           subject_change={this.subject_change}/>
+          </div>
+          <div key="summary" className="tcs-summary">
+            {description}
+          </div>
         </If>
-        <DisplayComponent contractors={this.state.contractors} root={this.props.root}/>
-        <If v={this.state.got_contractors && this.state.contractors.length === 0}>
+        <DisplayComponent
+          contractors={this.state.contractor_response ? this.state.contractor_response.results : []}
+          root={this.props.root}/>
+        <If v={this.state.contractor_response && this.state.contractor_response.count === 0}>
           <div className="tcs-no-contractors">
-            {this.props.root.get_text('no_tutors_found')}
+            {this.props.root.get_text(this.state.location_str === null ? 'no_tutors_found' : 'no_tutors_found_loc')}
           </div>
         </If>
 
@@ -145,8 +175,8 @@ class Contractors extends Component {
         <Route path={this.props.root.url(':id(\\d+):_extra')} render={props => (
           <ConModal id={props.match.params.id}
                     last_url={this.state.last_url}
-                    contractors={this.state.contractors}
-                    got_contractors={this.state.got_contractors}
+                    contractors={this.state.contractor_response.results}
+                    got_contractors={!!this.state.contractor_response}
                     get_contractor_details={this.get_contractor_details}
                     root={this.props.root}
                     config={this.props.config}

@@ -30,6 +30,10 @@ class App extends Component {
 
   get_text (name, replacements) {
     let s = this.props.config.messages[name]
+    if (!s) {
+      console.warn(`not translation found for "${name}"`)
+      return name
+    }
     for (let [k, v] of Object.entries(replacements || {})) {
       s = s.replace(`{${k}}`, v)
     }

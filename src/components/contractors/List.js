@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
-import {Location, Markdown} from '../shared/Tools'
+import {Location, Markdown, If} from '../shared/Tools'
 import Stars from './Stars'
 
 class AnimateLink extends Component {
@@ -64,6 +64,11 @@ export const List = ({contractors, root}) => (
           <div className="tcs-location">
             <Location/>
             <span>{contractor.town}</span>
+            <div className="tcs-distance">
+              <If v={contractor.distance !== null}>
+                {root.get_text('distance_away', {distance: Math.round(contractor.distance / 100) / 10})}
+              </If>
+            </div>
           </div>
         </div>
       </AnimateLink>
