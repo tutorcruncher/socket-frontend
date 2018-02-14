@@ -117,7 +117,6 @@ class Contractors extends Component {
   }
 
   render () {
-    let description = ''
     const con_count = this.state.contractor_response && this.state.contractor_response.count
     const location_pretty = (
       this.state.contractor_response &&
@@ -125,6 +124,7 @@ class Contractors extends Component {
       this.state.contractor_response.location.pretty
     )
 
+    let description = ''
     if (con_count) {
       const description_prefix = []
       if (location_pretty) {
@@ -133,10 +133,12 @@ class Contractors extends Component {
       if (this.state.selected_subject) {
         description_prefix.push(this.state.selected_subject.name)
       }
-      description = this.props.root.get_text('filter_summary_' + (con_count === 1 ? 'single' : 'plural'), {
-        count: con_count,
-        prefix: description_prefix.join('; '),
-      })
+      if (description_prefix.length > 0) {
+        description = this.props.root.get_text('filter_summary_' + (con_count === 1 ? 'single' : 'plural'), {
+          count: con_count,
+          prefix: description_prefix.join('; '),
+        })
+      }
     }
     const DisplayComponent = this.props.config.mode === 'grid' ? Grid : List
     return (
