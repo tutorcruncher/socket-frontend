@@ -42,8 +42,10 @@ const STRINGS = {
   review_hours: '({hours} hours)',
   previous: 'Previous',
   next: 'Next',
-  no_tutors_found: 'No more tutors found',
-  no_tutors_found_loc: 'No more tutors found near "{location_pretty}"',
+  no_tutors_found: 'No tutors found.',
+  no_tutors_found_loc: 'No more tutors found near "{location}".',
+  no_tutors_found_no_loc: 'No more tutors, unable to locate "{location}".',
+  no_tutors_found_rate_limited: 'Too many location lookups, no results.',
   distance_away: '{distance}km away',
 }
 

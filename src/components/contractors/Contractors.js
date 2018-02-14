@@ -124,6 +124,24 @@ class Contractors extends Component {
       this.state.contractor_response.location.pretty
     )
 
+    let error_message = null
+    if (this.state.contractor_response && this.state.contractor_response.count === 0) {
+      const location_error = (
+        this.state.contractor_response &&
+        this.state.contractor_response.location &&
+        this.state.contractor_response.location.error
+      )
+      // location error can be 'rate_limited' pr 'no_results'
+      if (location_error === 'rate_limited') {
+        error_message = this.props.root.get_text('no_tutors_found_rate_limited')
+      } else if (location_error === 'no_results') {
+        error_message = this.props.root.get_text('no_tutors_found_no_loc', {location: this.state.location_str})
+      } else if (location_pretty) {
+        error_message = this.props.root.get_text('no_tutors_found_loc', {location: location_pretty})
+      } else {
+        error_message = this.props.root.get_text('no_tutors_found')
+      }
+    }
     let description = ''
     if (con_count) {
       const description_prefix = []
@@ -164,11 +182,9 @@ class Contractors extends Component {
         <DisplayComponent
           contractors={this.state.contractor_response ? this.state.contractor_response.results : []}
           root={this.props.root}/>
-        <If v={this.state.contractor_response && this.state.contractor_response.count === 0}>
+        <If v={error_message}>
           <div className="tcs-no-contractors">
-            {this.props.root.get_text(
-              this.state.location_str === null ? 'no_tutors_found' : 'no_tutors_found_loc', {location_pretty}
-            )}
+            {error_message}
           </div>
         </If>
 
