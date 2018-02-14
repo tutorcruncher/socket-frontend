@@ -94,9 +94,10 @@ class Contractors extends Component {
     const contractor_response = await this.props.root.requests.get('contractors', args)
     this.props.config.event_callback('updated_contractors', contractor_response)
     this.setState({contractor_response: {results: []}})
+    const on_previous_pages = (page - 1) * this.props.config.pagination
     setTimeout(() => this.setState({
       contractor_response,
-      more_pages: contractor_response.count > contractor_response.results.length,
+      more_pages: contractor_response.count > contractor_response.results.length + on_previous_pages,
     }), 0)
   }
 
@@ -125,12 +126,9 @@ class Contractors extends Component {
     )
 
     let error_message = null
-    if (this.state.contractor_response && this.state.contractor_response.count === 0) {
-      const location_error = (
-        this.state.contractor_response &&
-        this.state.contractor_response.location &&
-        this.state.contractor_response.location.error
-      )
+    let description = null
+    if (con_count === 0) {
+      const location_error = this.state.contractor_response.location && this.state.contractor_response.location.error
       // location error can be 'rate_limited' pr 'no_results'
       if (location_error === 'rate_limited') {
         error_message = this.props.root.get_text('no_tutors_found_rate_limited')
@@ -141,22 +139,12 @@ class Contractors extends Component {
       } else {
         error_message = this.props.root.get_text('no_tutors_found')
       }
-    }
-    let description = ''
-    if (con_count) {
-      const description_prefix = []
-      if (location_pretty) {
-        description_prefix.push(location_pretty)
-      }
-      if (this.state.selected_subject) {
-        description_prefix.push(this.state.selected_subject.name)
-      }
-      if (description_prefix.length > 0) {
-        description = this.props.root.get_text('filter_summary_' + (con_count === 1 ? 'single' : 'plural'), {
-          count: con_count,
-          prefix: description_prefix.join('; '),
-        })
-      }
+    } else if (con_count > 0) {
+      description = [
+        location_pretty,
+        this.state.selected_subject && this.state.selected_subject.name,
+        this.props.root.get_text('filter_summary_' + (con_count === 1 ? 'single' : 'plural'), {count: con_count})
+      ].filter(Boolean).join(' • ')
     }
     const DisplayComponent = this.props.config.mode === 'grid' ? Grid : List
     return (
@@ -207,8 +195,8 @@ class Contractors extends Component {
         <Route path={this.props.root.url(':id(\\d+):_extra')} render={props => (
           <ConModal id={props.match.params.id}
                     last_url={this.state.last_url}
-                    contractors={this.state.contractor_response.results}
-                    got_contractors={!!this.state.contractor_response}
+                    contractors={this.state.contractor_response && this.state.contractor_response.results}
+                    got_contractors={Boolean(this.state.contractor_response)}
                     get_contractor_details={this.get_contractor_details}
                     root={this.props.root}
                     config={this.props.config}
