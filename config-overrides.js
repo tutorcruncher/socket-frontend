@@ -19,7 +19,8 @@ module.exports = function override (config, env) {
           {
             loader: 'sass-loader',
             options: {
-              outputStyle: 'compressed'
+              outputStyle: 'compressed',
+              includePaths: [path.resolve(__dirname, 'node_modules')],
             }
           }
         ]
