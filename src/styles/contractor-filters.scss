@@ -16,6 +16,10 @@
 
 .tcs-filters-container {
   display: flex;
+  .Select-placeholder, input {
+    font-size: 16px !important;
+    background: transparent !important;
+  }
 }
 
 .tcs-contractor-filter {
@@ -33,10 +37,11 @@
   border: 1px solid #ccc;
   height: 36px;
   padding: 0 2px;
+  background: white;
 }
 
 .tcs-location-input {
-  width: calc(100% - 30px);
+  width: calc(100% - 50px);
   border: none;
   padding: 8px;
   font-size: 16px;
