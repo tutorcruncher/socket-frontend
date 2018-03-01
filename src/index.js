@@ -1,6 +1,7 @@
 import Raven from 'raven-js'
 import React from 'react'
 import ReactDOM from 'react-dom'
+import 'babel-polyfill'
 import './main.scss'
 import App from './components/App'
 import {BrowserRouter, HashRouter} from 'react-router-dom'
@@ -72,7 +73,7 @@ window.socket = async function (public_key, config) {
   }
 
   let error = null
-  if (config.mode && MODES.indexOf(config.mode) === -1) {
+  if (config.mode && !MODES.includes(config.mode)) {
     error = `invalid mode "${config.mode}", options are: ${MODES.join(', ')}`
     config.mode = 'grid'
   }
@@ -97,7 +98,7 @@ window.socket = async function (public_key, config) {
     if (config.mode === 'enquiry') {
       config.router_mode = 'history'
     }
-  } else if (ROUTER_MODES.indexOf(config.router_mode) === -1) {
+  } else if (!ROUTER_MODES.includes(config.router_mode)) {
     error = `invalid router mode "${config.router_mode}", options are: ${ROUTER_MODES.join(', ')}`
     config.router_mode = 'hash'
   }

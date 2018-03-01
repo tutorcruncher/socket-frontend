@@ -94,7 +94,7 @@ class EnquiryForm extends Component {
     return (
       <div className="tcs-enquiry">
         <IfElse v={this.state.submitted}>
-          <div className="tcs-submitted" v-if="submitted">
+          <div className="tcs-submitted">
             <Markdown content={
               get_text(this.mode.includes('modal') ? 'enquiry_modal_submitted_thanks' : 'enquiry_submitted_thanks')
             }/>
