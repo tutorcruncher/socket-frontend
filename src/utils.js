@@ -107,7 +107,9 @@ export function get_company_options (public_key, config) {
 
 function request (app, path, send_data, method, expected_statuses) {
   let url = path
-  if (!url.startsWith('http')) {
+  if (url.startsWith('/')) {
+    url = app.props.config.api_root + url
+  } else if (!url.startsWith('http')) {
     url = `${app.props.config.api_root}/${app.props.public_key}/${path}`
   }
 

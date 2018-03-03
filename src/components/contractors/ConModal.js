@@ -51,11 +51,15 @@ class ConModal extends Component {
       )
     }
     const {contractor, contractor_extra} = _con
+    let photo_src = contractor.photo
+    if (photo_src.startsWith('/')) {
+      photo_src = this.props.config.api_root + photo_src
+    }
     return (
       <Modal history={this.props.history} title={contractor.name} last_url={this.props.last_url}>
         <div className="tcs-body">
           <div className="tcs-extra">
-            <img src={contractor.photo} alt={contractor.name}/>
+            <img src={photo_src} alt={contractor.name}/>
 
             <Stars contractor={contractor} root={this.props.root}/>
 
