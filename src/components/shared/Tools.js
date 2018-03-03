@@ -60,3 +60,11 @@ export const IfElse = ({v, children}) => {
 export const Markdown = ({content}) => (
   <div className="tcs-md" dangerouslySetInnerHTML={{__html: to_markdown(content)}}/>
 )
+
+export const Photo = ({contractor, config, className}) => {
+  let photo_src = contractor.photo
+  if (photo_src.startsWith('/')) {
+    photo_src = config.api_root + photo_src
+  }
+  return <img src={photo_src} alt={contractor.name} className={className}/>
+}

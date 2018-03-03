@@ -169,6 +169,7 @@ class Contractors extends Component {
         </If>
         <DisplayComponent
           contractors={this.state.contractor_response ? this.state.contractor_response.results : []}
+          config={this.props.config}
           root={this.props.root}/>
         <If v={error_message}>
           <div className="tcs-no-contractors">

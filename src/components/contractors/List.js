@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
-import {Location, Markdown, If} from '../shared/Tools'
+import {Location, Markdown, If, Photo} from '../shared/Tools'
 import Stars from './Stars'
 
 class AnimateLink extends Component {
@@ -23,12 +23,12 @@ class AnimateLink extends Component {
   }
 }
 
-export const Grid = ({contractors, root}) => (
+export const Grid = ({contractors, root, config}) => (
   <div className="tcs-flex">
     {contractors.map((contractor, i) => (
       <AnimateLink key={i} delay={i * 50} to={root.url(contractor.link)} className="tcs-col">
         <div className="tcs-item tcs-box">
-          <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
+          <Photo contractor={contractor} config={config} className="tcs-thumb"/>
           <h3 className="tcs-name">{contractor.name}</h3>
         </div>
       </AnimateLink>
@@ -36,12 +36,12 @@ export const Grid = ({contractors, root}) => (
   </div>
 )
 
-export const List = ({contractors, root}) => (
+export const List = ({contractors, root, config}) => (
   <div className="tcs-list">
     {contractors.map((contractor, i) => (
       <AnimateLink key={i} delay={i * 80} to={root.url(contractor.link)} className="tcs-item">
         <div className="tcs-image-col">
-          <img src={contractor.photo} alt={contractor.name} className="tcs-thumb"/>
+          <Photo contractor={contractor} config={config} className="tcs-thumb"/>
           <button className="tcs-button">
             {root.get_text('view_profile')}
           </button>
