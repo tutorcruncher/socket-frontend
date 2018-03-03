@@ -50,7 +50,7 @@ export const google_analytics = (history, config) => {
   } else {
     ga_prefixes.push('')
   }
-  window.ga('create', process.env.GA_ID || '-', 'auto', tcs_ga_name)
+  window.ga('create', process.env.REACT_APP_GA_ID || '-', 'auto', tcs_ga_name)
   window.ga(tcs_ga_name + '.set', 'dimension1', config.mode)
   window.ga(tcs_ga_name + '.set', 'dimension2', config.router_mode)
 
