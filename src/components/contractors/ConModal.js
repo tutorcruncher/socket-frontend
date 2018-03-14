@@ -79,7 +79,10 @@ class ConModal extends Component {
                  style={{transition: `all ${TRANSITION_TIME}ms ease-in-out`}}>
 
               <IfElse v={this.state.show_enquiry}>
-                <EnquiryForm contractor={contractor} root={this.props.root} config={this.props.config}/>
+                <EnquiryForm contractor={contractor}
+                             root={this.props.root}
+                             config={this.props.config}
+                             mode='con-modal'/>
               {/*else:*/}
                 <ConDetails contractor={contractor}
                             contractor_extra={contractor_extra}

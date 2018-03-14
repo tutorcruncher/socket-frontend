@@ -12,7 +12,9 @@ class EnquiryForm extends Component {
       grecaptcha_missing: false,
       enquiry_data: {},
     }
-    this.mode = this.props.mode || 'vanilla'
+    if (!this.props.mode) {
+      throw Error('Enquiry form mode not set')
+    }
     this.grecaptcha_container_id = 'grecaptcha_' + this.props.config.random_id
     this.render_grecaptcha = this.render_grecaptcha.bind(this)
     this.submit = this.submit.bind(this)
@@ -20,7 +22,7 @@ class EnquiryForm extends Component {
   }
 
   componentDidMount () {
-    if (this.mode !== 'vanilla') {
+    if (this.props.mode !== 'vanilla') {
       this.props.root.ga_event('enquiry-form', 'loaded', this.props.mode)
     }
 
@@ -51,7 +53,7 @@ class EnquiryForm extends Component {
 
     const r = await this.props.root.requests.post('enquiry', this.state.enquiry_data, [201, 400])
     if (r.status === 201) {
-      this.props.root.ga_event('enquiry-form', 'submitted', this.mode)
+      this.props.root.ga_event('enquiry-form', 'submitted', this.props.mode)
       this.setState({submitted: true})
     } else {
       console.warn('Invalid form:', r)
@@ -96,7 +98,8 @@ class EnquiryForm extends Component {
         <IfElse v={this.state.submitted}>
           <div className="tcs-submitted">
             <Markdown content={
-              get_text(this.mode.includes('modal') ? 'enquiry_modal_submitted_thanks' : 'enquiry_submitted_thanks')
+              get_text(this.props.mode.includes('modal')
+                ? 'enquiry_modal_submitted_thanks' : 'enquiry_submitted_thanks')
             }/>
           </div>
           {/*else:*/}
