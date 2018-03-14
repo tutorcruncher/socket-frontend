@@ -6,7 +6,7 @@ const EnquiryModal = ({root, config, history}) => (
   <Modal history={history} title={root.get_text('enquiry_title')}>
     <div className="tcs-body">
       <div className="tcs-content">
-        <EnquiryForm root={root} config={config}/>
+        <EnquiryForm root={root} config={config} mode='enquiry-modal'/>
       </div>
     </div>
   </Modal>
