@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Component } from 'react'
+import {Link} from 'react-router-dom'
 import { to_markdown } from '../../utils'
 
 // this is the svg for map icon straight from
@@ -67,4 +68,24 @@ export const Photo = ({contractor, config, className}) => {
     photo_src = config.api_root + photo_src
   }
   return <img src={photo_src} alt={contractor.name} className={className}/>
+}
+
+export class AnimateLink extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {show: false}
+  }
+
+  async componentDidMount () {
+    setTimeout(() => this.setState({show: true}), this.props.delay || 0)
+  }
+
+  render () {
+    const extra_classes = this.props.className ? this.props.className + ' ' : ''
+    return (
+      <Link to={this.props.to} className={extra_classes + 'tcs-animate-entry' + (this.state.show ? ' tcs-show' : '')}>
+        {this.props.children}
+      </Link>
+    )
+  }
 }

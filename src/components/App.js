@@ -5,6 +5,7 @@ import Error from './shared/Error'
 import Contractors from './contractors/Contractors'
 import PlainEnquiry from './enquiry/PlainEnquiry'
 import EnquiryButton from './enquiry/EnquiryButton'
+import Appointments from './appointments/Appointments'
 
 class App extends Component {
   constructor (props) {
@@ -69,6 +70,8 @@ class App extends Component {
       return <PlainEnquiry root={this} config={this.props.config}/>
     } else if (this.props.config.mode === 'enquiry-modal') {
       return <EnquiryButton root={this} config={this.props.config}/>
+    } else if (this.props.config.mode === 'appointments') {
+      return <Appointments root={this} config={this.props.config} history={this.props.history}/>
     } else {
       // grid or list
       return <Contractors root={this} config={this.props.config} history={this.props.history}/>

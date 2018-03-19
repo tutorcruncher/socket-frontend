@@ -53,7 +53,9 @@ class Modal extends Component {
             </div>
           </div>
 
-          {this.props.children}
+          <div className="tcs-body">
+            {this.props.children}
+          </div>
 
           <Footer/>
         </div>

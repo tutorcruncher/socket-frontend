@@ -50,7 +50,7 @@ const STRINGS = {
   distance_away: '{distance}km away',
 }
 
-const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']
+const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']
 const ROUTER_MODES = ['hash', 'history']
 
 window.socket = async function (public_key, config) {

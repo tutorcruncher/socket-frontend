@@ -1,27 +1,6 @@
-import React, { Component } from 'react'
-import {Link} from 'react-router-dom'
-import {Location, Markdown, If, Photo} from '../shared/Tools'
+import React from 'react'
+import {Location, Markdown, If, Photo, AnimateLink} from '../shared/Tools'
 import Stars from './Stars'
-
-class AnimateLink extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {show: false}
-  }
-
-  async componentDidMount () {
-    setTimeout(() => this.setState({show: true}), this.props.delay || 0)
-  }
-
-  render () {
-    const extra_classes = this.props.className ? this.props.className + ' ' : ''
-    return (
-      <Link to={this.props.to} className={extra_classes + 'tcs-animate-entry' + (this.state.show ? ' tcs-show' : '')}>
-        {this.props.children}
-      </Link>
-    )
-  }
-}
 
 export const Grid = ({contractors, root, config}) => (
   <div className="tcs-flex">

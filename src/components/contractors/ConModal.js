@@ -53,7 +53,6 @@ class ConModal extends Component {
     const {contractor, contractor_extra} = _con
     return (
       <Modal history={this.props.history} title={contractor.name} last_url={this.props.last_url}>
-        <div className="tcs-body">
           <div className="tcs-extra">
             <Photo contractor={contractor} config={this.props.config}/>
 
@@ -91,7 +90,6 @@ class ConModal extends Component {
 
             </div>
           </div>
-        </div>
       </Modal>
     )
   }
