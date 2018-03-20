@@ -53,43 +53,43 @@ class ConModal extends Component {
     const {contractor, contractor_extra} = _con
     return (
       <Modal history={this.props.history} title={contractor.name} last_url={this.props.last_url}>
-          <div className="tcs-extra">
-            <Photo contractor={contractor} config={this.props.config}/>
+        <div className="tcs-extra">
+          <Photo contractor={contractor} config={this.props.config}/>
 
-            <Stars contractor={contractor} root={this.props.root}/>
+          <Stars contractor={contractor} root={this.props.root}/>
 
-            <div className="tcs-location">
-              <Location/>
-              <span>{contractor.town}</span>
-            </div>
+          <div className="tcs-location">
+            <Location/>
+            <span>{contractor.town}</span>
+          </div>
+
+          <IfElse v={this.state.show_enquiry}>
+            <button className="tcs-button" onClick={this.switch_view}>
+              {this.props.root.get_text('contractor_details_button', {contractor_name: contractor.name})}
+            </button>
+            <button className="tcs-button" onClick={this.switch_view}>
+              {this.props.root.get_text('contractor_enquiry_button', {contractor_name: contractor.name})}
+            </button>
+          </IfElse>
+        </div>
+        <div className="tcs-content">
+          <div className="tcs-aside tcs-md">{contractor.tag_line}</div>
+          <div className={'tcs-scroll con-modal-transition' + this.state.transition_class}
+                style={{transition: `all ${TRANSITION_TIME}ms ease-in-out`}}>
 
             <IfElse v={this.state.show_enquiry}>
-              <button className="tcs-button" onClick={this.switch_view}>
-                {this.props.root.get_text('contractor_details_button', {contractor_name: contractor.name})}
-              </button>
-              <button className="tcs-button" onClick={this.switch_view}>
-                {this.props.root.get_text('contractor_enquiry_button', {contractor_name: contractor.name})}
-              </button>
+              <EnquiryForm contractor={contractor}
+                            root={this.props.root}
+                            config={this.props.config}
+                            mode='con-modal'/>
+            {/*else:*/}
+              <ConDetails contractor={contractor}
+                          contractor_extra={contractor_extra}
+                          get_text={this.props.root.get_text}/>
             </IfElse>
-          </div>
-          <div className="tcs-content">
-            <div className="tcs-aside tcs-md">{contractor.tag_line}</div>
-            <div className={'tcs-scroll con-modal-transition' + this.state.transition_class}
-                 style={{transition: `all ${TRANSITION_TIME}ms ease-in-out`}}>
 
-              <IfElse v={this.state.show_enquiry}>
-                <EnquiryForm contractor={contractor}
-                             root={this.props.root}
-                             config={this.props.config}
-                             mode='con-modal'/>
-              {/*else:*/}
-                <ConDetails contractor={contractor}
-                            contractor_extra={contractor_extra}
-                            get_text={this.props.root.get_text}/>
-              </IfElse>
-
-            </div>
           </div>
+        </div>
       </Modal>
     )
   }

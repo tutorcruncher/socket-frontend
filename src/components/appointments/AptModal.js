@@ -9,7 +9,7 @@ class AptModal extends Component {
   }
 
   get_appointment () {
-    return {foo: this.apt_id}  // TODO
+    return this.props.appointments.find(a => a.id === this.apt_id)
   }
 
   render () {
@@ -20,7 +20,7 @@ class AptModal extends Component {
         </Modal>
       )
     }
-    const apt  = this.get_appointment()
+    const apt = this.get_appointment()
     if (!apt) {
       return (
         <Modal history={this.props.history} title="Appointment not Found">

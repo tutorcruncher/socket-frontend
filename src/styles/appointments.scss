@@ -1,0 +1,12 @@
+@import '../conf';
+
+.tcs-appointments {
+  a.tcs-item {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    color: $text-color;
+    .tcs-topic {
+      font-size: 20px;
+    }
+  }
+}

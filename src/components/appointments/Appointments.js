@@ -9,7 +9,7 @@ class Appointments extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      response: null,
+      appointments: null,
       selected_job: null,
       page: 1,
       more_pages: false,
@@ -41,31 +41,36 @@ class Appointments extends Component {
     const mp = this.props.history.location.pathname.match(/page\/(\d+)/)
     const page = mp ? parseInt(mp[1], 10) : 1
     this.setState({job_id, page})
-    const response = await this.props.root.requests.get('appointments', {
+    const appointments = await this.props.root.requests.get('appointments', {
       service: job_id,
       page: page,
       pagination: this.props.config.pagination,
     })
-    this.props.config.event_callback('updated_appointments', response)
+    console.log(appointments)
+    this.props.config.event_callback('updated_appointments', appointments)
     const on_previous_pages = (page - 1) * this.props.config.pagination
-    setTimeout(() => this.setState({
-      response,
-      more_pages: response.count > response.results.length + on_previous_pages,
-    }), 0)
+    this.setState({
+      appointments,
+      more_pages: appointments.count > appointments.results.length + on_previous_pages,
+    })
   }
 
   render () {
-    const appointments = this.state.response ? this.state.response.results : []
+    const appointments = this.state.appointments ? this.state.appointments.results : []
     return (
       <div className="tcs-app tcs-appointments">
-        <div>
-          appointments
-        </div>
         {appointments.map((apt, i) => (
           <AnimateLink key={i}
-                       delay={i * 80} to={root.url(`appointment/${apt.id}-${slugify(apt.topic)}`)}
+                       delay={i * 80} to={this.props.root.url(`appointment/${apt.link}`)}
                        className="tcs-item">
-            {apt.topic}
+            <div>
+              <div className="tcs-topic">{apt.topic}</div>
+              <div>{apt.price}</div>
+            </div>
+            <div className="tcs-text-right">
+              <span>{apt.start}</span>
+              &nbsp;<span>({(new Date(apt.finish)) - (new Date(apt.start))})</span>
+            </div>
           </AnimateLink>
         ))}
 
@@ -87,8 +92,8 @@ class Appointments extends Component {
         </If>
         <Route path={this.props.root.url('appointment/:id(\\d+):_extra')} render={props => (
           <AptModal id={props.match.params.id}
-                    appointments={this.state.response && this.state.response.results}
-                    got_data={Boolean(this.state.response)}
+                    appointments={this.state.appointments && this.state.appointments.results}
+                    got_data={Boolean(this.state.appointments)}
                     root={this.props.root}
                     config={this.props.config}
                     history={props.history}/>
