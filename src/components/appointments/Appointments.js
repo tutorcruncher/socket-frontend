@@ -1,24 +1,9 @@
 import React, { Component } from 'react'
 import {Link, Route} from 'react-router-dom'
 import format from 'date-fns/format'
-import {slugify, colour_contrast} from '../../utils'
+import {slugify, colour_contrast, group_by} from '../../utils'
 import {If} from '../shared/Tools'
 import AptModal from './AptModal'
-
-const group_by = (items, key_getter) => {
-  const groups = []
-  let key, current_key
-  for (let item of items) {
-    key = key_getter(item)
-    if (groups.length && current_key === key) {
-      groups[groups.length - 1].push(item)
-    } else {
-      groups.push([item])
-      current_key = key
-    }
-  }
-  return groups
-}
 
 const group_appointments = apts => {
   // group appointments by month then day
@@ -60,19 +45,6 @@ const AptDayGroup = ({appointments, props}) => {
   )
 }
 
-const AptMonthGroup = ({date, appointments, props}) => {
-  console.log('date:', date)
-  return (
-    <div className="tcs-apt-group-month">
-      <div className="tcs-title">{format(date, 'MMMM')}</div>
-      {appointments.map((appointments, j) => (
-        <AptDayGroup appointments={appointments} key={j} props={props}/>
-      ))}
-    </div>
-  )
-}
-
-
 class Appointments extends Component {
   constructor (props) {
     super(props)
@@ -83,6 +55,7 @@ class Appointments extends Component {
       more_pages: false,
     }
     this.update = this.update.bind(this)
+    this.root_url = this.props.root.url('')
   }
 
   async componentDidMount () {
@@ -92,7 +65,7 @@ class Appointments extends Component {
   page_url (page, selected_job) {
     page = page || this.state.page
     selected_job = selected_job || this.state.selected_job
-    let url = this.props.root.url('')
+    let url = this.root_url
     if (this.state.selected_job) {
       url = this.props.root.url(`job/${selected_job.id}-${slugify(selected_job.name)}`)
     }
@@ -128,7 +101,12 @@ class Appointments extends Component {
     return (
       <div className="tcs-app tcs-appointments">
         {months.map(({date, appointments}, i) => (
-          <AptMonthGroup date={date} appointments={appointments} key={i} props={this.props}/>
+          <div className="tcs-apt-group-month" key={i}>
+            <div className="tcs-title">{format(date, 'MMMM')}</div>
+            {appointments.map((appointments, i) => (
+              <AptDayGroup appointments={appointments} key={i} props={this.props}/>
+            ))}
+          </div>
         ))}
 
         <If v={this.state.page > 1 || this.state.more_pages}>
@@ -149,6 +127,7 @@ class Appointments extends Component {
         </If>
         <Route path={this.props.root.url('appointment/:id(\\d+):_extra')} render={props => (
           <AptModal id={props.match.params.id}
+                    last_url={this.root_url}
                     appointments={this.state.appointments && this.state.appointments.results}
                     got_data={Boolean(this.state.appointments)}
                     root={this.props.root}

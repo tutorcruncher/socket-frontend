@@ -214,3 +214,18 @@ export function colour_contrast (colour) {
   const yiq = (r * 299 + g * 587 + b * 114) / 1000
   return yiq >= 128 ? 'light' : 'dark'
 }
+
+export const group_by = (items, key_getter) => {
+  const groups = []
+  let key, current_key
+  for (let item of items) {
+    key = key_getter(item)
+    if (groups.length && current_key === key) {
+      groups[groups.length - 1].push(item)
+    } else {
+      groups.push([item])
+      current_key = key
+    }
+  }
+  return groups
+}
