@@ -1,12 +1,44 @@
 @import '../conf';
 
 .tcs-appointments {
-  a.tcs-item {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    color: $text-color;
-    .tcs-topic {
-      font-size: 20px;
+  padding: 10px;
+}
+
+.tcs-apt-group-month {
+  padding: 10px 8px;
+  .tcs-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+.tcs-apt-group-day {
+  padding-bottom: 12px;
+  display: grid;
+  grid-template-columns: 100px auto;
+  .tcs-day {
+    border-right: 2px solid #DDD;
+    margin-right: 12px;
+    padding-right: 12px;
+    text-align: right;
+    font-size: 18px;
+  }
+  .tcs-apt {
+    margin: 0 0 8px;
+    padding: 3px;
+    border-radius: $border-radius;
+    display: flex;
+    justify-content: space-between;
+    color: black;
+    span {
+      margin: 0 5px;
+      vertical-align: middle;
     }
+    &.dark {
+      color: white;
+    }
+  }
+  .tcs-item:last-child .tcs-apt {
+    margin-bottom: 0;
   }
 }

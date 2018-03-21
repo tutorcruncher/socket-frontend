@@ -186,3 +186,31 @@ export const slugify = text => (
      .replace(/^-+/, '')       // Trim - from start of text
      .replace(/-+$/, '')       // Trim - from end of text
 )
+
+export function colour_contrast (colour) {
+  let r = 0
+  let g = 0
+  let b = 0
+  let c
+  if (/rgba/.test(colour)) {
+    c = colour.replace('rgba(', '').replace(')', '').split(/,/)
+    r = c[0]
+    g = c[1]
+    b = c[2]
+  } else if (/rgb/.test(colour)) {
+    c = colour.replace('rgb(', '').replace(')', '').split(/,/)
+    r = c[0]
+    g = c[1]
+    b = c[2]
+  } else if (/#/.test(colour)) {
+    c = colour.replace('#', '')
+    if (c.length === 3) {
+      c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2]
+    }
+    r = parseInt(c.substr(0, 2), 16)
+    g = parseInt(c.substr(2, 2), 16)
+    b = parseInt(c.substr(4, 2), 16)
+  }
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000
+  return yiq >= 128 ? 'light' : 'dark'
+}

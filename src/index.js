@@ -2,6 +2,8 @@ import Raven from 'raven-js'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import 'babel-polyfill'
+import format from 'date-fns/format'
+import distanceInWordsStrict from 'date-fns/distance_in_words_strict'
 import './main.scss'
 import App from './components/App'
 import {BrowserRouter, HashRouter} from 'react-router-dom'
@@ -120,6 +122,21 @@ window.socket = async function (public_key, config) {
   if (!config.event_callback) {
     config.event_callback = () => null
   }
+
+  config.format = config.format || {
+    datetime: 'HH:mm DD/MM/YYYY',
+    date: 'DD/MM/YYYY'
+  }
+  config.date_fns = {format, distanceInWordsStrict}
+  config.format_date = config.date_format || (
+    (ts, config) => config.date_fns.format(new Date(ts), config.format.date)
+  )
+  config.format_datetime = config.format_datetime || (
+    (ts, config) => config.date_fns.format(new Date(ts), config.format.datetime)
+  )
+  config.format_time_diff = config.format_time_diff || (
+    (ts1, ts2, config) => config.date_fns.distanceInWordsStrict(new Date(ts1), new Date(ts2))
+  )
 
   const el = document.querySelector(config.element)
   if (el === null) {

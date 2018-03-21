@@ -28,7 +28,6 @@ class App extends Component {
     }
   }
 
-
   get_text (name, replacements) {
     let s = this.props.config.messages[name]
     if (!s) {

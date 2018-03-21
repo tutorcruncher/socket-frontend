@@ -1,8 +1,76 @@
 import React, { Component } from 'react'
 import {Link, Route} from 'react-router-dom'
-import {If, AnimateLink} from '../shared/Tools'
-import {slugify} from '../../utils'
+import format from 'date-fns/format'
+import {slugify, colour_contrast} from '../../utils'
+import {If} from '../shared/Tools'
 import AptModal from './AptModal'
+
+const group_by = (items, key_getter) => {
+  const groups = []
+  let key, current_key
+  for (let item of items) {
+    key = key_getter(item)
+    if (groups.length && current_key === key) {
+      groups[groups.length - 1].push(item)
+    } else {
+      groups.push([item])
+      current_key = key
+    }
+  }
+  return groups
+}
+
+const group_appointments = apts => {
+  // group appointments by month then day
+  return group_by(apts, a => a.start.match(/\d{4}-\d{2}/)[0])
+    .map(apts_ => ({
+      date: apts_[0].start,
+      appointments: group_by(apts_, a => a.start.match(/\d{4}-\d{2}-\d{2}/)[0])
+    }))
+}
+
+const AptDayGroup = ({appointments, props}) => {
+  const first_apt = appointments[0]
+  return (
+    <div className="tcs-apt-group-day">
+      <div className="tcs-day">
+        {format(first_apt.start, 'Do')}
+        <br/>
+        {format(first_apt.start, 'ddd')}
+      </div>
+      <div>
+        {appointments.map((apt, i) => (
+          <Link key={i} to={props.root.url(`appointment/${apt.link}`)}
+                      className="tcs-item">
+            <div className={`tcs-apt ${colour_contrast(apt.service_colour)}`}
+                 style={{backgroundColor: apt.service_colour}}>
+              <div>
+                <span>{format(apt.start, 'HH:mm')}</span>
+                <span>{apt.topic} ({apt.service_name})</span>
+              </div>
+              <div>
+                <span>{props.config.format_time_diff(apt.finish, apt.start, props.config)}</span>&bull;
+                <span>£{apt.price}</span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const AptMonthGroup = ({date, appointments, props}) => {
+  console.log('date:', date)
+  return (
+    <div className="tcs-apt-group-month">
+      <div className="tcs-title">{format(date, 'MMMM')}</div>
+      {appointments.map((appointments, j) => (
+        <AptDayGroup appointments={appointments} key={j} props={props}/>
+      ))}
+    </div>
+  )
+}
 
 
 class Appointments extends Component {
@@ -46,7 +114,6 @@ class Appointments extends Component {
       page: page,
       pagination: this.props.config.pagination,
     })
-    console.log(appointments)
     this.props.config.event_callback('updated_appointments', appointments)
     const on_previous_pages = (page - 1) * this.props.config.pagination
     this.setState({
@@ -57,21 +124,11 @@ class Appointments extends Component {
 
   render () {
     const appointments = this.state.appointments ? this.state.appointments.results : []
+    const months = group_appointments(appointments)
     return (
       <div className="tcs-app tcs-appointments">
-        {appointments.map((apt, i) => (
-          <AnimateLink key={i}
-                       delay={i * 80} to={this.props.root.url(`appointment/${apt.link}`)}
-                       className="tcs-item">
-            <div>
-              <div className="tcs-topic">{apt.topic}</div>
-              <div>{apt.price}</div>
-            </div>
-            <div className="tcs-text-right">
-              <span>{apt.start}</span>
-              &nbsp;<span>({(new Date(apt.finish)) - (new Date(apt.start))})</span>
-            </div>
-          </AnimateLink>
+        {months.map(({date, appointments}, i) => (
+          <AptMonthGroup date={date} appointments={appointments} key={i} props={this.props}/>
         ))}
 
         <If v={this.state.page > 1 || this.state.more_pages}>
