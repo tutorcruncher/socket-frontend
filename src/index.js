@@ -50,6 +50,8 @@ const STRINGS = {
   no_tutors_found_no_loc: 'No more tutors, unable to locate "{location}".',
   no_tutors_found_rate_limited: 'Too many location lookups, no results.',
   distance_away: '{distance}km away',
+  book_appointment_button: 'Book Lesson',
+  add_to_lesson: 'Add to Lesson',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']
@@ -129,11 +131,14 @@ window.socket = async function (public_key, config) {
   }
   config.date_fns = {format, distanceInWordsStrict}
   config.format_date = config.date_format || (
-    (ts, config) => config.date_fns.format(new Date(ts), config.format.date)
+    function (ts) {return this.date_fns.format(new Date(ts), this.format.date)}
   )
+  config.format_date = config.format_date.bind(config)
+
   config.format_datetime = config.format_datetime || (
-    (ts, config) => config.date_fns.format(new Date(ts), config.format.datetime)
+    function (ts) {return this.date_fns.format(new Date(ts), this.format.datetime)}
   )
+  config.format_datetime = config.format_datetime.bind(config)
   config.format_time_diff = config.format_time_diff || (
     (ts1, ts2, config) => config.date_fns.distanceInWordsStrict(new Date(ts1), new Date(ts2))
   )

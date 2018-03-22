@@ -89,3 +89,16 @@ export class AnimateLink extends Component {
     )
   }
 }
+
+export const DetailGrid = ({children}) => (
+  <div className="tcs-details">
+    {children}
+  </div>
+)
+
+export const Detail = ({label, children, className}) => (
+  <div className={`tcs-detail ${className || ''}`}>
+    <div className="tcs-label">{label}</div>
+    <div className="tcs-value">{children}</div>
+  </div>
+)

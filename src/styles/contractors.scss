@@ -59,52 +59,6 @@ table.tcs-skills {
   }
 }
 
-.tcs-body {
-  max-height: calc(94vh - 140px);
-  overflow-y: auto;
-  @media(min-width: $size-sm) {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-  }
-}
-
-.tcs-content {
-  flex-grow: 1;
-  padding-right: 10px;
-  color: $text-color;
-  margin-right: 5px;
-  @media(min-width: $size-sm) {
-    .tcs-scroll {
-      overflow-y: auto;
-      max-height: calc(94vh - 200px);
-    }
-  }
-}
-
-.tcs-extra {
-  width: $extra-width;
-  margin: 0 auto 20px;
-  text-align: center;
-  flex-shrink: 0;
-
-  img {
-    height: $extra-width;
-    border-radius: 4px;
-    display: block;
-    margin: auto;
-  }
-
-  .tcs-stars {
-    margin-top: 10px;
-  }
-
-  .tcs-button {
-    margin: 10px auto 0;
-    width: 100%;
-  }
-}
-
 .con-modal-transition {
   opacity: 1;
   transform: translate(0, 0);

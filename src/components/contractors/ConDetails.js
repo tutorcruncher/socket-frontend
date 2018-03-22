@@ -15,7 +15,7 @@ const ConDetails = ({contractor, contractor_extra, get_text}) => (
 
     {contractor_extra && contractor_extra.extra_attributes.map((attr, i) => (
       <div key={i} className="tcs-attr">
-        <h3>{attr.name}</h3>
+        <h3 className="tcs-attr-title">{attr.name}</h3>
         <IfElse v={attr.type === 'text_short' || attr.type === 'text_extended'}>
           <Markdown content={attr.value}/>
         {/*else*/}

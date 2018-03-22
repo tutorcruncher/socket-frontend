@@ -42,3 +42,58 @@
     margin-bottom: 0;
   }
 }
+
+$circle-size: 22px;
+.tcs-circle {
+  display: inline-block;
+  width: $circle-size;
+  height: $circle-size;
+  border-radius: $circle-size / 2;
+  margin-right: 10px;
+}
+
+.tcs-session-name {
+  text-align: right;
+  font-size: 14px;
+  position: absolute;
+  bottom: 32px;
+  right: 21px;
+}
+
+.tcs-price {
+  font-size: 28px;
+  .tcs-label {
+    font-size: 14px;
+    color: $label-colour;
+  }
+}
+
+.tcs-signout {
+  color: $brand-colour;
+  cursor: pointer;
+}
+
+.tcs-book {
+  padding-top: 10px;
+}
+
+.tcs-signin {
+  margin: 0 auto;
+  display: block;
+}
+
+$new-student-height: 38px;
+$new-student-border-radius: 5px;
+.tcs-book-new {
+  .tcs-default-input {
+    width: calc(100% - 200px);
+    height: $new-student-height;
+    border-radius: $new-student-border-radius 0 0 $new-student-border-radius;
+    border-right: none;
+  }
+  .tcs-button {
+    width: 200px;
+    height: $new-student-height;
+    border-radius: 0 $new-student-border-radius $new-student-border-radius 0;
+  }
+}

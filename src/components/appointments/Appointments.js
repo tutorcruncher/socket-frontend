@@ -28,7 +28,7 @@ const AptDayGroup = ({appointments, props}) => {
           <Link key={i} to={props.root.url(`appointment/${apt.link}`)}
                       className="tcs-item">
             <div className={`tcs-apt ${colour_contrast(apt.service_colour)}`}
-                 style={{backgroundColor: apt.service_colour}}>
+                 style={{background: apt.service_colour}}>
               <div>
                 <span>{format(apt.start, 'HH:mm')}</span>
                 <span>{apt.topic} ({apt.service_name})</span>

@@ -77,3 +77,23 @@ svg.tcs-close {
     }
   }
 }
+
+.tcs-details {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.tcs-detail {
+  padding: 6px 0;
+  .tcs-label {
+    font-size: 12px;
+    color: $label-colour;
+  }
+  .tcs-value {
+    font-size: 20px;
+    margin-right: auto;
+  }
+  &.tcs-new-line {
+    grid-column: 1;
+  }
+}
