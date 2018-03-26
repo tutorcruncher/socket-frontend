@@ -51,10 +51,12 @@
   }
 }
 
-.tcs-body {
-  min-height: 350px;
+.tcs-modal-body {
   max-height: calc(94vh - 140px);
   overflow-y: auto;
+}
+
+.tcs-modal-flex {
   @media(min-width: $size-sm) {
     display: flex;
     justify-content: space-between;

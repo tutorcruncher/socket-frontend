@@ -23,8 +23,8 @@ class App extends Component {
 
     this.ga_event = this.ga_event.bind(this)
     this.requests = {
-      get: async (...args) => requests.get(this, ...args),
-      post: async (...args) => requests.post(this, ...args),
+      get: (...args) => requests.get(this, ...args),
+      post: (...args) => requests.post(this, ...args),
     }
   }
 

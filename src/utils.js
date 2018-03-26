@@ -105,7 +105,7 @@ export function get_company_options (public_key, config) {
   })
 }
 
-function request (app, path, send_data, method, expected_statuses) {
+function request (app, method, path, config) {
   let url = path
   if (url.startsWith('/')) {
     url = app.props.config.api_root + url
@@ -113,28 +113,48 @@ function request (app, path, send_data, method, expected_statuses) {
     url = `${app.props.config.api_root}/${app.props.public_key}/${path}`
   }
 
-  if (Number.isInteger(expected_statuses)) {
-    expected_statuses = [expected_statuses]
-  } else {
-    expected_statuses = expected_statuses || [200]
+  config = config || {}
+  if (config.args) {
+    const arg_list = []
+    const add_arg = (n, v) => arg_list.push(encodeURIComponent(n) + '=' + encodeURIComponent(v))
+    for (let [name, value] of Object.entries(config.args)) {
+      if (Array.isArray(value)) {
+        for (let value_ of value) {
+          add_arg(name, value_)
+        }
+      } else if (value !== null && value !== undefined) {
+        add_arg(name, value)
+      }
+    }
+    if (arg_list.length > 0) {
+      url += '?' + arg_list.join('&')
+    }
   }
-  if (send_data) {
-    send_data = JSON.stringify(clean(send_data))
+
+  if (Number.isInteger(config.expected_statuses)) {
+    config.expected_statuses = [config.expected_statuses]
+  } else {
+    config.expected_statuses = config.expected_statuses || [200]
+  }
+  if (config.send_data) {
+    config.send_data = JSON.stringify(config.send_data)
   }
   // await sleep(2000)
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     const on_error = msg => {
       console.error('request error', msg, url, xhr)
-      app.setState({error: msg})
-      reject(msg)
+      if (config.set_app_state !== false) {
+        app.setState({error: msg})
+      }
+      reject({msg, url, xhr})
     }
     xhr.open(method, url)
     xhr.setRequestHeader('Accept', 'application/json')
     xhr.onload = () => {
-      if (expected_statuses.includes(xhr.status)) {
+      if (config.expected_statuses.includes(xhr.status)) {
         const data = JSON.parse(xhr.responseText)
-        if (expected_statuses.length === 1) {
+        if (config.expected_statuses.length === 1) {
           resolve(data)
         } else {
           resolve({
@@ -148,31 +168,22 @@ function request (app, path, send_data, method, expected_statuses) {
       }
     }
     xhr.onerror = () => on_error(`Error requesting data ${xhr.statusText}: ${xhr.status}`)
-    xhr.send(send_data)
+    xhr.send(config.send_data)
   })
 }
 
 export const requests = {
-  get: async (app, path, args) => {
-    if (args) {
-      const arg_list = []
-      const add_arg = (n, v) => arg_list.push(encodeURIComponent(n) + '=' + encodeURIComponent(v))
-      for (let [name, value] of Object.entries(args)) {
-        if (Array.isArray(value)) {
-          for (let value_ of value) {
-            add_arg(name, value_)
-          }
-        } else if (value !== null && value !== undefined) {
-          add_arg(name, value)
-        }
-      }
-      if (arg_list.length > 0) {
-        path += '?' + arg_list.join('&')
-      }
-    }
-    return await request(app, path, null, 'GET')
+  get: (app, path, args, config) => {
+    config = config || {}
+    config.args = args
+    return request(app, 'GET', path, config)
   },
-  post: async (app, path, data, expected_statuses) => await request(app, path, data, 'POST', expected_statuses || 201)
+  post: (app, path, data, config) => {
+    config = config || {}
+    config.send_data = data
+    config.expected_statuses = config.expected_statuses || [201]
+    return request(app, 'POST', path, config)
+  }
 }
 
 export const async_start = (f, ...args) => setTimeout(async () => f(...args), 0)

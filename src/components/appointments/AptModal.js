@@ -10,6 +10,7 @@ class AptModal extends Component {
     this.process_message = this.process_message.bind(this)
     this.update_session = this.update_session.bind(this)
     this.signout = this.signout.bind(this)
+    this.book = this.book.bind(this)
     this.state = {
       signature: null,
       sso_data: null,
@@ -30,7 +31,6 @@ class AptModal extends Component {
   }
 
   process_message (event) {
-    console.log('message:', event)
     const success = this.update_session(event.data)
     if (success) {
       event.source.close()
@@ -38,8 +38,7 @@ class AptModal extends Component {
     }
   }
 
-  update_session (raw_data) {
-    console.log('raw data:', raw_data)
+  async update_session (raw_data) {
     let data
     try {
       data = JSON.parse(raw_data)
@@ -47,14 +46,34 @@ class AptModal extends Component {
       return false
     }
     data.display_data = JSON.parse(data.sso_data)
-    console.log('data:', data)
     this.setState(data)
 
     const args = {signature: data.signature, sso_data: data.sso_data}
-    this.props.root.requests.get('check-client', args).then(data => {
+    this.props.root.requests.get('check-client', args, {set_app_state: false}).then(data => {
       this.setState({appointment_attendees: data.appointment_attendees})
+    }).catch(e => {
+      if (e.xhr.status === 403) {
+        console.log('got error in update_sesion:', e)
+        this.signout()
+      } else {
+        this.props.root.setState({error: e.msg})
+      }
     })
     return true
+  }
+
+  async book (student_id) {
+    console.log('book:', student_id)
+    const data = {appointment: this.apt_id}
+    if (student_id) {
+      data.student_id = student_id
+    } else {
+      data.student_name = this.state.new_student
+      this.setState({new_student: null})
+    }
+    const url = `book-appointment?signature=${this.state.signature}&sso_data=${encodeURIComponent(this.state.sso_data)}`
+    const r = await this.props.root.requests.post(url, data)
+    console.log(r)
   }
 
   signout () {
@@ -68,6 +87,7 @@ class AptModal extends Component {
   }
 
   render () {
+    console.log(this.state)
     if (!this.props.got_data) {
       return (
         <Modal history={this.props.history} title=''>
@@ -90,33 +110,28 @@ class AptModal extends Component {
       </span>
     )
     return (
-      <Modal history={this.props.history} title={title} last_url={this.props.last_url}>
-        <div className="tcs-extra">
-          <div className="tcs-price">
-            £{apt.price}
-            <div className="tcs-label">Price</div>
-          </div>
-          {this.state.display_data &&
-            <div className="tcs-session-name">
-              {this.state.display_data.nm}
-              <div className="tcs-signout" onClick={this.signout}>
-                Not you? sign out
-              </div>
+      <Modal history={this.props.history} title={title} last_url={this.props.last_url} flex={false}>
+        <div className="tcs-modal-flex">
+          <div className="tcs-extra">
+            <div className="tcs-price">
+              £{apt.price}
+              <div className="tcs-label">Price</div>
             </div>
-          }
+          </div>
+          <div className="tcs-content">
+            <DetailGrid>
+              <Detail label="Job">
+                {apt.service_name}
+              </Detail>
+              {apt.attendees_max && <Detail label="Spaces Available">{apt.attendees_max - apt.attendees_count}</Detail>}
+              <Detail label="Start" className="tcs-new-line">{this.props.config.format_datetime(apt.start)}</Detail>
+              <Detail label="Finish">{this.props.config.format_datetime(apt.finish)}</Detail>
+              {apt.location && <Detail label="Location">{apt.location}</Detail>}
+            </DetailGrid>
+          </div>
         </div>
 
-        <div className="tcs-content">
-          <div className="tcs-colour-line"/>
-          <DetailGrid>
-            <Detail label="Job">
-              {apt.service_name}
-            </Detail>
-            {apt.attendees_max && <Detail label="Spaces Available">{apt.attendees_max - apt.attendees_count}</Detail>}
-            <Detail label="Start" className="tcs-new-line">{this.props.config.format_datetime(apt.start)}</Detail>
-            <Detail label="Finish">{this.props.config.format_datetime(apt.finish)}</Detail>
-            {apt.location && <Detail label="Location">{apt.location}</Detail>}
-          </DetailGrid>
+        <div>
           {apt.service_extra_attributes.map((attr, i) => (
             <div key={i} className="tcs-attr">
               <h3 className="tcs-attr-title">{attr.name}</h3>
@@ -129,19 +144,28 @@ class AptModal extends Component {
           ))}
           <div className="tcs-book">
             <IfElse v={this.state.display_data}>
-                <div className="tcs-book-new">
-                  <div>Add a new Student to the lesson:</div>
-                  <div>
-                    <input type="text"
-                           className="tcs-default-input"
-                           placeholder="Student Name"
-                           required={true}
-                           maxLength={255}
-                           value={this.state.new_student || ''}
-                           onChange={e => this.setState({new_student: e.target.value})}/>
-                    <button className="tcs-button" onClick={this.login} disabled={!this.state.new_student}>
-                      {this.props.root.get_text('add_to_lesson')}
-                    </button>
+                <div>
+                  {Object.entries(this.state.display_data.srs).map(([k, v]) => (
+                    <div key={k}>
+                      {v}
+                    </div>
+                  ))}
+                  <div className="tcs-book-new">
+                    <div>Add a new Student to the lesson:</div>
+                    <div>
+                      <input type="text"
+                            className="tcs-default-input"
+                            placeholder="Student Name"
+                            required={true}
+                            maxLength={255}
+                            value={this.state.new_student || ''}
+                            onChange={e => this.setState({new_student: e.target.value})}/>
+                      <button className="tcs-button"
+                              onClick={() => this.book(null)}
+                              disabled={!this.state.new_student}>
+                        {this.props.root.get_text('add_to_lesson')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               {/*else*/}
@@ -150,6 +174,15 @@ class AptModal extends Component {
                 </button>
             </IfElse>
           </div>
+
+          {this.state.display_data &&
+            <div className="tcs-session-name">
+              {this.state.display_data.nm}
+              <div className="tcs-signout" onClick={this.signout}>
+                Not you? sign out
+              </div>
+            </div>
+          }
         </div>
       </Modal>
     )

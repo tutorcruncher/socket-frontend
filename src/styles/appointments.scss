@@ -53,15 +53,13 @@ $circle-size: 22px;
 }
 
 .tcs-session-name {
+  padding-top: 20px;
   text-align: right;
   font-size: 14px;
-  position: absolute;
-  bottom: 32px;
-  right: 21px;
 }
 
 .tcs-price {
-  font-size: 28px;
+  font-size: 30px;
   .tcs-label {
     font-size: 14px;
     color: $label-colour;

@@ -43,6 +43,7 @@ class Modal extends Component {
   }
 
   render () {
+    const flex = this.props.flex !== undefined ? Boolean(this.props.flex) : true
     return (
       <div className={'tcs-modal-mask' + (this.state.show ? ' tcs-show' : '')} onClick={this.close}>
         <div className="tcs-modal" onClick={e => e.stopPropagation()}>
@@ -53,7 +54,7 @@ class Modal extends Component {
             </div>
           </div>
 
-          <div className="tcs-body">
+          <div className={`tcs-modal-body${flex ? ' tcs-modal-flex' : ''}`}>
             {this.props.children}
           </div>
 
