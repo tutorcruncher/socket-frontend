@@ -71,27 +71,54 @@ $circle-size: 22px;
   cursor: pointer;
 }
 
-.tcs-book {
-  padding-top: 10px;
-}
-
 .tcs-signin {
   margin: 0 auto;
   display: block;
 }
 
-$new-student-height: 38px;
-$new-student-border-radius: 5px;
-.tcs-book-new {
-  .tcs-default-input {
-    width: calc(100% - 200px);
-    height: $new-student-height;
-    border-radius: $new-student-border-radius 0 0 $new-student-border-radius;
-    border-right: none;
+$student-height: 38px;
+$student-border-radius: 5px;
+$student-border-colour: #D8D8D8;
+.tcs-book {
+  padding-top: 10px;
+  .tcs-book-existing {
+    margin-bottom: 15px;
   }
-  .tcs-button {
+  .tcs-book-item {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid $student-border-colour;
+    &:nth-child(2) {
+      border-top: 1px solid $student-border-colour;
+    }
+  }
+  .tcs-existing-name {
+    padding: 8px 6px;
+  }
+  .tcs-existing-name, .tcs-default-input {
+    width: calc(100% - 220px);
+    height: $student-height;
+  }
+  .tcs-already-added {
+    border-radius: $student-border-radius;
+  }
+  .tcs-add-button, .tcs-already-added {
     width: 200px;
-    height: $new-student-height;
-    border-radius: 0 $new-student-border-radius $new-student-border-radius 0;
+    height: $student-height;
+  }
+  .tcs-already-added {
+    background: #12a012;
+    color: white;
+    text-align: center;
+    padding: 8px 12px;
+    .tcs-svg {
+      fill: white;
+      margin-left: 2px;
+      transform: translateY(3px);
+      width: 18px;
+      height: 18px;
+    }
   }
 }

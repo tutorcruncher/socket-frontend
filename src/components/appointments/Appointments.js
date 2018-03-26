@@ -132,6 +132,7 @@ class Appointments extends Component {
                     got_data={Boolean(this.state.appointments)}
                     root={this.props.root}
                     config={this.props.config}
+                    update_apts={this.update}
                     history={props.history}/>
         )}/>
       </div>

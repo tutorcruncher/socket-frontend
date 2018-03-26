@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import {IfElse, Markdown, DetailGrid, Detail} from '../shared/Tools'
+import {IfElse, Markdown, DetailGrid, Detail, Tick} from '../shared/Tools'
 import Modal from '../shared/Modal'
+
+const LS_KEY = '_tcs_user_data_'
 
 class AptModal extends Component {
   constructor (props) {
@@ -9,20 +11,34 @@ class AptModal extends Component {
     this.login = this.login.bind(this)
     this.process_message = this.process_message.bind(this)
     this.update_session = this.update_session.bind(this)
+    this.check_client = this.check_client.bind(this)
     this.signout = this.signout.bind(this)
     this.book = this.book.bind(this)
+    this.get_srs = this.get_srs.bind(this)
     this.state = {
+      apt: props.appointments && props.appointments.find(a => a.id === this.apt_id),
       signature: null,
       sso_data: null,
       display_data: null,
       appointment_attendees: null,
       new_student: null,
+      booking_allowed: false,
+      extra_attendees: 0,
     }
   }
 
   componentDidMount () {
     window.addEventListener('message', this.process_message, false)
-    this.update_session(window.sessionStorage.__tcs_user_data)
+    this.update_session(window.sessionStorage[LS_KEY])
+  }
+
+  componentWillReceiveProps (nextProps) {
+    const new_apt = nextProps.appointments && nextProps.appointments.find(a => a.id === this.apt_id)
+    if (this.state.apt && new_apt && this.state.apt.attendees_count !== new_apt.attendees_count) {
+      // clear temporary extra_attendees
+      this.setState({extra_attendees: 0})
+    }
+    this.setState({apt: new_apt})
   }
 
   login () {
@@ -34,11 +50,11 @@ class AptModal extends Component {
     const success = this.update_session(event.data)
     if (success) {
       event.source.close()
-      window.sessionStorage.__tcs_user_data = event.data
+      window.sessionStorage[LS_KEY] = event.data
     }
   }
 
-  async update_session (raw_data) {
+  update_session (raw_data) {
     let data
     try {
       data = JSON.parse(raw_data)
@@ -47,33 +63,51 @@ class AptModal extends Component {
     }
     data.display_data = JSON.parse(data.sso_data)
     this.setState(data)
+    this.check_client(data)
+    return true
+  }
 
+  async check_client (data) {
+    data = data || this.state
     const args = {signature: data.signature, sso_data: data.sso_data}
-    this.props.root.requests.get('check-client', args, {set_app_state: false}).then(data => {
-      this.setState({appointment_attendees: data.appointment_attendees})
-    }).catch(e => {
+    try {
+      const r = await this.props.root.requests.get('check-client', args, {set_app_state: false})
+      this.setState({appointment_attendees: r.appointment_attendees[this.apt_id] || [], booking_allowed: true})
+    } catch (e) {
       if (e.xhr.status === 403) {
-        console.log('got error in update_sesion:', e)
         this.signout()
       } else {
         this.props.root.setState({error: e.msg})
       }
-    })
-    return true
+    }
   }
 
   async book (student_id) {
-    console.log('book:', student_id)
+    this.setState({booking_allowed: false})
     const data = {appointment: this.apt_id}
     if (student_id) {
       data.student_id = student_id
     } else {
       data.student_name = this.state.new_student
-      this.setState({new_student: null})
     }
     const url = `book-appointment?signature=${this.state.signature}&sso_data=${encodeURIComponent(this.state.sso_data)}`
-    const r = await this.props.root.requests.post(url, data)
-    console.log(r)
+    await this.props.root.requests.post(url, data)
+    this.props.update_apts()
+    if (!student_id) {
+      const display_data = Object.assign({}, this.state.display_data)
+      student_id = 999999999
+      display_data.srs[student_id] = data.student_name
+      this.setState({new_student: null, display_data})
+      window.sessionStorage.removeItem(LS_KEY)  // force new login when opening appointment to update students
+    }
+    const appointment_attendees = this.state.appointment_attendees.slice()
+    appointment_attendees.push(student_id)
+    this.setState({
+      booking_allowed: true,
+      extra_attendees: this.state.extra_attendees + 1,
+      appointment_attendees
+    })
+    setTimeout(() => this.props.update_apts(), 5000)
   }
 
   signout () {
@@ -82,12 +116,24 @@ class AptModal extends Component {
       sso_data: null,
       display_data: null,
       appointment_attendees: null,
+      new_student: null,
+      booking_allowed: false,
     })
-    window.sessionStorage.removeItem('__tcs_user_data')
+    window.sessionStorage.removeItem(LS_KEY)
+  }
+
+  get_srs () {
+    return this.state.display_data && Object.entries(this.state.display_data.srs).map(([k, name]) => {
+      const sr_id = parseInt(k, 10)
+      return {
+        id: sr_id,
+        name: name,
+        already_on_apt: this.state.appointment_attendees && this.state.appointment_attendees.includes(sr_id)
+      }
+    })
   }
 
   render () {
-    console.log(this.state)
     if (!this.props.got_data) {
       return (
         <Modal history={this.props.history} title=''>
@@ -95,7 +141,7 @@ class AptModal extends Component {
         </Modal>
       )
     }
-    const apt = this.props.appointments.find(a => a.id === this.apt_id)
+    const apt = this.state.apt
     if (!apt) {
       return (
         <Modal history={this.props.history} title="Appointment not Found">
@@ -109,6 +155,9 @@ class AptModal extends Component {
         {apt.topic}
       </span>
     )
+    const srs = this.get_srs()
+    const spaces_available = apt.attendees_max - apt.attendees_count - this.state.extra_attendees
+    const booking_allowed = this.state.booking_allowed && spaces_available > 0
     return (
       <Modal history={this.props.history} title={title} last_url={this.props.last_url} flex={false}>
         <div className="tcs-modal-flex">
@@ -123,7 +172,7 @@ class AptModal extends Component {
               <Detail label="Job">
                 {apt.service_name}
               </Detail>
-              {apt.attendees_max && <Detail label="Spaces Available">{apt.attendees_max - apt.attendees_count}</Detail>}
+              {apt.attendees_max && <Detail label="Spaces Available">{spaces_available}</Detail>}
               <Detail label="Start" className="tcs-new-line">{this.props.config.format_datetime(apt.start)}</Detail>
               <Detail label="Finish">{this.props.config.format_datetime(apt.finish)}</Detail>
               {apt.location && <Detail label="Location">{apt.location}</Detail>}
@@ -145,14 +194,32 @@ class AptModal extends Component {
           <div className="tcs-book">
             <IfElse v={this.state.display_data}>
                 <div>
-                  {Object.entries(this.state.display_data.srs).map(([k, v]) => (
-                    <div key={k}>
-                      {v}
+                  {srs && (
+                    <div className="tcs-book-existing">
+                      <div>Add your existing Students to the lesson</div>
+                      {srs.map(({id, name, already_on_apt}) => (
+                        <div key={id} className="tcs-book-item">
+                          <div className="tcs-existing-name">
+                            {name}
+                          </div>
+                          {already_on_apt ? (
+                            <div className="tcs-already-added">
+                              Added <Tick/>
+                            </div>
+                          ) : (
+                            <button className="tcs-button tcs-add-button"
+                                    onClick={() => this.book(id)}
+                                    disabled={!booking_allowed || already_on_apt}>
+                              {this.props.root.get_text('add_to_lesson')}
+                            </button>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                   <div className="tcs-book-new">
-                    <div>Add a new Student to the lesson:</div>
-                    <div>
+                    <div>Add a new Student to the lesson</div>
+                    <div className="tcs-book-item">
                       <input type="text"
                             className="tcs-default-input"
                             placeholder="Student Name"
@@ -160,9 +227,9 @@ class AptModal extends Component {
                             maxLength={255}
                             value={this.state.new_student || ''}
                             onChange={e => this.setState({new_student: e.target.value})}/>
-                      <button className="tcs-button"
+                      <button className="tcs-button tcs-add-button"
                               onClick={() => this.book(null)}
-                              disabled={!this.state.new_student}>
+                              disabled={!booking_allowed || !this.state.new_student}>
                         {this.props.root.get_text('add_to_lesson')}
                       </button>
                     </div>
