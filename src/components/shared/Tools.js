@@ -58,3 +58,18 @@ export const Detail = ({label, children, className}) => (
     <div className="tcs-value">{children}</div>
   </div>
 )
+
+export const DisplayExtraAttrs = ({extra_attributes}) => (
+  <div>
+    {extra_attributes && extra_attributes.map((attr, i) => (
+      <div key={i} className="tcs-attr">
+        <h3 className="tcs-attr-title">{attr.name}</h3>
+        <IfElse v={attr.type === 'text_short' || attr.type === 'text_extended'}>
+          <Markdown content={attr.value}/>
+        {/*else*/}
+          <p>{attr.value}</p>
+        </IfElse>
+      </div>
+    ))}
+  </div>
+)

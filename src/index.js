@@ -57,6 +57,12 @@ const STRINGS = {
   diff_1hour_minutes: '1 hr {minutes} mins',
   diff_hours: '{hours} hrs',
   diff_hours_minutes: '{hours} hrs {minutes} mins',
+  spaces: '{spaces} spaces available',
+  no_spaces: 'No spaces available',
+  spaces_attending: 'Already attending, {spaces} more spaces available',
+  no_spaces_attending: 'Already attending, no more spaces available',
+  add_existing_students: 'Add your existing Students to the lesson',
+  add_new_student: 'Add a new Student to the lesson',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']

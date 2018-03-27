@@ -1,83 +1,92 @@
 import React, { Component } from 'react'
-import {IfElse, Markdown, DetailGrid, Detail} from '../shared/Tools'
+import {If, DetailGrid, Detail, DisplayExtraAttrs} from '../shared/Tools'
 import {Tick} from '../shared/Svgs'
 import Modal from '../shared/Modal'
 
-const LS_KEY = '_tcs_user_data_'
+const get_attendees = (appointment_attendees, apt_id) => (appointment_attendees && appointment_attendees[apt_id]) || []
+const NEW_STUDENT_ID = 999999999
+
+const AddExisting = ({students, book, booking_allowed, get_text}) => (
+  students && students.length > 0 &&
+  <div className="tcs-book-existing">
+    <div>{get_text('add_existing_students')}</div>
+    {students.map(({id, name, already_on_apt}) => (
+      <div key={id} className="tcs-book-item">
+        <div className="tcs-existing-name">
+          {name}
+        </div>
+        {already_on_apt ? (
+          <div className="tcs-already-added">
+            Added <Tick/>
+          </div>
+        ) : (
+          <button className="tcs-button tcs-add-button"
+                  onClick={() => book(id)}
+                  disabled={!booking_allowed || already_on_apt}>
+            {get_text('add_to_lesson')}
+          </button>
+        )}
+      </div>
+    ))}
+  </div>
+)
+
+const AddNew = ({new_student, onChange, book, booking_allowed, get_text}) => (
+  <div className="tcs-book-new">
+    <div>Add a new Student to the lesson</div>
+    <div className="tcs-book-item">
+      <input type="text"
+            className="tcs-default-input"
+            placeholder="Student Name"
+            required={true}
+            maxLength={255}
+            value={new_student || ''}
+            onChange={onChange}/>
+      <button className="tcs-button tcs-add-button"
+              onClick={() => book(null)}
+              disabled={!booking_allowed || !new_student}>
+        {get_text('add_to_lesson')}
+      </button>
+    </div>
+  </div>
+)
 
 class AptModal extends Component {
   constructor (props) {
     super(props)
     this.apt_id = parseInt(this.props.id, 10)
-    this.login = this.login.bind(this)
-    this.signout = this.signout.bind(this)
     this.book = this.book.bind(this)
     this.state = {
       apt: props.appointments && props.appointments.find(a => a.id === this.apt_id),
-      signature: null,
-      sso_data: null,
-      display_data: null,
-      appointment_attendees: null,
+      display_data: props.display_data,
+      attendees: get_attendees(props.appointment_attendees, this.apt_id),
       new_student: null,
-      booking_allowed: false,
+      booking_allowed: true,
       extra_attendees: 0,
     }
-    this.timeout_id = null
-  }
-
-  componentDidMount () {
-    window.addEventListener('message', this.process_message, false)
-    this.update_session(window.sessionStorage[LS_KEY])
+    this.update_timeout = null
+    this.unmount_signout = false
+    this.new_student_id = NEW_STUDENT_ID
   }
 
   componentWillReceiveProps (nextProps) {
-    const new_apt = nextProps.appointments && nextProps.appointments.find(a => a.id === this.apt_id)
-    if (this.state.apt && new_apt && this.state.apt.attendees_count !== new_apt.attendees_count) {
+    const new_state = {
+      apt: nextProps.appointments && nextProps.appointments.find(a => a.id === this.apt_id),
+      attendees: get_attendees(nextProps.appointment_attendees, this.apt_id)
+    }
+    // don't modify display_data as it might be changed, only set it or unset it
+    if (!(this.state.display_data && nextProps.display_data)) {
+      new_state.display_data = nextProps.display_data
+    }
+    if (this.state.apt && new_state.apt && this.state.apt.attendees_count !== new_state.apt.attendees_count) {
       // clear temporary extra_attendees
-      this.setState({extra_attendees: 0})
+      new_state.extra_attendees = 0
     }
-    this.setState({apt: new_apt})
+    this.setState(new_state)
   }
 
-  login () {
-    const url = `${this.props.config.auth_url}?site=${encodeURIComponent(window.location.href)}`
-    window.open(url, 'Auth', 'width=1000,height=700,left=100,top=100,scrollbars,toolbar=0,resizable')
-  }
-
-  process_message (event) {
-    const success = this.update_session(event.data)
-    if (success) {
-      event.source.close()
-      window.sessionStorage[LS_KEY] = event.data
-    }
-  }
-
-  update_session (raw_data) {
-    let data
-    try {
-      data = JSON.parse(raw_data)
-    } catch (e) {
-      return false
-    }
-    data.display_data = JSON.parse(data.sso_data)
-    this.setState(data)
-    this.check_client(data)
-    return true
-  }
-
-  async check_client (data) {
-    data = data || this.state
-    const args = {signature: data.signature, sso_data: data.sso_data}
-    try {
-      const r = await this.props.root.requests.get('check-client', args, {set_app_state: false})
-      this.setState({appointment_attendees: r.appointment_attendees[this.apt_id] || [], booking_allowed: true})
-    } catch (e) {
-      if (e.xhr.status === 401) {
-        this.signout()
-      } else {
-        this.props.root.setState({error: e.msg})
-      }
-    }
+  componentWillUnmount () {
+    this.unmount_signout && this.props.signout()
   }
 
   async book (student_id) {
@@ -88,46 +97,35 @@ class AptModal extends Component {
     } else {
       data.student_name = this.state.new_student
     }
-    const url = `book-appointment?signature=${this.state.signature}&sso_data=${encodeURIComponent(this.state.sso_data)}`
-    await this.props.root.requests.post(url, data)
+    await this.props.root.requests.post('book-appointment', data, {args: this.props.sso_args})
     if (!student_id) {
       const display_data = Object.assign({}, this.state.display_data)
-      student_id = 999999999
+      student_id = this.new_student_id  // so new student appears last
+      this.new_student_id += 1
       display_data.srs[student_id] = data.student_name
       this.setState({new_student: null, display_data})
-      window.sessionStorage.removeItem(LS_KEY)  // force new login when opening another appointment to update students
+      // force new login when opening another appointment to update students
+      this.unmount_signout = true
     }
-    const appointment_attendees = this.state.appointment_attendees.slice()
-    appointment_attendees.push(student_id)
+    const attendees = this.state.attendees.slice()
+    attendees.push(student_id)
     this.setState({
       booking_allowed: true,
       extra_attendees: this.state.extra_attendees + 1,
-      appointment_attendees
+      attendees
     })
-    // update_apts with enough time for the data to have been updated in tc
-    this.timeout_id && clearTimeout(this.timeout_id)
-    this.timeout_id = setTimeout(() => this.props.update_apts(), 5000)
-  }
-
-  signout () {
-    this.setState({
-      signature: null,
-      sso_data: null,
-      display_data: null,
-      appointment_attendees: null,
-      new_student: null,
-      booking_allowed: false,
-    })
-    window.sessionStorage.removeItem(LS_KEY)
+    // update with enough time for the data to have been updated in tc
+    this.update_timeout && clearTimeout(this.update_timeout)
+    this.update_timeout = setTimeout(() => this.props.update(), 5000)
   }
 
   get_students () {
     return this.state.display_data && Object.entries(this.state.display_data.srs).map(([k, name]) => {
-      const sr_id = parseInt(k, 10)
+      const s_id = parseInt(k, 10)
       return {
-        id: sr_id,
+        id: s_id,
         name: name,
-        already_on_apt: this.state.appointment_attendees && this.state.appointment_attendees.includes(sr_id)
+        already_on_apt: s_id >= NEW_STUDENT_ID || (this.state.attendees && this.state.attendees.includes(s_id))
       }
     })
   }
@@ -168,9 +166,7 @@ class AptModal extends Component {
           </div>
           <div className="tcs-content">
             <DetailGrid>
-              <Detail label="Job">
-                {apt.service_name}
-              </Detail>
+              <Detail label="Job">{apt.service_name}</Detail>
               {apt.attendees_max && <Detail label="Spaces Available">{spaces_available}</Detail>}
               <Detail label="Start" className="tcs-new-line">{this.props.config.format_datetime(apt.start)}</Detail>
               <Detail label="Finish">{this.props.config.format_datetime(apt.finish)}</Detail>
@@ -180,71 +176,33 @@ class AptModal extends Component {
         </div>
 
         <div>
-          {apt.service_extra_attributes.map((attr, i) => (
-            <div key={i} className="tcs-attr">
-              <h3 className="tcs-attr-title">{attr.name}</h3>
-              <IfElse v={attr.type === 'text_short' || attr.type === 'text_extended'}>
-                <Markdown content={attr.value}/>
-              {/*else*/}
-                <p>{attr.value}</p>
-              </IfElse>
-            </div>
-          ))}
+          <DisplayExtraAttrs extra_attributes={apt.service_extra_attributes}/>
           <div className="tcs-book">
-            <IfElse v={this.state.display_data}>
-                <div>
-                  {students && (
-                    <div className="tcs-book-existing">
-                      <div>Add your existing Students to the lesson</div>
-                      {students.map(({id, name, already_on_apt}) => (
-                        <div key={id} className="tcs-book-item">
-                          <div className="tcs-existing-name">
-                            {name}
-                          </div>
-                          {already_on_apt ? (
-                            <div className="tcs-already-added">
-                              Added <Tick/>
-                            </div>
-                          ) : (
-                            <button className="tcs-button tcs-add-button"
-                                    onClick={() => this.book(id)}
-                                    disabled={!booking_allowed || already_on_apt}>
-                              {this.props.root.get_text('add_to_lesson')}
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div className="tcs-book-new">
-                    <div>Add a new Student to the lesson</div>
-                    <div className="tcs-book-item">
-                      <input type="text"
-                            className="tcs-default-input"
-                            placeholder="Student Name"
-                            required={true}
-                            maxLength={255}
-                            value={this.state.new_student || ''}
-                            onChange={e => this.setState({new_student: e.target.value})}/>
-                      <button className="tcs-button tcs-add-button"
-                              onClick={() => this.book(null)}
-                              disabled={!booking_allowed || !this.state.new_student}>
-                        {this.props.root.get_text('add_to_lesson')}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              {/*else*/}
-                <button className="tcs-button tcs-signin" onClick={this.login}>
+            <If v={this.state.display_data}>
+              <div>
+                <AddExisting students={students}
+                              book={this.book}
+                              booking_allowed={booking_allowed}
+                              get_text={this.props.root.get_text}/>
+                <AddNew new_student={this.state.new_student}
+                        onChange={e => this.setState({new_student: e.target.value})}
+                        book={this.book}
+                        booking_allowed={booking_allowed}
+                        get_text={this.props.root.get_text}/>
+              </div>
+            </If>
+            <If v={!this.state.display_data && booking_allowed}>
+                <button className="tcs-button tcs-signin" onClick={this.props.signin}>
                   {this.props.root.get_text('book_appointment_button')}
                 </button>
-            </IfElse>
+            </If>
           </div>
 
           {this.state.display_data &&
             <div className="tcs-session-name">
               {this.state.display_data.nm}
-              <div className="tcs-signout" onClick={this.signout}>
+              <br/>
+              <div className="tcs-signout" onClick={this.props.signout}>
                 Not you? sign out
               </div>
             </div>
