@@ -131,19 +131,19 @@ class Contractors extends Component {
       const location_error = this.state.contractor_response.location && this.state.contractor_response.location.error
       // location error can be 'rate_limited' pr 'no_results'
       if (location_error === 'rate_limited') {
-        error_message = this.props.root.get_text('no_tutors_found_rate_limited')
+        error_message = this.props.config.get_text('no_tutors_found_rate_limited')
       } else if (location_error === 'no_results') {
-        error_message = this.props.root.get_text('no_tutors_found_no_loc', {location: this.state.location_str})
+        error_message = this.props.config.get_text('no_tutors_found_no_loc', {location: this.state.location_str})
       } else if (location_pretty) {
-        error_message = this.props.root.get_text('no_tutors_found_loc', {location: location_pretty})
+        error_message = this.props.config.get_text('no_tutors_found_loc', {location: location_pretty})
       } else {
-        error_message = this.props.root.get_text('no_tutors_found')
+        error_message = this.props.config.get_text('no_tutors_found')
       }
     } else if (con_count > 0) {
       description = [
         location_pretty,
         this.state.selected_subject && this.state.selected_subject.name,
-        this.props.root.get_text('filter_summary_' + (con_count === 1 ? 'single' : 'plural'), {count: con_count})
+        this.props.config.get_text('filter_summary_' + (con_count === 1 ? 'single' : 'plural'), {count: con_count})
       ].filter(Boolean).join(' • ')
     }
     const DisplayComponent = this.props.config.mode === 'grid' ? Grid : List
@@ -151,13 +151,13 @@ class Contractors extends Component {
       <div className="tcs-app tcs-contractors">
         <If v={this.state.contractor_response}>
           <div className="tcs-filters-container">
-            <LocationInput get_text={this.props.root.get_text}
+            <LocationInput get_text={this.props.config.get_text}
                            show={this.props.config.show_location_search}
                            loc_raw={this.state.location_str}
                            loc_change={this.location_change}
                            submit={this.submit_location}/>
 
-            <SubjectSelect get_text={this.props.root.get_text}
+            <SubjectSelect get_text={this.props.config.get_text}
                            show={this.props.config.show_subject_filter}
                            subjects={this.state.subjects}
                            selected_subject={this.state.selected_subject}
@@ -183,13 +183,13 @@ class Contractors extends Component {
               to={this.page_url(this.state.page - 1)}
               onClick={() => setTimeout(() => this.update_contractors(), 0)}
               className={'tcs-previous' + (this.state.page > 1 ? '' : ' tcs-disable')}>
-              &lsaquo;&lsaquo; {this.props.root.get_text('previous')}
+              &lsaquo;&lsaquo; {this.props.config.get_text('previous')}
             </Link>
             <Link
               to={this.page_url(this.state.page + 1)}
               onClick={() => setTimeout(() => this.update_contractors(), 0)}
               className={'tcs-next' + (this.state.more_pages ? '' : ' tcs-disable')}>
-              {this.props.root.get_text('next')} &rsaquo;&rsaquo;
+              {this.props.config.get_text('next')} &rsaquo;&rsaquo;
             </Link>
           </div>
         </If>

@@ -16,7 +16,7 @@ const STAR_WIDTH = Math.round(RAW_STAR_SIZE / RAW_STAR_STEP * STAR_SIZE)
 let star_def_id = 0
 const int_range = v => Array.apply(null, {length: v}).map(Number.call, Number)
 
-const Stars = ({contractor, root}) => {
+const Stars = ({contractor, config}) => {
   if (typeof contractor.review_rating !== 'number') {
     return null
   }
@@ -37,7 +37,7 @@ const Stars = ({contractor, root}) => {
     score_stars += 0.15
   }
   const comment = typeof contractor.review_duration === 'number' &&
-    root.get_text('review_hours', {hours: Math.round(contractor.review_duration / 3600)})
+    config.get_text('review_hours', {hours: Math.round(contractor.review_duration / 3600)})
   const star_display = `${Math.round(score * 10) / 10} Stars`
   return (
     <div className="tcs-stars">

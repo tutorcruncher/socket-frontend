@@ -6,6 +6,26 @@ import Modal from '../shared/Modal'
 const get_attendees = (appointment_attendees, apt_id) => (appointment_attendees && appointment_attendees[apt_id]) || []
 const NEW_STUDENT_ID = 999999999
 
+const AptDetails = ({apt, spaces_available, props}) => (
+  <div className="tcs-modal-flex">
+    <div className="tcs-extra">
+      <div className="tcs-price">
+        {props.config.format_money(apt.price)}
+        <div className="tcs-label">Price</div>
+      </div>
+    </div>
+    <div className="tcs-content">
+      <DetailGrid>
+        <Detail label="Job">{apt.service_name}</Detail>
+        {apt.attendees_max && <Detail label="Spaces Available">{spaces_available}</Detail>}
+        <Detail label="Start" className="tcs-new-line">{props.config.format_datetime(apt.start)}</Detail>
+        <Detail label="Finish">{props.config.format_datetime(apt.finish)}</Detail>
+        {apt.location && <Detail label="Location">{apt.location}</Detail>}
+      </DetailGrid>
+    </div>
+  </div>
+)
+
 const AddExisting = ({students, book, booking_allowed, get_text}) => (
   students && students.length > 0 &&
   <div className="tcs-book-existing">
@@ -157,24 +177,7 @@ class AptModal extends Component {
     const booking_allowed = this.state.booking_allowed && spaces_available > 0
     return (
       <Modal history={this.props.history} title={title} last_url={this.props.last_url} flex={false}>
-        <div className="tcs-modal-flex">
-          <div className="tcs-extra">
-            <div className="tcs-price">
-              {this.props.config.format_money(apt.price)}
-              <div className="tcs-label">Price</div>
-            </div>
-          </div>
-          <div className="tcs-content">
-            <DetailGrid>
-              <Detail label="Job">{apt.service_name}</Detail>
-              {apt.attendees_max && <Detail label="Spaces Available">{spaces_available}</Detail>}
-              <Detail label="Start" className="tcs-new-line">{this.props.config.format_datetime(apt.start)}</Detail>
-              <Detail label="Finish">{this.props.config.format_datetime(apt.finish)}</Detail>
-              {apt.location && <Detail label="Location">{apt.location}</Detail>}
-            </DetailGrid>
-          </div>
-        </div>
-
+        <AptDetails apt={apt} spaces_available={spaces_available} props={this.props}/>
         <div>
           <DisplayExtraAttrs extra_attributes={apt.service_extra_attributes}/>
           <div className="tcs-book">
@@ -183,17 +186,17 @@ class AptModal extends Component {
                 <AddExisting students={students}
                               book={this.book}
                               booking_allowed={booking_allowed}
-                              get_text={this.props.root.get_text}/>
+                              get_text={this.props.config.get_text}/>
                 <AddNew new_student={this.state.new_student}
                         onChange={e => this.setState({new_student: e.target.value})}
                         book={this.book}
                         booking_allowed={booking_allowed}
-                        get_text={this.props.root.get_text}/>
+                        get_text={this.props.config.get_text}/>
               </div>
             </If>
             <If v={!this.state.display_data && booking_allowed}>
                 <button className="tcs-button tcs-signin" onClick={this.props.signin}>
-                  {this.props.root.get_text('book_appointment_button')}
+                  {this.props.config.get_text('book_appointment_button')}
                 </button>
             </If>
           </div>

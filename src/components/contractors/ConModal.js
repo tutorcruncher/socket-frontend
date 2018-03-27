@@ -56,8 +56,7 @@ class ConModal extends Component {
       <Modal history={this.props.history} title={contractor.name} last_url={this.props.last_url}>
         <div className="tcs-extra">
           <Photo contractor={contractor} config={this.props.config}/>
-
-          <Stars contractor={contractor} root={this.props.root}/>
+          <Stars contractor={contractor} config={this.props.config}/>
 
           <div className="tcs-location">
             <Location/>
@@ -66,10 +65,10 @@ class ConModal extends Component {
 
           <IfElse v={this.state.show_enquiry}>
             <button className="tcs-button" onClick={this.switch_view}>
-              {this.props.root.get_text('contractor_details_button', {contractor_name: contractor.name})}
+              {this.props.config.get_text('contractor_details_button', {contractor_name: contractor.name})}
             </button>
             <button className="tcs-button" onClick={this.switch_view}>
-              {this.props.root.get_text('contractor_enquiry_button', {contractor_name: contractor.name})}
+              {this.props.config.get_text('contractor_enquiry_button', {contractor_name: contractor.name})}
             </button>
           </IfElse>
         </div>
@@ -86,7 +85,7 @@ class ConModal extends Component {
             {/*else:*/}
               <ConDetails contractor={contractor}
                           contractor_extra={contractor_extra}
-                          get_text={this.props.root.get_text}/>
+                          get_text={this.props.config.get_text}/>
             </IfElse>
 
           </div>

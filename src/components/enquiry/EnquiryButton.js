@@ -6,7 +6,7 @@ const EnquiryButton = ({root, config}) => (
   <div className="tcs-app">
     <div className="tcs-enquiry-modal">
       <Link to={root.url('enquiry')} className="tcs-button tcs-enquiry-button">
-        {root.get_text('enquiry_button')}
+        {config.get_text('enquiry_button')}
       </Link>
 
       <Route path={root.url('enquiry')} render={props => (

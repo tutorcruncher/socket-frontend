@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import {google_analytics, requests, async_start} from '../utils'
+import {google_analytics, request, async_start} from '../utils'
 import Error from './shared/Error'
 import Contractors from './contractors/Contractors'
 import PlainEnquiry from './enquiry/PlainEnquiry'
@@ -16,15 +16,24 @@ class App extends Component {
       enquiry_form_info: null,
     }
     this.url = props.url_generator
-    this.get_text = (...args) => this.props.config.get_text(...args)
 
     this.get_enquiry = this.get_enquiry.bind(this)
     this.set_enquiry = this.set_enquiry.bind(this)
 
     this.ga_event = this.ga_event.bind(this)
+    this.request = request.bind(this)
     this.requests = {
-      get: (...args) => requests.get(this, ...args),
-      post: (...args) => requests.post(this, ...args),
+      get: (path, args, config) => {
+        config = config || {}
+        config.args = args
+        return this.request('GET', path, config)
+      },
+      post: (path, data, config) => {
+        config = config || {}
+        config.send_data = data
+        config.expected_statuses = config.expected_statuses || [201]
+        return this.request('POST', path, config)
+      }
     }
   }
 

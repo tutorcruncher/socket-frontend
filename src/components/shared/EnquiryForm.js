@@ -87,7 +87,7 @@ class EnquiryForm extends Component {
   render () {
     const enquiry_form_info = this.props.root.get_enquiry()
     const visible_fields = enquiry_form_info.visible ? enquiry_form_info.visible : []
-    const get_text = this.props.root.get_text
+    const get_text = this.props.config.get_text
     const description = (
       this.props.contractor ?
         get_text('contractor_enquiry', {contractor_name: this.props.contractor.name}) :
@@ -122,13 +122,13 @@ class EnquiryForm extends Component {
 
               <If v={this.state.grecaptcha_missing}>
                 <div className="error-msg">
-                  {this.props.root.get_text('grecaptcha_missing')}
+                  {get_text('grecaptcha_missing')}
                 </div>
               </If>
 
               <div className="tcs-field tcs-submit">
                 <button className="tcs-button" type="submit">
-                  {this.props.root.get_text('submit_enquiry')}
+                  {get_text('submit_enquiry')}
                 </button>
               </div>
             </form>

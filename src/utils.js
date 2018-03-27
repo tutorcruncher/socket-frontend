@@ -105,12 +105,12 @@ export function get_company_options (public_key, config) {
   })
 }
 
-function request (app, method, path, config) {
+export function request (method, path, config) {
   let url = path
   if (url.startsWith('/')) {
-    url = app.props.config.api_root + url
+    url = this.props.config.api_root + url
   } else if (!url.startsWith('http')) {
-    url = `${app.props.config.api_root}/${app.props.public_key}/${path}`
+    url = `${this.props.config.api_root}/${this.props.public_key}/${path}`
   }
 
   config = config || {}
@@ -145,7 +145,7 @@ function request (app, method, path, config) {
     const on_error = msg => {
       console.error('request error', msg, url, xhr)
       if (config.set_app_state !== false) {
-        app.setState({error: msg})
+        this.setState({error: msg})
       }
       reject({msg, url, xhr})
     }
@@ -170,20 +170,6 @@ function request (app, method, path, config) {
     xhr.onerror = () => on_error(`Error requesting data ${xhr.statusText}: ${xhr.status}`)
     xhr.send(config.send_data)
   })
-}
-
-export const requests = {
-  get: (app, path, args, config) => {
-    config = config || {}
-    config.args = args
-    return request(app, 'GET', path, config)
-  },
-  post: (app, path, data, config) => {
-    config = config || {}
-    config.send_data = data
-    config.expected_statuses = config.expected_statuses || [201]
-    return request(app, 'POST', path, config)
-  }
 }
 
 export const async_start = (f, ...args) => setTimeout(async () => f(...args), 0)

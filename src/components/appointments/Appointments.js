@@ -183,13 +183,13 @@ class Appointments extends Component {
               to={this.page_url(this.state.page - 1)}
               onClick={() => setTimeout(() => this.update(), 0)}
               className={'tcs-previous' + (this.state.page > 1 ? '' : ' tcs-disable')}>
-              &lsaquo;&lsaquo; {this.props.root.get_text('previous')}
+              &lsaquo;&lsaquo; {this.props.config.get_text('previous')}
             </Link>
             <Link
               to={this.page_url(this.state.page + 1)}
               onClick={() => setTimeout(() => this.update(), 0)}
               className={'tcs-next' + (this.state.more_pages ? '' : ' tcs-disable')}>
-              {this.props.root.get_text('next')} &rsaquo;&rsaquo;
+              {this.props.config.get_text('next')} &rsaquo;&rsaquo;
             </Link>
           </div>
         </If>
