@@ -52,11 +52,11 @@ const STRINGS = {
   distance_away: '{distance}km away',
   book_appointment_button: 'Book Lesson',
   add_to_lesson: 'Add to Lesson',
-  diff_minutes: '{minutes} minutes',
-  diff_1hour: '1 hour',
-  diff_1hour_minutes: '1 hour {minutes} minutes',
-  diff_hours: '{hours} hours',
-  diff_hours_minutes: '{hours} hours {minutes} minutes',
+  diff_minutes: '{minutes} mins',
+  diff_1hour: '1 hr',
+  diff_1hour_minutes: '1 hr {minutes} mins',
+  diff_hours: '{hours} hrs',
+  diff_hours_minutes: '{hours} hrs {minutes} mins',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']

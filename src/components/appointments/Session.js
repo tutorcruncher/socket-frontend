@@ -8,35 +8,20 @@ const LS_KEY = '_tcs_user_data_'
 class AptModal extends Component {
   constructor (props) {
     super(props)
-    this.apt_id = parseInt(this.props.id, 10)
     this.login = this.login.bind(this)
+    this.process_message = this.process_message.bind(this)
+    this.update_session = this.update_session.bind(this)
+    this.check_client = this.check_client.bind(this)
     this.signout = this.signout.bind(this)
-    this.book = this.book.bind(this)
     this.state = {
-      apt: props.appointments && props.appointments.find(a => a.id === this.apt_id),
       signature: null,
       sso_data: null,
       display_data: null,
       appointment_attendees: null,
-      new_student: null,
-      booking_allowed: false,
-      extra_attendees: 0,
     }
     this.timeout_id = null
-  }
-
-  componentDidMount () {
     window.addEventListener('message', this.process_message, false)
     this.update_session(window.sessionStorage[LS_KEY])
-  }
-
-  componentWillReceiveProps (nextProps) {
-    const new_apt = nextProps.appointments && nextProps.appointments.find(a => a.id === this.apt_id)
-    if (this.state.apt && new_apt && this.state.apt.attendees_count !== new_apt.attendees_count) {
-      // clear temporary extra_attendees
-      this.setState({extra_attendees: 0})
-    }
-    this.setState({apt: new_apt})
   }
 
   login () {
@@ -80,56 +65,14 @@ class AptModal extends Component {
     }
   }
 
-  async book (student_id) {
-    this.setState({booking_allowed: false})
-    const data = {appointment: this.apt_id}
-    if (student_id) {
-      data.student_id = student_id
-    } else {
-      data.student_name = this.state.new_student
-    }
-    const url = `book-appointment?signature=${this.state.signature}&sso_data=${encodeURIComponent(this.state.sso_data)}`
-    await this.props.root.requests.post(url, data)
-    if (!student_id) {
-      const display_data = Object.assign({}, this.state.display_data)
-      student_id = 999999999
-      display_data.srs[student_id] = data.student_name
-      this.setState({new_student: null, display_data})
-      window.sessionStorage.removeItem(LS_KEY)  // force new login when opening another appointment to update students
-    }
-    const appointment_attendees = this.state.appointment_attendees.slice()
-    appointment_attendees.push(student_id)
-    this.setState({
-      booking_allowed: true,
-      extra_attendees: this.state.extra_attendees + 1,
-      appointment_attendees
-    })
-    // update_apts with enough time for the data to have been updated in tc
-    this.timeout_id && clearTimeout(this.timeout_id)
-    this.timeout_id = setTimeout(() => this.props.update_apts(), 5000)
-  }
-
   signout () {
     this.setState({
       signature: null,
       sso_data: null,
       display_data: null,
       appointment_attendees: null,
-      new_student: null,
-      booking_allowed: false,
     })
     window.sessionStorage.removeItem(LS_KEY)
-  }
-
-  get_students () {
-    return this.state.display_data && Object.entries(this.state.display_data.srs).map(([k, name]) => {
-      const sr_id = parseInt(k, 10)
-      return {
-        id: sr_id,
-        name: name,
-        already_on_apt: this.state.appointment_attendees && this.state.appointment_attendees.includes(sr_id)
-      }
-    })
   }
 
   render () {

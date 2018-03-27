@@ -56,28 +56,6 @@
   }
 }
 
-svg.tcs-svg {
-  width: $svg-size;
-  height: $svg-size;
-}
-
-svg.tcs-close {
-  cursor: pointer;
-  font-size: 26px;
-  text-decoration: none;
-  padding: 5px;
-  box-sizing: content-box;
-  path {
-    fill: $grey-text;
-    transition: all .5s ease;
-  }
-  &:hover {
-    path {
-      fill: black;
-    }
-  }
-}
-
 .tcs-details {
   display: grid;
   grid-template-columns: auto auto;

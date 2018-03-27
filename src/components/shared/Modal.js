@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Cross, Footer }  from './Tools'
+import { Cross, Footer }  from './Svgs'
 
 class Modal extends Component {
   constructor (props) {

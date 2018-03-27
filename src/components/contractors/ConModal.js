@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Modal from '../shared/Modal'
-import {Location, IfElse, Photo} from '../shared/Tools'
+import {IfElse, Photo} from '../shared/Tools'
+import {Location} from '../shared/Svgs'
 import ConDetails from './ConDetails'
 import EnquiryForm from '../shared/EnquiryForm'
 import Stars from './Stars'

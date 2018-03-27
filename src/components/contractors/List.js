@@ -1,5 +1,6 @@
 import React from 'react'
-import {Location, Markdown, If, Photo, AnimateLink} from '../shared/Tools'
+import {Markdown, If, Photo, AnimateLink} from '../shared/Tools'
+import {Location} from '../shared/Svgs'
 import Stars from './Stars'
 
 export const Grid = ({contractors, root, config}) => (

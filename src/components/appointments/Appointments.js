@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import {Link, Route} from 'react-router-dom'
+import ReactTooltip from 'react-tooltip'
 import format from 'date-fns/format'
-import {slugify, colour_contrast, group_by} from '../../utils'
+import {colour_contrast, group_by} from '../../utils'
 import {If} from '../shared/Tools'
+import {CalendarTimes, CalendarPlus} from '../shared/Svgs' // CalendarCheck
 import AptModal from './AptModal'
 
 const group_appointments = apts => {
@@ -12,6 +14,29 @@ const group_appointments = apts => {
       date: apts_[0].start,
       appointments: group_by(apts_, a => a.start.match(/\d{4}-\d{2}-\d{2}/)[0])
     }))
+}
+
+const Apt = ({apt, props}) => {
+  const full = apt.attendees_max === apt.attendees_count
+  const colour = full ? '#CCC' : apt.service_colour
+  const tip = full ? 'Lesson fully subscribed' : null
+  let Icon = full ? CalendarTimes : CalendarPlus
+  return (
+    <Link to={props.root.url(`appointment/${apt.link}`)} className="tcs-item">
+      <div className={`tcs-apt ${colour_contrast(colour)}`} style={{background: colour}} data-tip={tip}>
+        <div>
+          <Icon/>
+          <span>{format(apt.start, 'HH:mm')}</span>
+          <span>{apt.topic} ({apt.service_name})</span>
+        </div>
+        <div>
+          <span>{props.config.format_time_diff(apt.finish, apt.start)}</span>&bull;
+          <span>{props.config.format_money(apt.price)}</span>
+        </div>
+      </div>
+      <ReactTooltip effect="solid"/>
+    </Link>
+  )
 }
 
 const AptDayGroup = ({appointments, props}) => {
@@ -25,20 +50,7 @@ const AptDayGroup = ({appointments, props}) => {
       </div>
       <div>
         {appointments.map((apt, i) => (
-          <Link key={i} to={props.root.url(`appointment/${apt.link}`)}
-                      className="tcs-item">
-            <div className={`tcs-apt ${colour_contrast(apt.service_colour)}`}
-                 style={{background: apt.service_colour}}>
-              <div>
-                <span>{format(apt.start, 'HH:mm')}</span>
-                <span>{apt.topic} ({apt.service_name})</span>
-              </div>
-              <div>
-                <span>{props.config.format_time_diff(apt.finish, apt.start)}</span>&bull;
-                <span>{props.config.format_money(apt.price)}</span>
-              </div>
-            </div>
-          </Link>
+          <Apt key={i} apt={apt} props={props}/>
         ))}
       </div>
     </div>
@@ -50,7 +62,6 @@ class Appointments extends Component {
     super(props)
     this.state = {
       appointments: null,
-      selected_job: null,
       page: 1,
       more_pages: false,
     }
@@ -62,13 +73,9 @@ class Appointments extends Component {
     await this.update()
   }
 
-  page_url (page, selected_job) {
+  page_url (page) {
     page = page || this.state.page
-    selected_job = selected_job || this.state.selected_job
     let url = this.root_url
-    if (this.state.selected_job) {
-      url = this.props.root.url(`job/${selected_job.id}-${slugify(selected_job.name)}`)
-    }
     if (page > 1) {
       url += `${url.substr(-1) === '/' ? '' : '/'}page/${page}`
     }
