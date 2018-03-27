@@ -14,7 +14,7 @@ class AptModal extends Component {
     this.check_client = this.check_client.bind(this)
     this.signout = this.signout.bind(this)
     this.book = this.book.bind(this)
-    this.get_srs = this.get_srs.bind(this)
+    this.get_students = this.get_students.bind(this)
     this.state = {
       apt: props.appointments && props.appointments.find(a => a.id === this.apt_id),
       signature: null,
@@ -74,7 +74,7 @@ class AptModal extends Component {
       const r = await this.props.root.requests.get('check-client', args, {set_app_state: false})
       this.setState({appointment_attendees: r.appointment_attendees[this.apt_id] || [], booking_allowed: true})
     } catch (e) {
-      if (e.xhr.status === 403) {
+      if (e.xhr.status === 401) {
         this.signout()
       } else {
         this.props.root.setState({error: e.msg})
@@ -122,7 +122,7 @@ class AptModal extends Component {
     window.sessionStorage.removeItem(LS_KEY)
   }
 
-  get_srs () {
+  get_students () {
     return this.state.display_data && Object.entries(this.state.display_data.srs).map(([k, name]) => {
       const sr_id = parseInt(k, 10)
       return {
@@ -155,7 +155,7 @@ class AptModal extends Component {
         {apt.topic}
       </span>
     )
-    const srs = this.get_srs()
+    const students = this.get_students()
     const spaces_available = apt.attendees_max - apt.attendees_count - this.state.extra_attendees
     const booking_allowed = this.state.booking_allowed && spaces_available > 0
     return (
@@ -163,7 +163,7 @@ class AptModal extends Component {
         <div className="tcs-modal-flex">
           <div className="tcs-extra">
             <div className="tcs-price">
-              £{apt.price}
+              {this.props.config.format_money(apt.price)}
               <div className="tcs-label">Price</div>
             </div>
           </div>
@@ -194,10 +194,10 @@ class AptModal extends Component {
           <div className="tcs-book">
             <IfElse v={this.state.display_data}>
                 <div>
-                  {srs && (
+                  {students && (
                     <div className="tcs-book-existing">
                       <div>Add your existing Students to the lesson</div>
-                      {srs.map(({id, name, already_on_apt}) => (
+                      {students.map(({id, name, already_on_apt}) => (
                         <div key={id} className="tcs-book-item">
                           <div className="tcs-existing-name">
                             {name}

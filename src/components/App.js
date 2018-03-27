@@ -16,7 +16,7 @@ class App extends Component {
       enquiry_form_info: null,
     }
     this.url = props.url_generator
-    this.get_text = this.get_text.bind(this)
+    this.get_text = (...args) => this.props.config.get_text(...args)
 
     this.get_enquiry = this.get_enquiry.bind(this)
     this.set_enquiry = this.set_enquiry.bind(this)
@@ -26,18 +26,6 @@ class App extends Component {
       get: (...args) => requests.get(this, ...args),
       post: (...args) => requests.post(this, ...args),
     }
-  }
-
-  get_text (name, replacements) {
-    let s = this.props.config.messages[name]
-    if (!s) {
-      console.warn(`not translation found for "${name}"`)
-      return name
-    }
-    for (let [k, v] of Object.entries(replacements || {})) {
-      s = s.replace(`{${k}}`, v)
-    }
-    return s
   }
 
   get_enquiry () {

@@ -3,11 +3,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import 'babel-polyfill'
 import format from 'date-fns/format'
-import distanceInWordsStrict from 'date-fns/distance_in_words_strict'
 import './main.scss'
 import App from './components/App'
 import {BrowserRouter, HashRouter} from 'react-router-dom'
 import {auto_url_root, get_company_options} from './utils'
+import {format_date, format_datetime, format_money, format_time_diff, get_text} from './formatting'
 
 const raven_config = {
   release: process.env.REACT_APP_RELEASE,
@@ -52,6 +52,11 @@ const STRINGS = {
   distance_away: '{distance}km away',
   book_appointment_button: 'Book Lesson',
   add_to_lesson: 'Add to Lesson',
+  diff_minutes: '{minutes} minutes',
+  diff_1hour: '1 hour',
+  diff_1hour_minutes: '1 hour {minutes} minutes',
+  diff_hours: '{hours} hours',
+  diff_hours_minutes: '{hours} hours {minutes} minutes',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']
@@ -129,32 +134,19 @@ window.socket = async function (public_key, config) {
     datetime: 'HH:mm DD/MM/YYYY',
     date: 'DD/MM/YYYY'
   }
-  config.date_fns = {format, distanceInWordsStrict}
-  config.format_date = config.date_format || (
-    function (ts) {return this.date_fns.format(new Date(ts), this.format.date)}
-  )
-  config.format_date = config.format_date.bind(config)
-
-  config.format_datetime = config.format_datetime || (
-    function (ts) {return this.date_fns.format(new Date(ts), this.format.datetime)}
-  )
-  config.format_datetime = config.format_datetime.bind(config)
-  config.format_time_diff = config.format_time_diff || (
-    (ts1, ts2, config) => config.date_fns.distanceInWordsStrict(new Date(ts1), new Date(ts2))
-  )
+  config.date_fns = {format}
+  config.format_date = (config.date_format || format_date).bind(config)
+  config.format_datetime = (config.format_datetime || format_datetime).bind(config)
+  config.format_time_diff = (config.format_time_diff || format_time_diff).bind(config)
+  config.format_money = (config.format_money || format_money).bind(config)
 
   const el = document.querySelector(config.element)
   if (el === null) {
     config.console.error(`SOCKET: page element "${config.element}" does not exist, unable to start socket view.`)
     return
   }
-
-  config.messages = config.messages || {}
-  for (let k of Object.keys(STRINGS)) {
-    if (!config.messages[k]) {
-      config.messages[k] = STRINGS[k]
-    }
-  }
+  config.messages = Object.assign(Object.assign({}, STRINGS), config.messages || {})
+  config.get_text = (config.get_text || get_text).bind(config)
   config.random_id = Math.random().toString(36).substring(2, 10)
   config.grecaptcha_key = process.env.REACT_APP_GRECAPTCHA_KEY
 

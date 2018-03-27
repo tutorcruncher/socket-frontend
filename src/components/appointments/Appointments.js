@@ -34,8 +34,8 @@ const AptDayGroup = ({appointments, props}) => {
                 <span>{apt.topic} ({apt.service_name})</span>
               </div>
               <div>
-                <span>{props.config.format_time_diff(apt.finish, apt.start, props.config)}</span>&bull;
-                <span>£{apt.price}</span>
+                <span>{props.config.format_time_diff(apt.finish, apt.start)}</span>&bull;
+                <span>{props.config.format_money(apt.price)}</span>
               </div>
             </div>
           </Link>
