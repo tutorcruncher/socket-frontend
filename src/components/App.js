@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import {google_analytics, request, async_start} from '../utils'
+import {google_analytics, request} from '../utils'
 import Error from './shared/Error'
 import Contractors from './contractors/Contractors'
 import PlainEnquiry from './enquiry/PlainEnquiry'
@@ -16,9 +16,6 @@ class App extends Component {
       enquiry_form_info: null,
     }
     this.url = props.url_generator
-
-    this.get_enquiry = this.get_enquiry.bind(this)
-    this.set_enquiry = this.set_enquiry.bind(this)
 
     this.ga_event = this.ga_event.bind(this)
     this.request = request.bind(this)
@@ -39,7 +36,7 @@ class App extends Component {
 
   get_enquiry () {
     if (this.state.enquiry_form_info === null) {
-      async_start(this.set_enquiry)
+      this.set_enquiry()
     }
     return this.state.enquiry_form_info || {}
   }

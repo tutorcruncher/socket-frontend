@@ -172,8 +172,6 @@ export function request (method, path, config) {
   })
 }
 
-export const async_start = (f, ...args) => setTimeout(async () => f(...args), 0)
-
 export const slugify = text => (
    text
      .toLowerCase()

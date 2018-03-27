@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Link, Route} from 'react-router-dom'
-import {async_start, slugify} from '../../utils'
+import {slugify} from '../../utils'
 import {If} from '../shared/Tools'
 import {Grid, List} from './List'
 import ConModal from './ConModal'
@@ -105,7 +105,7 @@ class Contractors extends Component {
     const state_ref = 'con_extra_' + con.id
     const con_extra = this.state[state_ref]
     if (con_extra === undefined) {
-      async_start(this.set_contractor_details, con.url, state_ref)
+      this.set_contractor_details(con.url, state_ref)
     }
     return con_extra
   }
