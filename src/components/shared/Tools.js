@@ -52,9 +52,9 @@ export const DetailGrid = ({children}) => (
   </div>
 )
 
-export const Detail = ({label, children, className}) => (
+export const Detail = ({label, children,config, className}) => (
   <div className={`tcs-detail ${className || ''}`}>
-    <div className="tcs-label">{label}</div>
+    <div className="tcs-label">{config.get_text(label)}</div>
     <div className="tcs-value">{children}</div>
   </div>
 )
@@ -73,3 +73,5 @@ export const DisplayExtraAttrs = ({extra_attributes}) => (
     ))}
   </div>
 )
+
+export const Bull = () => <span className="tcs-bull">&bull;</span>

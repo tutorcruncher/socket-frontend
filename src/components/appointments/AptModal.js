@@ -11,16 +11,18 @@ const AptDetails = ({apt, spaces_available, props}) => (
     <div className="tcs-extra">
       <div className="tcs-price">
         {props.config.format_money(apt.price)}
-        <div className="tcs-label">Price</div>
+        <div className="tcs-label">{props.config.get_text('price')}</div>
       </div>
     </div>
     <div className="tcs-content">
       <DetailGrid>
-        <Detail label="Job">{apt.service_name}</Detail>
-        {apt.attendees_max && <Detail label="Spaces Available">{spaces_available}</Detail>}
-        <Detail label="Start" className="tcs-new-line">{props.config.format_datetime(apt.start)}</Detail>
-        <Detail label="Finish">{props.config.format_datetime(apt.finish)}</Detail>
-        {apt.location && <Detail label="Location">{apt.location}</Detail>}
+        <Detail label="job" config={props.config}>{apt.service_name}</Detail>
+        {apt.attendees_max && <Detail label="spaces_available" config={props.config}>{spaces_available}</Detail>}
+        <Detail label="start" config={props.config} className="tcs-new-line">
+          {props.config.format_datetime(apt.start)}
+        </Detail>
+        <Detail label="finish" config={props.config}>{props.config.format_datetime(apt.finish)}</Detail>
+        {apt.location && <Detail label="location" config={props.config}>{apt.location}</Detail>}
       </DetailGrid>
     </div>
   </div>
@@ -37,7 +39,7 @@ const AddExisting = ({students, book, booking_allowed, get_text}) => (
         </div>
         {already_on_apt ? (
           <div className="tcs-already-added">
-            Added <Tick/>
+            {get_text('added')} <Tick/>
           </div>
         ) : (
           <button className="tcs-button tcs-add-button"
@@ -53,7 +55,7 @@ const AddExisting = ({students, book, booking_allowed, get_text}) => (
 
 const AddNew = ({new_student, onChange, book, booking_allowed, get_text}) => (
   <div className="tcs-book-new">
-    <div>Add a new Student to the lesson</div>
+    <div>{get_text('add_new_student')}</div>
     <div className="tcs-book-item">
       <input type="text"
             className="tcs-default-input"
@@ -161,8 +163,8 @@ class AptModal extends Component {
     const apt = this.state.apt
     if (!apt) {
       return (
-        <Modal history={this.props.history} title="Appointment not Found">
-          <p>No Appointment found with id {this.props.id}.</p>
+        <Modal history={this.props.history} title={this.props.config.get_text('appointment_not_found')}>
+          <p>{this.props.config.get_text('appointment_not_found_id', {apt_id: this.props.id})}</p>
         </Modal>
       )
     }
@@ -206,7 +208,7 @@ class AptModal extends Component {
               {this.state.display_data.nm}
               <br/>
               <div className="tcs-signout" onClick={this.props.signout}>
-                Not you? sign out
+                {this.props.config.get_text('not_you_sign_out')}
               </div>
             </div>
           }

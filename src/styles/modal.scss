@@ -36,17 +36,25 @@
 
 .tcs-header {
   margin-bottom: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
   border-bottom: 2px solid $dft-border-color;
-  h2 {
+  h2.tcs-h2 {
     margin-top: 0;
     margin-bottom: 0;
     display: inline-block;
     font-size: 29px;
     font-weight: 400;
-    height: 32px;
+    height: 39px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 40px);
+    @media(max-width: $window-small) {
+      font-size: 26px;
+      height: 35px;
+    }
   }
-  .close {
+  .tcs-close {
     float: right;
   }
 }

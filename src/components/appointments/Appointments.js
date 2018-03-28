@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import {Link, Route} from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 import {colour_contrast, group_by} from '../../utils'
-import {If} from '../shared/Tools'
+import {If, Bull} from '../shared/Tools'
 import {CalendarCheck, CalendarPlus, CalendarTimes} from '../shared/Svgs'
 import AptModal from './AptModal'
 
 const LS_KEY = '_tcs_user_data_'
+// matches value in appointments.scss
+const NARROW = 750
 
 const group_appointments = apts => {
   // group appointments by month then day
@@ -19,6 +21,7 @@ const group_appointments = apts => {
 
 const Apt = ({apt, props, appointment_attendees}) => {
   const full = apt.attendees_max === apt.attendees_count
+  const narrow = window.innerWidth < NARROW
   const colour = full ? '#CCC' : apt.service_colour
   let Icon, tip
   const spaces_ctx = {spaces: apt.attendees_max - apt.attendees_count}
@@ -35,10 +38,13 @@ const Apt = ({apt, props, appointment_attendees}) => {
         <div>
           <Icon/>
           <span>{props.config.date_fns.format(apt.start, 'HH:mm')}</span>
-          <span>{apt.topic} ({apt.service_name})</span>
+          <span>{apt.topic}</span>
+          {narrow && <br/>}
+          <span>({apt.service_name})</span>
         </div>
-        <div>
-          <span>{props.config.format_time_diff(apt.finish, apt.start)}</span>&bull;
+        <div className="tcs-right">
+          <span>{props.config.format_time_diff(apt.finish, apt.start)}</span>
+          {narrow ? <br/> :<Bull/>}
           <span>{props.config.format_money(apt.price)}</span>
         </div>
       </div>

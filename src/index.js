@@ -63,6 +63,16 @@ const STRINGS = {
   no_spaces_attending: 'Already attending, no more spaces available',
   add_existing_students: 'Add your existing Students to the lesson',
   add_new_student: 'Add a new Student to the lesson',
+  appointment_not_found: 'Appointment not Found',
+  appointment_not_found_id: 'No Appointment found with id {apt_id}.',
+  price: 'Price',
+  job: 'Job',
+  spaces_available: 'Spaces Available',
+  start: 'Start',
+  finish: 'Finish',
+  location: 'Location',
+  not_you_sign_out: 'Not you? sign out',
+  added: 'Added',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']

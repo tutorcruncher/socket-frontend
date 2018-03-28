@@ -1,9 +1,5 @@
 @import '../conf';
 
-.tcs-appointments {
-  padding: 10px;
-}
-
 .tcs-apt-group-month {
   padding: 10px 8px;
   .tcs-title {
@@ -16,26 +12,42 @@
   padding-bottom: 12px;
   display: grid;
   grid-template-columns: 100px auto;
+  @media(max-width: $window-small) {
+    grid-template-columns: 60px auto;
+  }
   .tcs-day {
     border-right: 2px solid #DDD;
-    margin-right: 12px;
-    padding-right: 12px;
     text-align: right;
     font-size: 18px;
+    margin-right: 12px;
+    padding-right: 12px;
+    @media(max-width: $window-small) {
+      margin-right: 6px;
+      padding-right: 6px;
+    }
   }
   .tcs-apt {
     margin: 0 0 8px;
     padding: 8px 6px 8px 10px;
     border-radius: $border-radius;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto auto;
     color: black;
     vertical-align: top;
+    .tcs-svg {
+      margin-right: 5px;
+      @media(max-width: $window-small) {
+        display: none;
+      }
+    }
     span {
-      margin: 0 5px;
+      margin-right: 5px;
     }
     &.dark {
       color: white;
+    }
+    .tcs-right {
+      text-align: right;
     }
   }
   .tcs-item:last-child .tcs-apt {
