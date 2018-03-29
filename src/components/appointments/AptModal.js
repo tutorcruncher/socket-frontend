@@ -1,32 +1,40 @@
 import React, { Component } from 'react'
-import {If, DetailGrid, Detail, DisplayExtraAttrs} from '../shared/Tools'
-import {Tick} from '../shared/Svgs'
+import {If, IfElse, DisplayExtraAttrs} from '../shared/Tools'
+import {Tick, CalendarPlus, CalendarTimes} from '../shared/Svgs'
 import Modal from '../shared/Modal'
 
 const get_attendees = (appointment_attendees, apt_id) => (appointment_attendees && appointment_attendees[apt_id]) || []
 const NEW_STUDENT_ID = 999999999
+const DATE_FMT = 'MMM Do h:m a'
 
-const AptDetails = ({apt, spaces_available, props}) => (
-  <div className="tcs-modal-flex">
-    <div className="tcs-extra">
-      <div className="tcs-price">
-        {props.config.format_money(apt.price)}
-        <div className="tcs-label">{props.config.get_text('price')}</div>
+
+const AptDetails = ({apt, spaces_available, attending, props}) => {
+  const c = props.config
+  const CalendarIcon = spaces_available ? CalendarPlus : CalendarTimes
+  return (
+    <div>
+      <div className={`tcs-apt-details ${spaces_available ? 'tcs-bookable' : ''}`}>
+        <div>
+          <CalendarIcon/>
+        </div>
+        <div className="tcs-price">
+          {c.format_money(apt.price)}
+        </div>
+        <div>
+          {c.get_text(spaces_available === 0 ? 'no_spaces' : 'spaces', {spaces: spaces_available})}
+        </div>
+        <IfElse v={apt.start.substr(0, 10) === apt.finish.substr(0, 10)}>
+          <div>
+            {c.date_fns.format(apt.start, DATE_FMT)} &bull; {c.format_duration(apt.finish, apt.start)}
+          </div>
+          <div>
+          {c.date_fns.format(apt.start, DATE_FMT)} - {c.date_fns.format(apt.finish, DATE_FMT)}
+          </div>
+        </IfElse>
       </div>
     </div>
-    <div className="tcs-content">
-      <DetailGrid>
-        <Detail label="job" config={props.config}>{apt.service_name}</Detail>
-        {apt.attendees_max && <Detail label="spaces_available" config={props.config}>{spaces_available}</Detail>}
-        <Detail label="start" config={props.config} className="tcs-new-line">
-          {props.config.format_datetime(apt.start)}
-        </Detail>
-        <Detail label="finish" config={props.config}>{props.config.format_datetime(apt.finish)}</Detail>
-        {apt.location && <Detail label="location" config={props.config}>{apt.location}</Detail>}
-      </DetailGrid>
-    </div>
-  </div>
-)
+  )
+}
 
 const AddExisting = ({students, book, booking_allowed, get_text}) => (
   students && students.length > 0 &&
@@ -171,7 +179,7 @@ class AptModal extends Component {
     const title = (
       <span>
         <span className="tcs-circle" style={{background: apt.service_colour}}/>
-        {apt.topic}
+        {apt.topic} &bull; {apt.service_name}
       </span>
     )
     const students = this.get_students()
@@ -179,7 +187,10 @@ class AptModal extends Component {
     const booking_allowed = this.state.booking_allowed && spaces_available > 0
     return (
       <Modal history={this.props.history} title={title} last_url={this.props.last_url} flex={false}>
-        <AptDetails apt={apt} spaces_available={spaces_available} props={this.props}/>
+        <AptDetails apt={apt}
+                    spaces_available={spaces_available}
+                    attending={Boolean(this.state.display_data && this.state.attendees)}
+                    props={this.props}/>
         <div>
           <DisplayExtraAttrs extra_attributes={apt.service_extra_attributes}/>
           <div className="tcs-book">

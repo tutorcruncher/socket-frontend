@@ -45,13 +45,10 @@
     font-size: 29px;
     font-weight: 400;
     height: 39px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     width: calc(100% - 40px);
     @media(max-width: $window-small) {
-      font-size: 26px;
-      height: 35px;
+      font-size: 22px;
+      height: 31px;
     }
   }
   .tcs-close {

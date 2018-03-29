@@ -7,7 +7,7 @@ import './main.scss'
 import App from './components/App'
 import {BrowserRouter, HashRouter} from 'react-router-dom'
 import {auto_url_root, get_company_options} from './utils'
-import {format_date, format_datetime, format_money, format_time_diff, get_text} from './formatting'
+import {format_money, format_duration, get_text} from './formatting'
 
 const raven_config = {
   release: process.env.REACT_APP_RELEASE,
@@ -53,14 +53,14 @@ const STRINGS = {
   book_appointment_button: 'Book Lesson',
   add_to_lesson: 'Add to Lesson',
   diff_minutes: '{minutes} mins',
-  diff_1hour: '1 hr',
-  diff_1hour_minutes: '1 hr {minutes} mins',
-  diff_hours: '{hours} hrs',
-  diff_hours_minutes: '{hours} hrs {minutes} mins',
+  diff_1hour: '1 hour',
+  diff_1hour_minutes: '1 hour {minutes} mins',
+  diff_hours: '{hours} hours',
+  diff_hours_minutes: '{hours} hours {minutes} mins',
   spaces: '{spaces} spaces available',
   no_spaces: 'No spaces available',
-  spaces_attending: 'Already attending, {spaces} more spaces available',
-  no_spaces_attending: 'Already attending, no more spaces available',
+  spaces_attending: "You're already attending, {spaces} more spaces available",
+  no_spaces_attending: "You're already attending, no more spaces available",
   add_existing_students: 'Add your existing Students to the lesson',
   add_new_student: 'Add a new Student to the lesson',
   appointment_not_found: 'Appointment not Found',
@@ -151,9 +151,7 @@ window.socket = async function (public_key, config) {
     date: 'DD/MM/YYYY'
   }
   config.date_fns = {format}
-  config.format_date = (config.date_format || format_date).bind(config)
-  config.format_datetime = (config.format_datetime || format_datetime).bind(config)
-  config.format_time_diff = (config.format_time_diff || format_time_diff).bind(config)
+  config.format_duration = (config.format_duration || format_duration).bind(config)
   config.format_money = (config.format_money || format_money).bind(config)
 
   const el = document.querySelector(config.element)

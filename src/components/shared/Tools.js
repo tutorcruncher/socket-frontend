@@ -46,19 +46,6 @@ export class AnimateLink extends Component {
   }
 }
 
-export const DetailGrid = ({children}) => (
-  <div className="tcs-details">
-    {children}
-  </div>
-)
-
-export const Detail = ({label, children,config, className}) => (
-  <div className={`tcs-detail ${className || ''}`}>
-    <div className="tcs-label">{config.get_text(label)}</div>
-    <div className="tcs-value">{children}</div>
-  </div>
-)
-
 export const DisplayExtraAttrs = ({extra_attributes}) => (
   <div>
     {extra_attributes && extra_attributes.map((attr, i) => (
@@ -74,4 +61,4 @@ export const DisplayExtraAttrs = ({extra_attributes}) => (
   </div>
 )
 
-export const Bull = () => <span className="tcs-bull">&bull;</span>
+export const Bull = ({style}) => <span className="tcs-bull" style={style}>&bull;</span>

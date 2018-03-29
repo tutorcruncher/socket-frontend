@@ -25,11 +25,7 @@ export function format_date (ts) {
   return this.date_fns.format(new Date(ts), this.format.date)
 }
 
-export function format_datetime (ts) {
-  return this.date_fns.format(new Date(ts), this.format.datetime)
-}
-
-export function format_time_diff (ts1, ts2) {
+export function format_duration (ts1, ts2) {
   const d1 = new Date(ts1)
   const d2 = new Date(ts2)
   let minutes = Math.round((d1 - d2) / 60000)

@@ -1,5 +1,16 @@
 @import '../conf';
 
+.tcs-right {
+  text-align: right;
+}
+
+.tcs-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 3px;
+}
+
 svg.tcs-svg {
   width: $svg-size;
   height: $svg-size;

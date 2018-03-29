@@ -21,6 +21,9 @@
     font-size: 18px;
     margin-right: 12px;
     padding-right: 12px;
+    .tcs-day-no {
+      font-size: 26px;
+    }
     @media(max-width: $window-small) {
       margin-right: 6px;
       padding-right: 6px;
@@ -28,26 +31,15 @@
   }
   .tcs-apt {
     margin: 0 0 8px;
-    padding: 8px 6px 8px 10px;
+    padding: 6px 6px 6px 10px;
     border-radius: $border-radius;
     display: grid;
-    grid-template-columns: auto auto;
+    // grid-template-columns: 50px 2fr 1fr;
+    grid-template-columns: auto 1fr auto;
     color: black;
     vertical-align: top;
-    .tcs-svg {
-      margin-right: 5px;
-      @media(max-width: $window-small) {
-        display: none;
-      }
-    }
-    span {
-      margin-right: 5px;
-    }
     &.dark {
       color: white;
-    }
-    .tcs-right {
-      text-align: right;
     }
   }
   .tcs-item:last-child .tcs-apt {
@@ -70,13 +62,34 @@ $circle-size: 22px;
   font-size: 14px;
 }
 
-.tcs-price {
-  font-size: 30px;
-  .tcs-label {
-    font-size: 14px;
-    color: $label-colour;
+$colour-positive: #83aa68;
+.tcs-apt-details {
+  margin: 0 auto;
+  max-width: 400px;
+  min-height: 100px;
+  background: #AAA;
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+  font-size: 18px;
+  &.tcs-bookable {
+    background: #83aa68;
+  }
+  > div {
+    padding-bottom: 4px;
+  }
+  .tcs-price {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .tcs-svg {
+    fill: white;
+    width: 30px;
+    height: 30px;
   }
 }
+
 
 .tcs-signout {
   color: $brand-colour;
@@ -94,6 +107,8 @@ $student-border-radius: 5px;
 $student-border-colour: #D8D8D8;
 .tcs-book {
   padding-top: 10px;
+  margin: 0 auto;
+  max-width: 600px;
   .tcs-book-existing {
     margin-bottom: 15px;
   }
@@ -122,7 +137,7 @@ $student-border-colour: #D8D8D8;
     height: $student-height;
   }
   .tcs-already-added {
-    background: #12a012;
+    background: $colour-positive;
     color: white;
     text-align: center;
     padding: 8px 12px;

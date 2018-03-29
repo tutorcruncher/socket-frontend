@@ -1,51 +1,46 @@
 import React, { Component } from 'react'
 import {Link, Route} from 'react-router-dom'
-import ReactTooltip from 'react-tooltip'
 import {colour_contrast, group_by} from '../../utils'
 import {If, Bull} from '../shared/Tools'
-import {CalendarCheck, CalendarPlus, CalendarTimes} from '../shared/Svgs'
 import AptModal from './AptModal'
 
 const LS_KEY = '_tcs_user_data_'
-// matches value in appointments.scss
-const NARROW = 750
 
 const group_appointments = apts => {
   // group appointments by month then day
-  return group_by(apts, a => a.start.match(/\d{4}-\d{2}/)[0])
+  return group_by(apts, a => a.start.substr(0, 7))
     .map(apts_ => ({
       date: apts_[0].start,
-      appointments: group_by(apts_, a => a.start.match(/\d{4}-\d{2}-\d{2}/)[0])
+      appointments: group_by(apts_, a => a.start.substr(0, 10))
     }))
 }
 
 const Apt = ({apt, props, appointment_attendees}) => {
   const full = apt.attendees_max === apt.attendees_count
-  const narrow = window.innerWidth < NARROW
-  const colour = full ? '#CCC' : apt.service_colour
-  let Icon, tip
+  let status
   const spaces_ctx = {spaces: apt.attendees_max - apt.attendees_count}
   if (appointment_attendees && appointment_attendees[apt.id] !== undefined) {
-    Icon = CalendarCheck
-    tip = props.config.get_text(full ? 'no_spaces_attending' : 'spaces_attending', spaces_ctx)
+    status = props.config.get_text(full ? 'no_spaces_attending' : 'spaces_attending', spaces_ctx)
   } else {
-    Icon = full ? CalendarTimes : CalendarPlus
-    tip = props.config.get_text(full ? 'no_spaces' : 'spaces', spaces_ctx)
+    status = props.config.get_text(full ? 'no_spaces' : 'spaces', spaces_ctx)
   }
   return (
     <Link to={props.root.url(`appointment/${apt.link}`)} className="tcs-item">
-      <div className={`tcs-apt ${colour_contrast(colour)}`} style={{background: colour}} data-tip={tip}>
-        <div>
-          <Icon/>
-          <span>{props.config.date_fns.format(apt.start, 'HH:mm')}</span>
-          <span>{apt.topic}</span>
-          {narrow && <br/>}
-          <span>({apt.service_name})</span>
+      <div className={`tcs-apt ${colour_contrast(apt.service_colour)}`} style={{background: apt.service_colour}}>
+        <div style={{fontWeight: 700, marginRight: 10}}>
+          {props.config.date_fns.format(apt.start, 'HH:mm')}
+        </div>
+        <div className="tcs-truncate">
+          {apt.topic}<Bull/>{apt.service_name}
+        </div>
+        <div className="tcs-right" style={{fontWeight: 700}}>
+        {props.config.format_money(apt.price)}
+        </div>
+        <div className="tcs-truncate" style={{gridColumn: 2}}>
+          {status}
         </div>
         <div className="tcs-right">
-          <span>{props.config.format_time_diff(apt.finish, apt.start)}</span>
-          {narrow ? <br/> :<Bull/>}
-          <span>{props.config.format_money(apt.price)}</span>
+          {props.config.format_duration(apt.finish, apt.start)}
         </div>
       </div>
     </Link>
@@ -57,9 +52,8 @@ const AptDayGroup = ({appointments, props, appointment_attendees}) => {
   return (
     <div className="tcs-apt-group-day">
       <div className="tcs-day">
-        {props.config.date_fns.format(first_apt.start, 'Do')}
-        <br/>
         {props.config.date_fns.format(first_apt.start, 'ddd')}
+        <div className="tcs-day-no">{props.config.date_fns.format(first_apt.start, 'd')}</div>
       </div>
       <div>
         {appointments.map(apt => (
@@ -114,7 +108,6 @@ class Appointments extends Component {
       appointments,
       more_pages: appointments.count > appointments.results.length + on_previous_pages,
     })
-    ReactTooltip.rebuild()
   }
 
   signin () {
@@ -182,7 +175,6 @@ class Appointments extends Component {
           </div>
         ))}
 
-        <ReactTooltip effect="solid"/>
         <If v={this.state.page > 1 || this.state.more_pages}>
           <div className="tcs-pagination">
             <Link
