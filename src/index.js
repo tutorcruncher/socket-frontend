@@ -2,12 +2,11 @@ import Raven from 'raven-js'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import 'babel-polyfill'
-import format from 'date-fns/format'
 import './main.scss'
 import App from './components/App'
 import {BrowserRouter, HashRouter} from 'react-router-dom'
 import {auto_url_root, get_company_options} from './utils'
-import {format_money, format_duration, get_text} from './formatting'
+import {format_money, format_dt, format_duration, get_text, timezone} from './formatting'
 
 const raven_config = {
   release: process.env.REACT_APP_RELEASE,
@@ -73,6 +72,7 @@ const STRINGS = {
   location: 'Location',
   not_you_sign_out: 'Not you? sign out',
   added: 'Added',
+  assuming_timezone: '(Times assume your timezone is {timezone})'
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']
@@ -150,7 +150,8 @@ window.socket = async function (public_key, config) {
     datetime: 'HH:mm DD/MM/YYYY',
     date: 'DD/MM/YYYY'
   }
-  config.date_fns = {format}
+  config.timezone = config.timezone || timezone
+  config.format_dt = (config.format_dt || format_dt).bind(config)
   config.format_duration = (config.format_duration || format_duration).bind(config)
   config.format_money = (config.format_money || format_money).bind(config)
 

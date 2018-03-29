@@ -21,8 +21,27 @@ export function format_money (amount) {
   }
 }
 
-export function format_date (ts) {
-  return this.date_fns.format(new Date(ts), this.format.date)
+const intl_options = Intl.DateTimeFormat().resolvedOptions()
+const locale = intl_options.locale || 'en-US'
+export const timezone = intl_options.timeZone || 'utc'
+// const LOCALE = 'en-US'
+const FORMAT_OPTIONS = {
+  full: {day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric'},
+  month: {month: 'short'},
+  day: {day: 'numeric'},
+  weekday: {weekday: 'short'},
+  time: {hour: 'numeric', minute: 'numeric'}
+}
+
+export function format_dt (ts, fmt) {
+  // timestampts are alwasy in utc thus we need to add the 0000 and js will take care of the rest
+  const d = new Date(ts + '+0000')
+  let options = FORMAT_OPTIONS[fmt]
+  if (!options) {
+    console.warn('unknown date format:', fmt)
+
+  }
+  return Intl.DateTimeFormat(locale, options).format(d)
 }
 
 export function format_duration (ts1, ts2) {

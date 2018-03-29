@@ -27,8 +27,8 @@ const Apt = ({apt, props, appointment_attendees}) => {
   return (
     <Link to={props.root.url(`appointment/${apt.link}`)} className="tcs-item">
       <div className={`tcs-apt ${colour_contrast(apt.service_colour)}`} style={{background: apt.service_colour}}>
-        <div style={{fontWeight: 700, marginRight: 10}}>
-          {props.config.date_fns.format(apt.start, 'HH:mm')}
+        <div style={{fontWeight: 700, marginRight: 8, minWidth: 68}}>
+          {props.config.format_dt(apt.start, 'time')}
         </div>
         <div className="tcs-truncate">
           {apt.topic}<Bull/>{apt.service_name}
@@ -52,8 +52,8 @@ const AptDayGroup = ({appointments, props, appointment_attendees}) => {
   return (
     <div className="tcs-apt-group-day">
       <div className="tcs-day">
-        {props.config.date_fns.format(first_apt.start, 'ddd')}
-        <div className="tcs-day-no">{props.config.date_fns.format(first_apt.start, 'd')}</div>
+        {props.config.format_dt(first_apt.start, 'weekday')}
+        <div className="tcs-day-no">{props.config.format_dt(first_apt.start, 'day')}</div>
       </div>
       <div>
         {appointments.map(apt => (
@@ -167,7 +167,7 @@ class Appointments extends Component {
       <div className="tcs-app tcs-appointments">
         {months.map(({date, appointments}, i) => (
           <div className="tcs-apt-group-month" key={i}>
-            <div className="tcs-title">{this.props.config.date_fns.format(date, 'MMMM')}</div>
+            <div className="tcs-title">{this.props.config.format_dt(date, 'month')}</div>
             {appointments.map((appointments, j) => (
               <AptDayGroup key={j} appointments={appointments} props={this.props}
                 appointment_attendees={this.state.appointment_attendees}/>

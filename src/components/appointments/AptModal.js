@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import {If, IfElse, DisplayExtraAttrs} from '../shared/Tools'
+import {Bull, If, IfElse, DisplayExtraAttrs} from '../shared/Tools'
 import {Tick, CalendarPlus, CalendarTimes} from '../shared/Svgs'
 import Modal from '../shared/Modal'
 
 const get_attendees = (appointment_attendees, apt_id) => (appointment_attendees && appointment_attendees[apt_id]) || []
 const NEW_STUDENT_ID = 999999999
-const DATE_FMT = 'MMM Do h:m a'
 
 
 const AptDetails = ({apt, spaces_available, attending, props}) => {
@@ -13,6 +12,9 @@ const AptDetails = ({apt, spaces_available, attending, props}) => {
   const CalendarIcon = spaces_available ? CalendarPlus : CalendarTimes
   return (
     <div>
+      <div className="tcs-right tcs-timezone">
+        {props.config.get_text('assuming_timezone', {timezone: props.config.timezone})}
+      </div>
       <div className={`tcs-apt-details ${spaces_available ? 'tcs-bookable' : ''}`}>
         <div>
           <CalendarIcon/>
@@ -25,10 +27,10 @@ const AptDetails = ({apt, spaces_available, attending, props}) => {
         </div>
         <IfElse v={apt.start.substr(0, 10) === apt.finish.substr(0, 10)}>
           <div>
-            {c.date_fns.format(apt.start, DATE_FMT)} &bull; {c.format_duration(apt.finish, apt.start)}
+            {c.format_dt(apt.start, 'full')}<Bull/>{c.format_duration(apt.finish, apt.start)}
           </div>
           <div>
-          {c.date_fns.format(apt.start, DATE_FMT)} - {c.date_fns.format(apt.finish, DATE_FMT)}
+          {c.format_dt(apt.start, 'full')} - {c.format_dt(apt.finish, 'full')}
           </div>
         </IfElse>
       </div>
@@ -179,7 +181,7 @@ class AptModal extends Component {
     const title = (
       <span>
         <span className="tcs-circle" style={{background: apt.service_colour}}/>
-        {apt.topic} &bull; {apt.service_name}
+        {apt.topic} <Bull/> {apt.service_name}
       </span>
     )
     const students = this.get_students()
