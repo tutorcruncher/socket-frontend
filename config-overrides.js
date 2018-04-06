@@ -41,12 +41,19 @@ module.exports = function override (config, env) {
       )
     }
   }
-  // add another output file at /simple/
+  // add another output file at /simple/ and /appointments/
   config.plugins.splice(2, 0,
     new HtmlWebpackPlugin({
       inject: true,
       template: path.resolve(__dirname, 'public', 'simple/index.html'),
       filename: 'simple/index.html'
+    })
+  )
+  config.plugins.splice(2, 0,
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: path.resolve(__dirname, 'public', 'appointments/index.html'),
+      filename: 'appointments/index.html'
     })
   )
   // console.dir(config, { depth: 10, colors: true })

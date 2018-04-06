@@ -27,7 +27,7 @@
     <main>
       <p><a href="https://github.com/tutorcruncher/socket-frontend">github.com/tutorcruncher/socket-frontend</a></p>
       <p><a href="/">back to index</a></p>
-      <p>simple socket view:</p>
+      <p>appointments socket view:</p>
       <div id="socket"></div>
     </main>
   </body>
@@ -35,6 +35,7 @@
     var public_key = '9c79f14df986a1ec693c'
     var api_root = null  // 'https://socket-beta.tutorcruncher.com' 'http://localhost:8000'
     window.socket = socket(public_key, {
+      mode: 'appointments',
       api_root: api_root,
     })
   </script>

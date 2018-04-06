@@ -104,7 +104,7 @@ class Appointments extends Component {
     const on_previous_pages = (page - 1) * this.props.config.pagination
     this.sso_args && await this.update_attendees()
     this.setState({
-      appointments,
+      appointments, page,
       more_pages: appointments.count > appointments.results.length + on_previous_pages,
     })
   }
