@@ -105,36 +105,56 @@ export function get_company_options (public_key, config) {
   })
 }
 
-function request (app, path, send_data, method, expected_statuses) {
+export function request (method, path, config) {
   let url = path
   if (url.startsWith('/')) {
-    url = app.props.config.api_root + url
+    url = this.props.config.api_root + url
   } else if (!url.startsWith('http')) {
-    url = `${app.props.config.api_root}/${app.props.public_key}/${path}`
+    url = `${this.props.config.api_root}/${this.props.public_key}/${path}`
   }
 
-  if (Number.isInteger(expected_statuses)) {
-    expected_statuses = [expected_statuses]
-  } else {
-    expected_statuses = expected_statuses || [200]
+  config = config || {}
+  if (config.args) {
+    const arg_list = []
+    const add_arg = (n, v) => arg_list.push(encodeURIComponent(n) + '=' + encodeURIComponent(v))
+    for (let [name, value] of Object.entries(config.args)) {
+      if (Array.isArray(value)) {
+        for (let value_ of value) {
+          add_arg(name, value_)
+        }
+      } else if (value !== null && value !== undefined) {
+        add_arg(name, value)
+      }
+    }
+    if (arg_list.length > 0) {
+      url += '?' + arg_list.join('&')
+    }
   }
-  if (send_data) {
-    send_data = JSON.stringify(clean(send_data))
+
+  if (Number.isInteger(config.expected_statuses)) {
+    config.expected_statuses = [config.expected_statuses]
+  } else {
+    config.expected_statuses = config.expected_statuses || [200]
+  }
+  if (config.send_data) {
+    config.send_data = JSON.stringify(config.send_data)
   }
   // await sleep(2000)
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     const on_error = msg => {
       console.error('request error', msg, url, xhr)
-      app.setState({error: msg})
-      reject(msg)
+      if (config.set_app_state !== false) {
+        this.setState({error: msg})
+      }
+      reject({msg, url, xhr})
     }
     xhr.open(method, url)
     xhr.setRequestHeader('Accept', 'application/json')
     xhr.onload = () => {
-      if (expected_statuses.includes(xhr.status)) {
+      if (config.expected_statuses.includes(xhr.status)) {
         const data = JSON.parse(xhr.responseText)
-        if (expected_statuses.length === 1) {
+        if (config.expected_statuses.length === 1) {
           resolve(data)
         } else {
           resolve({
@@ -148,41 +168,59 @@ function request (app, path, send_data, method, expected_statuses) {
       }
     }
     xhr.onerror = () => on_error(`Error requesting data ${xhr.statusText}: ${xhr.status}`)
-    xhr.send(send_data)
+    xhr.send(config.send_data)
   })
 }
-
-export const requests = {
-  get: async (app, path, args) => {
-    if (args) {
-      const arg_list = []
-      const add_arg = (n, v) => arg_list.push(encodeURIComponent(n) + '=' + encodeURIComponent(v))
-      for (let [name, value] of Object.entries(args)) {
-        if (Array.isArray(value)) {
-          for (let value_ of value) {
-            add_arg(name, value_)
-          }
-        } else if (value !== null && value !== undefined) {
-          add_arg(name, value)
-        }
-      }
-      if (arg_list.length > 0) {
-        path += '?' + arg_list.join('&')
-      }
-    }
-    return await request(app, path, null, 'GET')
-  },
-  post: async (app, path, data, expected_statuses) => await request(app, path, data, 'POST', expected_statuses || 201)
-}
-
-export const async_start = (f, ...args) => setTimeout(async () => f(...args), 0)
 
 export const slugify = text => (
    text
      .toLowerCase()
      .replace(/\s+/g, '-')     // Replace spaces with -
-     .replace(/[^\w-]+/g, '') // Remove all non-word chars
-     .replace(/--+/g, '-')   // Replace multiple - with single -
+     .replace(/[^\w-]+/g, '')  // Remove all non-word chars
+     .replace(/--+/g, '-')     // Replace multiple - with single -
      .replace(/^-+/, '')       // Trim - from start of text
      .replace(/-+$/, '')       // Trim - from end of text
 )
+
+export function colour_contrast (colour) {
+  let r = 0
+  let g = 0
+  let b = 0
+  let c
+  if (/rgba/.test(colour)) {
+    c = colour.replace('rgba(', '').replace(')', '').split(/,/)
+    r = c[0]
+    g = c[1]
+    b = c[2]
+  } else if (/rgb/.test(colour)) {
+    c = colour.replace('rgb(', '').replace(')', '').split(/,/)
+    r = c[0]
+    g = c[1]
+    b = c[2]
+  } else if (/#/.test(colour)) {
+    c = colour.replace('#', '')
+    if (c.length === 3) {
+      c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2]
+    }
+    r = parseInt(c.substr(0, 2), 16)
+    g = parseInt(c.substr(2, 2), 16)
+    b = parseInt(c.substr(4, 2), 16)
+  }
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000
+  return yiq >= 128 ? 'light' : 'dark'
+}
+
+export const group_by = (items, key_getter) => {
+  const groups = []
+  let key, current_key
+  for (let item of items) {
+    key = key_getter(item)
+    if (groups.length && current_key === key) {
+      groups[groups.length - 1].push(item)
+    } else {
+      groups.push([item])
+      current_key = key
+    }
+  }
+  return groups
+}

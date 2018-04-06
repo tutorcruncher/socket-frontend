@@ -1,0 +1,154 @@
+@import '../conf';
+
+.tcs-apt-group-month {
+  padding: 10px 8px;
+  .tcs-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+.tcs-apt-group-day {
+  padding-bottom: 12px;
+  display: grid;
+  grid-template-columns: 100px auto;
+  @media(max-width: $window-small) {
+    grid-template-columns: 60px auto;
+  }
+  .tcs-day {
+    border-right: 2px solid #DDD;
+    text-align: right;
+    font-size: 18px;
+    margin-right: 12px;
+    padding-right: 12px;
+    .tcs-day-no {
+      font-size: 26px;
+    }
+    @media(max-width: $window-small) {
+      margin-right: 6px;
+      padding-right: 6px;
+    }
+  }
+  .tcs-apt {
+    margin: 0 0 8px;
+    padding: 6px 6px 6px 10px;
+    border-radius: $border-radius;
+    display: grid;
+    // grid-template-columns: 50px 2fr 1fr;
+    grid-template-columns: auto 1fr auto;
+    color: black;
+    vertical-align: top;
+    &.dark {
+      color: white;
+    }
+  }
+  .tcs-item:last-child .tcs-apt {
+    margin-bottom: 0;
+  }
+}
+
+$circle-size: 22px;
+.tcs-circle {
+  display: inline-block;
+  width: $circle-size;
+  height: $circle-size;
+  border-radius: $circle-size / 2;
+  margin-right: 10px;
+}
+
+.tcs-session-name {
+  padding-top: 20px;
+  text-align: right;
+  font-size: 14px;
+}
+
+$colour-positive: #83aa68;
+.tcs-apt-details {
+  margin: 0 auto;
+  max-width: 400px;
+  min-height: 100px;
+  background: #AAA;
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+  font-size: 18px;
+  &.tcs-bookable {
+    background: #83aa68;
+  }
+  > div {
+    padding-bottom: 4px;
+  }
+  .tcs-price {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .tcs-svg {
+    fill: white;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.tcs-timezone {
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+.tcs-signout {
+  color: $brand-colour;
+  cursor: pointer;
+  display: inline;
+}
+
+.tcs-signin {
+  margin: 0 auto;
+  display: block;
+}
+
+$student-height: 38px;
+$student-border-radius: 5px;
+$student-border-colour: #D8D8D8;
+.tcs-book {
+  padding-top: 10px;
+  margin: 0 auto;
+  max-width: 600px;
+  .tcs-book-existing {
+    margin-bottom: 15px;
+  }
+  .tcs-book-item {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid $student-border-colour;
+    &:nth-child(2) {
+      border-top: 1px solid $student-border-colour;
+    }
+  }
+  .tcs-existing-name {
+    padding: 8px 6px;
+  }
+  .tcs-existing-name, .tcs-default-input {
+    width: calc(100% - 220px);
+    height: $student-height;
+  }
+  .tcs-already-added {
+    border-radius: $student-border-radius;
+  }
+  .tcs-add-button, .tcs-already-added {
+    width: 200px;
+    height: $student-height;
+  }
+  .tcs-already-added {
+    background: $colour-positive;
+    color: white;
+    text-align: center;
+    padding: 8px 12px;
+    .tcs-svg {
+      fill: white;
+      margin-left: 2px;
+    }
+  }
+}

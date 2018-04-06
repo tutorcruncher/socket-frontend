@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>tutorcruncher-socket</title>
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,500);
+      body {
+        background: #eee;
+        font-family: 'Open Sans', sans-serif;
+      }
+      * {
+        box-sizing: border-box;  /* bootstrap does this on most sites. */
+      }
+      main {
+        max-width: 800px;
+        margin: 20px auto;
+      }
+      main > div {
+        background-color: white;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p><a href="https://github.com/tutorcruncher/socket-frontend">github.com/tutorcruncher/socket-frontend</a></p>
+      <p><a href="/">back to index</a></p>
+      <p>appointments socket view:</p>
+      <div id="socket"></div>
+    </main>
+  </body>
+  <script>
+    var public_key = '9c79f14df986a1ec693c'
+    var api_root = null  // 'https://socket-beta.tutorcruncher.com' 'http://localhost:8000'
+    window.socket = socket(public_key, {
+      mode: 'appointments',
+      api_root: api_root,
+    })
+  </script>
+</html>

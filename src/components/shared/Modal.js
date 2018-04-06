@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Cross, Footer }  from './Tools'
+import { Cross, Footer }  from './Svgs'
 
 class Modal extends Component {
   constructor (props) {
@@ -43,17 +43,20 @@ class Modal extends Component {
   }
 
   render () {
+    const flex = this.props.flex !== undefined ? Boolean(this.props.flex) : true
     return (
       <div className={'tcs-modal-mask' + (this.state.show ? ' tcs-show' : '')} onClick={this.close}>
         <div className="tcs-modal" onClick={e => e.stopPropagation()}>
           <div className="tcs-header">
-            <h2>{this.props.title}</h2>
-            <div className="close" onClick={this.close}>
+            <h2 className="tcs-h2">{this.props.title}</h2>
+            <div className="tcs-close" onClick={this.close}>
               <Cross/>
             </div>
           </div>
 
-          {this.props.children}
+          <div className={`tcs-modal-body${flex ? ' tcs-modal-flex' : ''}`}>
+            {this.props.children}
+          </div>
 
           <Footer/>
         </div>

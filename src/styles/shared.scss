@@ -1,0 +1,71 @@
+@import '../conf';
+
+.tcs-right {
+  text-align: right;
+}
+
+.tcs-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 3px;
+}
+
+svg.tcs-svg {
+  width: $svg-size;
+  height: $svg-size;
+  vertical-align: bottom;
+}
+
+svg.tcs-close {
+  cursor: pointer;
+  font-size: 26px;
+  text-decoration: none;
+  padding: 5px;
+  box-sizing: content-box;
+  path {
+    fill: $grey-text;
+    transition: all .5s ease;
+  }
+  &:hover {
+    path {
+      fill: black;
+    }
+  }
+}
+
+.tcs-text-right {
+  text-align: right !important;
+}
+
+.tcs-text-center {
+  text-align: center !important;
+}
+
+.tcs-button {
+  display: inline-block;
+  background-color: $button-colour;
+  color: white;
+  border-radius: 4px;
+  font-size: 17px;
+  padding: 8px 12px;
+  border: none;
+  transition: all .3s ease;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    background: darken($button-colour, 20%);
+  }
+  &:disabled {
+    background: desaturate(lighten($button-colour, 20%), 70%);
+    color: desaturate(lighten($button-colour, 60%), 70%);
+    cursor: default;
+  }
+}
+
+a.tcs-item {
+  text-decoration: none !important;
+  user-select: none !important;
+  color: $text-color;
+}

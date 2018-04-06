@@ -12,18 +12,18 @@ module.exports = function override (config, env) {
   // https://github.com/facebookincubator/create-react-app/issues/2498
   config.module.rules[1].oneOf.splice(0, 0,
     {
-        test: /\.(sass|scss|css)$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              outputStyle: 'compressed',
-              includePaths: [path.resolve(__dirname, 'node_modules')],
-            }
+      test: /\.(sass|scss|css)$/,
+      use: [
+        'style-loader',
+        'css-loader',
+        {
+          loader: 'sass-loader',
+          options: {
+            outputStyle: 'compressed',
+            includePaths: [path.resolve(__dirname, 'node_modules')],
           }
-        ]
+        }
+      ]
     },
   )
   if (env === 'production') {
@@ -41,12 +41,19 @@ module.exports = function override (config, env) {
       )
     }
   }
-  // add another output file at /simple/
+  // add another output file at /simple/ and /appointments/
   config.plugins.splice(2, 0,
     new HtmlWebpackPlugin({
       inject: true,
       template: path.resolve(__dirname, 'public', 'simple/index.html'),
       filename: 'simple/index.html'
+    })
+  )
+  config.plugins.splice(2, 0,
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: path.resolve(__dirname, 'public', 'appointments/index.html'),
+      filename: 'appointments/index.html'
     })
   )
   // console.dir(config, { depth: 10, colors: true })

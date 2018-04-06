@@ -1,5 +1,5 @@
 import React from 'react'
-import {IfElse, If, Markdown} from '../shared/Tools'
+import {If, Markdown, DisplayExtraAttrs} from '../shared/Tools'
 
 const filter_qual_levels = skills => {
   if (skills.length <= 5) {
@@ -13,16 +13,7 @@ const ConDetails = ({contractor, contractor_extra, get_text}) => (
   <div className="con-details">
     <Markdown content={contractor.primary_description}/>
 
-    {contractor_extra && contractor_extra.extra_attributes.map((attr, i) => (
-      <div key={i} className="tcs-attr">
-        <h3>{attr.name}</h3>
-        <IfElse v={attr.type === 'text_short' || attr.type === 'text_extended'}>
-          <Markdown content={attr.value}/>
-        {/*else*/}
-          <p>{attr.value}</p>
-        </IfElse>
-      </div>
-    ))}
+    <DisplayExtraAttrs extra_attributes={contractor_extra && contractor_extra.extra_attributes}/>
     <If v={contractor_extra && contractor_extra.skills}>
       <table className="tcs-skills">
         <caption>

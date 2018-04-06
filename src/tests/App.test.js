@@ -13,6 +13,7 @@ it('shows tutors', async () => {
     api_root: 'https://socket.tutorcruncher.com',
     mode: 'grid',
     messages: STRINGS,
+    get_text: (n) => n,
     event_callback: () => null,
   }
   const wrapper = enz.mount(<Router><App config={config} public_key={'good'} url_generator={u => u}/></Router>)
@@ -38,6 +39,7 @@ it('with con filter', async () => {
       label: ['foobar'],
       label_exclude: ['spam'],
     },
+    get_text: (n) => n,
     event_callback: () => null,
   }
   const wrapper = enz.mount(<Router><App config={config} public_key={'good'} url_generator={u => u}/></Router>)

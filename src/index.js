@@ -6,6 +6,7 @@ import './main.scss'
 import App from './components/App'
 import {BrowserRouter, HashRouter} from 'react-router-dom'
 import {auto_url_root, get_company_options} from './utils'
+import {format_money, format_dt, format_duration, get_text, timezone} from './formatting'
 
 const raven_config = {
   release: process.env.REACT_APP_RELEASE,
@@ -48,9 +49,50 @@ const STRINGS = {
   no_tutors_found_no_loc: 'No more tutors, unable to locate "{location}".',
   no_tutors_found_rate_limited: 'Too many location lookups, no results.',
   distance_away: '{distance}km away',
+  book_appointment_button: 'Book Lesson',
+  add_to_lesson: 'Add to Lesson',
+  diff_minutes: '{minutes} mins',
+  diff_1hour: '1 hour',
+  diff_1hour_minutes: '1 hour {minutes} mins',
+  diff_hours: '{hours} hours',
+  diff_hours_minutes: '{hours} hours {minutes} mins',
+  spaces: ({ spaces }) => {
+    if (spaces === null) {
+      return 'Spaces available'
+    } else if (spaces === 0) {
+      return 'No spaces available'
+    } else if (spaces === 1) {
+      return '1 space available'
+    } else {
+      return `${spaces} spaces available`
+    }
+  },
+  spaces_attending: ({ spaces }) => {
+    if (spaces === null) {
+      return "You're already attending, more spaces available"
+    } else if (spaces === 0) {
+      return "You're already attending, no more spaces available"
+    } else if (spaces === 1) {
+      return "You're already attending, 1 more space available"
+    } else {
+      return `You're already attending, ${spaces} more spaces available`
+    }
+  },
+  add_existing_students: 'Add your existing Students to the lesson',
+  add_new_student: 'Add a new Student to the lesson',
+  appointment_not_found: 'Appointment not Found',
+  appointment_not_found_id: 'No Appointment found with id {apt_id}.',
+  price: 'Price',
+  job: 'Job',
+  start: 'Start',
+  finish: 'Finish',
+  location: 'Location',
+  not_you_sign_out: 'Not you? sign out',
+  added: 'Added',
+  assuming_timezone: "Times are based off your browser's timezone of {timezone}"
 }
 
-const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal']
+const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']
 const ROUTER_MODES = ['hash', 'history']
 
 window.socket = async function (public_key, config) {
@@ -121,18 +163,22 @@ window.socket = async function (public_key, config) {
     config.event_callback = () => null
   }
 
+  config.format = config.format || {
+    datetime: 'HH:mm DD/MM/YYYY',
+    date: 'DD/MM/YYYY'
+  }
+  config.timezone = config.timezone || timezone
+  config.format_dt = (config.format_dt || format_dt).bind(config)
+  config.format_duration = (config.format_duration || format_duration).bind(config)
+  config.format_money = (config.format_money || format_money).bind(config)
+
   const el = document.querySelector(config.element)
   if (el === null) {
     config.console.error(`SOCKET: page element "${config.element}" does not exist, unable to start socket view.`)
     return
   }
-
-  config.messages = config.messages || {}
-  for (let k of Object.keys(STRINGS)) {
-    if (!config.messages[k]) {
-      config.messages[k] = STRINGS[k]
-    }
-  }
+  config.messages = Object.assign(Object.assign({}, STRINGS), config.messages || {})
+  config.get_text = (config.get_text || get_text).bind(config)
   config.random_id = Math.random().toString(36).substring(2, 10)
   config.grecaptcha_key = process.env.REACT_APP_GRECAPTCHA_KEY
 

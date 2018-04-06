@@ -1,8 +1,26 @@
 @import '../conf';
 
-$border-colour: #aaa;
 $border-highlight-colour: #66afe9;
 $border-radius: 5px;
+
+.tcs-default-input {
+  font-size: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 12px 10px;
+  margin: 0;
+  height: inherit;
+  border-radius: $border-radius;
+  border: 1px solid $input-border-colour;
+  font-family: inherit;
+  outline: none;
+  background-color: white;
+  &:focus {
+    border-color: $border-highlight-colour;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px lighten($border-highlight-colour, 20%);
+  }
+}
+
 .tcs-field {
   &.required {
     .help-text {
@@ -13,21 +31,7 @@ $border-radius: 5px;
   padding: 8px 0;
   width: 100%;
   input, textarea, select {
-    font-size: 16px;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 8px 12px 10px;
-    margin: 0;
-    height: inherit;
-    border-radius: $border-radius;
-    border: 1px solid $border-colour;
-    font-family: inherit;
-    outline: none;
-    background-color: white;
-    &:focus {
-      border-color: $border-highlight-colour;
-      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px lighten($border-highlight-colour, 20%);
-    }
+    @extend .tcs-default-input;
     &:required {
       border: 1px solid #888;
     }
@@ -49,7 +53,7 @@ $border-radius: 5px;
     width: 50%;
     &.tcs-date {
       border-radius: $border-radius 0 0 $border-radius;
-      border-right: 1px solid lighten($border-colour, 20%);
+      border-right: 1px solid lighten($input-border-colour, 20%);
     }
     &.tcs-time {
       border-radius: 0 $border-radius $border-radius 0;
