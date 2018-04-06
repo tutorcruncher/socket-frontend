@@ -16,13 +16,12 @@ const group_appointments = apts => {
 }
 
 const Apt = ({apt, props, appointment_attendees}) => {
-  const full = apt.attendees_max === apt.attendees_count
   let status
-  const spaces_ctx = {spaces: apt.attendees_max - apt.attendees_count}
+  const spaces_ctx = {spaces: apt.attendees_max === null ? null : apt.attendees_max - apt.attendees_count}
   if (appointment_attendees && appointment_attendees[apt.id] !== undefined) {
-    status = props.config.get_text(full ? 'no_spaces_attending' : 'spaces_attending', spaces_ctx)
+    status = props.config.get_text('spaces_attending', spaces_ctx)
   } else {
-    status = props.config.get_text(full ? 'no_spaces' : 'spaces', spaces_ctx)
+    status = props.config.get_text('spaces', spaces_ctx)
   }
   return (
     <Link to={props.root.url(`appointment/${apt.link}`)} className="tcs-item">

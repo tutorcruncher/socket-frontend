@@ -4,6 +4,9 @@ export function get_text (name, replacements) {
     console.warn(`not translation found for "${name}"`)
     return name
   }
+  if (typeof(s) === 'function') {
+    return s(replacements)
+  }
   if (replacements) {
     for (let [k, v] of Object.entries(replacements)) {
       s = s.replace(`{${k}}`, v)

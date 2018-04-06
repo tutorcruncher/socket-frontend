@@ -12,18 +12,18 @@ module.exports = function override (config, env) {
   // https://github.com/facebookincubator/create-react-app/issues/2498
   config.module.rules[1].oneOf.splice(0, 0,
     {
-        test: /\.(sass|scss|css)$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              outputStyle: 'compressed',
-              includePaths: [path.resolve(__dirname, 'node_modules')],
-            }
+      test: /\.(sass|scss|css)$/,
+      use: [
+        'style-loader',
+        'css-loader',
+        {
+          loader: 'sass-loader',
+          options: {
+            outputStyle: 'compressed',
+            includePaths: [path.resolve(__dirname, 'node_modules')],
           }
-        ]
+        }
+      ]
     },
   )
   if (env === 'production') {

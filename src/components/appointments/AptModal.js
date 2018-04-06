@@ -15,7 +15,7 @@ const AptDetails = ({apt, spaces_available, attending, props}) => {
       <div className="tcs-right tcs-timezone">
         {props.config.get_text('assuming_timezone', {timezone: props.config.timezone})}
       </div>
-      <div className={`tcs-apt-details ${spaces_available ? 'tcs-bookable' : ''}`}>
+      <div className={`tcs-apt-details ${spaces_available === 0 ? '' : 'tcs-bookable'}`}>
         <div>
           <CalendarIcon/>
         </div>
@@ -23,7 +23,7 @@ const AptDetails = ({apt, spaces_available, attending, props}) => {
           {c.format_money(apt.price)}
         </div>
         <div>
-          {c.get_text(spaces_available === 0 ? 'no_spaces' : 'spaces', {spaces: spaces_available})}
+          {c.get_text('spaces', {spaces: spaces_available})}
         </div>
         <IfElse v={apt.start.substr(0, 10) === apt.finish.substr(0, 10)}>
           <div>
@@ -185,8 +185,10 @@ class AptModal extends Component {
       </span>
     )
     const students = this.get_students()
-    const spaces_available = apt.attendees_max - apt.attendees_count - this.state.extra_attendees
-    const booking_allowed = this.state.booking_allowed && spaces_available > 0
+    let spaces_available = (
+      apt.attendees_max === null ? null : apt.attendees_max - apt.attendees_count - this.state.extra_attendees
+    )
+    const booking_allowed = this.state.booking_allowed && spaces_available !== 0
     return (
       <Modal history={this.props.history} title={title} last_url={this.props.last_url} flex={false}>
         <AptDetails apt={apt}

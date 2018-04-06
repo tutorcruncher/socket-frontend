@@ -56,17 +56,34 @@ const STRINGS = {
   diff_1hour_minutes: '1 hour {minutes} mins',
   diff_hours: '{hours} hours',
   diff_hours_minutes: '{hours} hours {minutes} mins',
-  spaces: '{spaces} spaces available',
-  no_spaces: 'No spaces available',
-  spaces_attending: "You're already attending, {spaces} more spaces available",
-  no_spaces_attending: "You're already attending, no more spaces available",
+  spaces: ({ spaces }) => {
+    if (spaces === null) {
+      return 'Spaces available'
+    } else if (spaces === 0) {
+      return 'No spaces available'
+    } else if (spaces === 1) {
+      return '1 space available'
+    } else {
+      return `${spaces} spaces available`
+    }
+  },
+  spaces_attending: ({ spaces }) => {
+    if (spaces === null) {
+      return "You're already attending, more spaces available"
+    } else if (spaces === 0) {
+      return "You're already attending, no more spaces available"
+    } else if (spaces === 1) {
+      return "You're already attending, 1 more space available"
+    } else {
+      return `You're already attending, ${spaces} more spaces available`
+    }
+  },
   add_existing_students: 'Add your existing Students to the lesson',
   add_new_student: 'Add a new Student to the lesson',
   appointment_not_found: 'Appointment not Found',
   appointment_not_found_id: 'No Appointment found with id {apt_id}.',
   price: 'Price',
   job: 'Job',
-  spaces_available: 'Spaces Available',
   start: 'Start',
   finish: 'Finish',
   location: 'Location',
