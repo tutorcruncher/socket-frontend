@@ -37,12 +37,11 @@ const FORMAT_OPTIONS = {
 }
 
 export function format_dt (ts, fmt) {
-  // timestampts are alwasy in utc thus we need to add the 0000 and js will take care of the rest
-  const d = new Date(ts + '+0000')
+  // timestampts are always in utc thus we need to add the Z and js will take care of the rest
+  const d = new Date(ts + 'Z')
   let options = FORMAT_OPTIONS[fmt]
   if (!options) {
     console.warn('unknown date format:', fmt)
-
   }
   return Intl.DateTimeFormat(locale, options).format(d)
 }
