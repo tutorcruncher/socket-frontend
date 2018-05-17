@@ -130,7 +130,8 @@ class Input extends Component {
 
   render () {
     const field = this.props.field
-    const field_label = field.label + (field.required ? this.props.get_text('required') : '')
+    let field_label = field.label
+    field_label += field.required && field.type !== 'checkbox' ? this.props.get_text('required') : ''
     const name = field.prefix ? field.prefix + '-' + field.field : field.field
     let value
     if (field.prefix) {
@@ -144,8 +145,8 @@ class Input extends Component {
     return (
       <div className="tcs-field" id={'field-' + name}>
         <Input field={field} name={name} value={value} field_label={field_label} on_change={this.on_change}/>
-        <div className={'help-text' + (field.prefix ? '' : ' muted')}>
-          {field.help_text}
+        <div className={field.help_class || ('help-text' + (field.prefix ? '' : ' muted'))}>
+          {this.props.children || field.help_text}
         </div>
       </div>
     )

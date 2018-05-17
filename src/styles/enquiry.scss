@@ -24,9 +24,18 @@ form.tcs {
   }
 }
 
-.grecaptcha > div {
-  margin: 0 auto;
+.tcs-terms {
+  color: #666;
+  a {
+    color: #044d9c;
+    text-decoration: none;
+  }
 }
+
+.grecaptcha > div {
+  margin: 8px auto;
+}
+
 .error-msg {
   color: darkred;
   text-align: center;
