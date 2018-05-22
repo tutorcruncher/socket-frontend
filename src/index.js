@@ -89,7 +89,10 @@ const STRINGS = {
   location: 'Location',
   not_you_sign_out: 'Not you? sign out',
   added: 'Added',
-  assuming_timezone: "Times are based off your browser's timezone of {timezone}"
+  assuming_timezone: "Times are based off your browser's timezone of {timezone}",
+  terms_title: 'Terms and Conditions',
+  terms_help: 'I have read and agree to the',
+  terms_link: 'terms and conditions',
 }
 
 const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments']

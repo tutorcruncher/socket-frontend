@@ -93,6 +93,13 @@ class EnquiryForm extends Component {
         get_text('contractor_enquiry', {contractor_name: this.props.contractor.name}) :
         get_text('enquiry', {})
     )
+    const terms_field = this.props.config.terms_link && {
+      type: 'checkbox',
+      field: 'terms_and_conditions',
+      label: get_text('terms_title'),
+      help_class: 'tcs-terms',
+      required: true,
+    }
     return (
       <div className="tcs-enquiry">
         <IfElse v={this.state.submitted}>
@@ -117,6 +124,17 @@ class EnquiryForm extends Component {
                        enquiry_data={this.state.enquiry_data}
                        set_enquiry_data={this.set_enquiry_data}/>
               ))}
+
+              {terms_field && <Input key="terms"
+                     field={terms_field}
+                     get_text={get_text}
+                     enquiry_data={this.state.enquiry_data}
+                     set_enquiry_data={this.set_enquiry_data}>
+                {get_text('terms_help')}&nbsp;
+                <a href={this.props.config.terms_link} target="_blank">
+                  {get_text('terms_link')}
+                </a>.
+              </Input>}
 
               <div id={this.grecaptcha_container_id} className="grecaptcha"/>
 
