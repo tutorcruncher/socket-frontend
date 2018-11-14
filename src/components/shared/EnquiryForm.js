@@ -51,7 +51,7 @@ class EnquiryForm extends Component {
       data.contractor = this.props.contractor.id
     }
 
-    const r = await this.props.root.requests.post('enquiry', this.state.enquiry_data, {expected_statuses: [201, 400]})
+    const r = await this.props.root.requests.post('enquiry', data, {expected_statuses: [201, 400]})
     if (r.status === 201) {
       this.props.root.ga_event('enquiry-form', 'submitted', this.props.mode)
       this.setState({submitted: true})

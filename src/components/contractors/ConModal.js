@@ -79,9 +79,9 @@ class ConModal extends Component {
 
             <IfElse v={this.state.show_enquiry}>
               <EnquiryForm contractor={contractor}
-                            root={this.props.root}
-                            config={this.props.config}
-                            mode='con-modal'/>
+                           root={this.props.root}
+                           config={this.props.config}
+                           mode='con-modal'/>
             {/*else:*/}
               <ConDetails contractor={contractor}
                           contractor_extra={contractor_extra}
