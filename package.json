@@ -25,7 +25,7 @@
   "engines": {
     "node": "8.x",
     "npm": "5.x",
-    "yarn": "1.3.x"
+    "yarn": "1.10.x"
   },
   "jest": {
     "verbose": true,
