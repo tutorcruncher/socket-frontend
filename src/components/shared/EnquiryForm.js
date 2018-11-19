@@ -44,8 +44,7 @@ class EnquiryForm extends Component {
       return
     }
 
-    const enquiry_form_info = this.props.root.get_enquiry()
-    const data = Object.assign(enquiry_form_info.hidden, this.state.enquiry_data)
+    const data = Object.assign({}, this.state.enquiry_data)
     data.upstream_http_referrer = document.referrer
     if (this.props.contractor) {
       data.contractor = this.props.contractor.id
