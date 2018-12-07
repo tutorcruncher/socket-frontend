@@ -54,6 +54,7 @@ class EnquiryForm extends Component {
     if (r.status === 201) {
       this.props.root.ga_event('enquiry-form', 'submitted', this.props.mode)
       this.setState({submitted: true})
+      this.props.config.event_callback('enquiry_submitted', {mode: this.props.mode, data})
     } else {
       console.warn('Invalid form:', r)
       this.setState({error: true})
