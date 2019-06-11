@@ -149,7 +149,7 @@ $pagination-radius: 4px;
   }
 }
 
-@import 'react-select/dist/react-select.min';
+@import '~react-select/dist/react-select.min';
 
 .multiselect__select {
   cursor: default;
