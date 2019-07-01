@@ -46,7 +46,7 @@
     "react-app-rewired": "^1.6.2",
     "react-dom": "^16.2.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "1.0.17",
+    "react-scripts": "1.1.5",
     "react-select": "~1.2.1",
     "react-tooltip": "^3.4.0",
     "sass-loader": "^7.1.0",
