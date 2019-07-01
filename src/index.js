@@ -223,11 +223,8 @@ window.socket = async function (public_key, config) {
 
   const Router = config.router_mode === 'history' ? BrowserRouter : HashRouter
 
-  const router = ReactDOM.render(<Router><App
-      error={error}
-      public_key={public_key}
-      url_generator={url_generator}
-      config={config}/></Router>, el)
+  const conf = {error, public_key, url_generator, config}
+  const router = ReactDOM.render(<Router><App {...conf}/></Router>, el)
   // for external use and compatibility with old socket
   return {
     goto: path => {
