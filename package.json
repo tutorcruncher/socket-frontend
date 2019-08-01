@@ -37,7 +37,7 @@
     "babel-polyfill": "^6.26.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
-    "html-webpack-plugin": "^2.30.1",
+    "html-webpack-plugin": "^3.2.0",
     "marked": "^0.3.18",
     "node-sass": "^4.12.0",
     "pretty": "^2.0.0",
