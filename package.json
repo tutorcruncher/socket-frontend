@@ -38,7 +38,7 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "html-webpack-plugin": "^3.2.0",
-    "marked": "^0.3.18",
+    "marked": "^0.7.0",
     "node-sass": "^4.12.0",
     "pretty": "^2.0.0",
     "raven-js": "^3.22.0",
