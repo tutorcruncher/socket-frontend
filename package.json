@@ -40,8 +40,8 @@
     "html-webpack-plugin": "^3.2.0",
     "marked": "^0.7.0",
     "node-sass": "^4.12.0",
-    "pretty": "^2.0.0",
-    "raven-js": "^3.22.0",
+    "pretty": "^2.0.0"
+    "raven-js": "^3.27.2",
     "react": "^16.9.0",
     "react-app-rewired": "^1.6.2",
     "react-dom": "^16.8.6",
