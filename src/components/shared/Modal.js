@@ -45,7 +45,7 @@ class Modal extends Component {
 
   render () {
     const flex = this.props.flex !== undefined ? Boolean(this.props.flex) : true
-    const el = (
+    const modal_content = (
       <div className={'tcs-modal-mask' + (this.state.show ? ' tcs-show' : '')} onClick={this.close}>
         <div className="tcs-modal" onClick={e => e.stopPropagation()}>
           <div className="tcs-header">
@@ -63,10 +63,11 @@ class Modal extends Component {
         </div>
       </div>
     )
-    if (this.props.config.parent_el) {
-      return ReactDOM.createPortal(el, document.getElementById(this.props.config.parent_el))
+    const container_id = this.props.config.modal_container
+    if (container_id) {
+      return ReactDOM.createPortal(modal_content, document.getElementById(container_id))
     } else {
-      return el
+      return modal_content
     }
   }
 }

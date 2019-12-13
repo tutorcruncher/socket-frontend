@@ -174,7 +174,7 @@ class AptModal extends Component {
     if (!apt) {
       return (
         <Modal history={this.props.history}
-               parent_el={this.props.config.modal_parent}
+               config={this.props.config}
                title={this.props.config.get_text('appointment_not_found')}>
           <p>{this.props.config.get_text('appointment_not_found_id', {apt_id: this.props.id})}</p>
         </Modal>
