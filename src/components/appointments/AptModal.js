@@ -165,7 +165,7 @@ class AptModal extends Component {
   render () {
     if (!this.props.got_data) {
       return (
-        <Modal history={this.props.history} title=''>
+        <Modal history={this.props.history} title='' parent_el={this.props.config.modal_parent}>
           <p>Loading...</p>
         </Modal>
       )
@@ -173,7 +173,9 @@ class AptModal extends Component {
     const apt = this.state.apt
     if (!apt) {
       return (
-        <Modal history={this.props.history} title={this.props.config.get_text('appointment_not_found')}>
+        <Modal history={this.props.history}
+               parent_el={this.props.config.modal_parent}
+               title={this.props.config.get_text('appointment_not_found')}>
           <p>{this.props.config.get_text('appointment_not_found_id', {apt_id: this.props.id})}</p>
         </Modal>
       )
@@ -190,7 +192,11 @@ class AptModal extends Component {
     )
     const booking_allowed = this.state.booking_allowed && spaces_available !== 0
     return (
-      <Modal history={this.props.history} title={title} last_url={this.props.last_url} flex={false}>
+      <Modal history={this.props.history}
+             title={title}
+             last_url={this.props.last_url}
+             flex={false}
+             parent_el={this.props.config.modal_parent}>
         <AptDetails apt={apt}
                     spaces_available={spaces_available}
                     attending={Boolean(this.state.display_data && this.state.attendees)}

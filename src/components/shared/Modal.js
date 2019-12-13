@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import { Cross, Footer }  from './Svgs'
 
 class Modal extends Component {
@@ -44,7 +45,7 @@ class Modal extends Component {
 
   render () {
     const flex = this.props.flex !== undefined ? Boolean(this.props.flex) : true
-    return (
+    const el = (
       <div className={'tcs-modal-mask' + (this.state.show ? ' tcs-show' : '')} onClick={this.close}>
         <div className="tcs-modal" onClick={e => e.stopPropagation()}>
           <div className="tcs-header">
@@ -62,6 +63,11 @@ class Modal extends Component {
         </div>
       </div>
     )
+    if (this.props.parent_el) {
+      return ReactDOM.createPortal(el, document.getElementById(this.props.parent_el))
+    } else {
+      return el
+    }
   }
 }
 

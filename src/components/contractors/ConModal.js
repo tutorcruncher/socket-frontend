@@ -38,7 +38,7 @@ class ConModal extends Component {
   render () {
     if (!this.props.got_contractors) {
       return (
-        <Modal history={this.props.history} title=''>
+        <Modal history={this.props.history} title='' parent_el={this.props.config.modal_parent}>
           <p>Loading...</p>
         </Modal>
       )
@@ -46,7 +46,7 @@ class ConModal extends Component {
     const _con = this.get_contractor()
     if (!_con) {
       return (
-        <Modal history={this.props.history} title='Contractor not Found'>
+        <Modal history={this.props.history} parent_el={this.props.config.modal_parent} title='Contractor not Found'>
           <p>No Contractor found with id {this.props.id}.</p>
         </Modal>
       )

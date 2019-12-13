@@ -36,6 +36,9 @@
       <div id="socket3"></div>
       <p>Enquiry Modal:</p>
       <div id="socket4"></div>
+      <p>Enquiry Modal loaded in footer</p>
+      <div id="socket5"></div>
+      <div id="footer"></div>
     </main>
   </body>
   <script>
@@ -70,6 +73,13 @@
       router_mode: 'history',
       mode: 'enquiry-modal',
       api_root: api_root,
+    })
+    socket(public_key, {
+      element: '#socket5',
+      router_mode: 'history',
+      mode: 'enquiry-modal',
+      api_root: api_root,
+      modal_parent: 'footer',
     })
   </script>
 </html>
