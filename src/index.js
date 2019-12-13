@@ -151,9 +151,6 @@ window.socket = async function (public_key, config) {
   if (!config.element) {
     config.element = '#socket'
   }
-  if (!config.modal_parent) {
-    config.modal_parent = null
-  }
 
   config.contractor_filter = {}
   if (config.labels_include) {

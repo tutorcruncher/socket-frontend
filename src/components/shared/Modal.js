@@ -63,8 +63,8 @@ class Modal extends Component {
         </div>
       </div>
     )
-    if (this.props.parent_el) {
-      return ReactDOM.createPortal(el, document.getElementById(this.props.parent_el))
+    if (this.props.config.parent_el) {
+      return ReactDOM.createPortal(el, document.getElementById(this.props.config.parent_el))
     } else {
       return el
     }

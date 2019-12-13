@@ -165,7 +165,7 @@ class AptModal extends Component {
   render () {
     if (!this.props.got_data) {
       return (
-        <Modal history={this.props.history} title='' parent_el={this.props.config.modal_parent}>
+        <Modal history={this.props.history} title='' config={this.props.config}>
           <p>Loading...</p>
         </Modal>
       )
@@ -196,7 +196,7 @@ class AptModal extends Component {
              title={title}
              last_url={this.props.last_url}
              flex={false}
-             parent_el={this.props.config.modal_parent}>
+             config={this.props.config}>
         <AptDetails apt={apt}
                     spaces_available={spaces_available}
                     attending={Boolean(this.state.display_data && this.state.attendees)}

@@ -203,8 +203,7 @@ class Appointments extends Component {
                     update={this.update}
                     signin={this.signin}
                     signout={this.signout}
-                    history={props.history}
-                    parent_el={this.props.config.modal_parent}/>
+                    history={props.history}/>
         )}/>
       </div>
     )

@@ -38,7 +38,7 @@ class ConModal extends Component {
   render () {
     if (!this.props.got_contractors) {
       return (
-        <Modal history={this.props.history} title='' parent_el={this.props.config.modal_parent}>
+        <Modal history={this.props.history} title='' config={this.props.config}>
           <p>Loading...</p>
         </Modal>
       )
@@ -46,14 +46,14 @@ class ConModal extends Component {
     const _con = this.get_contractor()
     if (!_con) {
       return (
-        <Modal history={this.props.history} parent_el={this.props.config.modal_parent} title='Contractor not Found'>
+        <Modal history={this.props.history} config={this.props.config} title='Contractor not Found'>
           <p>No Contractor found with id {this.props.id}.</p>
         </Modal>
       )
     }
     const {contractor, contractor_extra} = _con
     return (
-      <Modal history={this.props.history} title={contractor.name} last_url={this.props.last_url}>
+      <Modal history={this.props.history} title={contractor.name} last_url={this.props.last_url} config={this.props.config}>
         <div className="tcs-extra">
           <Photo contractor={contractor} config={this.props.config}/>
           <Stars contractor={contractor} config={this.props.config}/>

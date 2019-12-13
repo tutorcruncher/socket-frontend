@@ -201,7 +201,6 @@ class Contractors extends Component {
                     get_contractor_details={this.get_contractor_details}
                     root={this.props.root}
                     config={this.props.config}
-                    parent_el={this.props.config.modal_parent}
                     history={props.history}/>
         )}/>
       </div>
