@@ -69,18 +69,6 @@ export const google_analytics = (history, config) => {
   return ga_prefixes
 }
 
-const clean = obj => {
-  let new_obj = {}
-  for (let [k, v] of Object.entries(obj)) {
-    if (typeof v === 'object') {
-      new_obj[k] = clean(v)
-    } else if (v !== null && v !== undefined && v !== '') {
-      new_obj[k] = v
-    }
-  }
-  return new_obj
-}
-
 export function get_company_options (public_key, config) {
   const url = `${config.api_root}/${public_key}/options`
 
