@@ -149,19 +149,13 @@ $pagination-radius: 4px;
   }
 }
 
-@import '~react-select/dist/react-select.min';
-
 .multiselect__select {
   cursor: default;
   right: 16px;
 }
 
-.multiselect__option--highlight {
-  background: $brand-colour;
-}
-
-.multiselect__option--selected.multiselect__option--highlight {
-  background: darken($brand-colour, 10%);
+.multiselect__option--is-selected {
+  background: $brand-colour !important;
 }
 
 .tcs-filters-container {
@@ -181,14 +175,16 @@ $pagination-radius: 4px;
   margin-left: 4px;
 }
 
-.tcs-location-filter {
+.tcs-location-filter, .multiselect__control {
   margin-right: 4px;
   border-radius: 4px;
-  border: 1px solid $dft-border-color;
-  height: 36px;
+  border: 1px solid $dft-border-color !important;
+  height: 36px !important;
+  min-height: 36px !important;
   padding: 0 2px;
   background: white;
 }
+
 
 .tcs-location-input {
   width: calc(100% - 50px);
@@ -201,6 +197,7 @@ $pagination-radius: 4px;
     color: #aaa;
   }
 }
+
 .tcs-location-clear {
   padding: 6px;
   width: 30px;

@@ -7,11 +7,13 @@ export const SubjectSelect = ({get_text, show, subjects, selected_subject, subje
     <div className="tcs-contractor-filter">
       <If v={show}>
         <Select
-          value={selected_subject && selected_subject.id}
+          value={selected_subject}
           onChange={subject_change}
           placeholder={get_text('subject_filter_placeholder')}
-          labelKey='name'
-          valueKey='id'
+          classNamePrefix='multiselect'
+          getOptionLabel={({name}) => name}
+          getOptionValue={({id}) => id}
+          isClearable={true}
           options={subjects}/>
       </If>
     </div>
