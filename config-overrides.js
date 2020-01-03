@@ -8,6 +8,12 @@ module.exports = function override (config, env) {
     const test = l.test && l.test.toString()
     return test !== /\.css$/
   })
+  config.optimization.runtimeChunk = false;
+  config.optimization.splitChunks = {
+    cacheGroups: {
+      default: false
+    }
+  };
   // compile sass, this comes first and compresses css as well as loading sass/scss
   // https://github.com/facebookincubator/create-react-app/issues/2498
   config.module.rules[2].oneOf.splice(0, 0,
