@@ -131,7 +131,7 @@ class EnquiryForm extends Component {
                      enquiry_data={this.state.enquiry_data}
                      set_enquiry_data={this.set_enquiry_data}>
                 {get_text('terms_help')}&nbsp;
-                <a href={this.props.config.terms_link} target="_blank">
+                <a href={this.props.config.terms_link} target="_blank" rel="noopener noreferrer">
                   {get_text('terms_link')}
                 </a>.
               </Input>}
