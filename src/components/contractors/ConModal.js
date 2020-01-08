@@ -19,7 +19,10 @@ class ConModal extends Component {
   }
 
   componentDidMount () {
-    this.props.get_contractor(parseInt(this.props.id, 10), s => this.setState(s))
+    this.props.get_contractor(
+        parseInt(this.props.id, 10),
+        c => this.setState({contractor: c, loaded: true})
+    )
   }
 
   switch_view = () => {

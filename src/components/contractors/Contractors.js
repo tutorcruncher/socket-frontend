@@ -93,23 +93,24 @@ export default class Contractors extends Component {
     }), 0)
   }
 
-  get_contractor = async (contractor_id, set_state) => {
+  get_contractor = async (contractor_id, set_contractor) => {
+
+    const state_ref = `con_extra_${contractor_id}`
+    let contractor = this.state[state_ref]
+    if (contractor) {
+      set_contractor(contractor)
+      return
+    }
+
     // make sure update_contractors has finished before getting the contractor to avoid unnecessary requests
     while (!this.state.contractor_response) {
       await sleep(50)
     }
 
-    const state_ref = `con_extra_${contractor_id}`
-    let contractor = this.state[state_ref]
-    if (contractor) {
-      set_state({contractor, loaded: true})
-      return
-    }
-
     const contractor_summary = this.state.contractor_response.results.find(c => c.id === contractor_id)
     let url
     if (contractor_summary) {
-      set_state({contractor: contractor_summary, loaded: true})
+      set_contractor(contractor_summary)
       url = contractor_summary.url
     } else {
       url = `contractors/${contractor_id}`
@@ -117,14 +118,14 @@ export default class Contractors extends Component {
 
     let r = await this.props.root.requests.get(url, null, {expected_statuses: [200, 404]})
     if (r.status === 404) {
-      set_state({contractor: null, loaded: true})
-      return
-    }
-    contractor = r.data
-    this.props.config.event_callback('get_contractor_details', contractor)
+      set_contractor(null)
+    } else {
+      contractor = r.data
+      this.props.config.event_callback('get_contractor_details', contractor)
 
-    this.setState({[state_ref]: contractor})
-    set_state({contractor, loaded: true})
+      this.setState({[state_ref]: contractor})
+      set_contractor(contractor)
+    }
   }
 
   render () {
