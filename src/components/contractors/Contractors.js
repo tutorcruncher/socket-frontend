@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import {Link, Route} from 'react-router-dom'
-import {slugify} from '../../utils'
+import {slugify, sleep} from '../../utils'
 import {If} from '../shared/Tools'
 import {Grid, List} from './List'
 import ConModal from './ConModal'
 import {SubjectSelect, LocationInput} from './Filters'
 
-class Contractors extends Component {
+export default class Contractors extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -18,14 +18,6 @@ class Contractors extends Component {
       last_url: null,
       location_str: null,
     }
-    this.update_contractors = this.update_contractors.bind(this)
-    this.get_contractor_details = this.get_contractor_details.bind(this)
-    this.set_contractor_details = this.set_contractor_details.bind(this)
-    this.subject_url = this.subject_url.bind(this)
-    this.page_url = this.page_url.bind(this)
-    this.subject_change = this.subject_change.bind(this)
-    this.location_change = this.location_change.bind(this)
-    this.submit_location = this.submit_location.bind(this)
   }
 
   async componentDidMount () {
@@ -38,7 +30,7 @@ class Contractors extends Component {
     await this.update_contractors()
   }
 
-  subject_url (selected_subject) {
+  subject_url = selected_subject => {
     if (selected_subject) {
       return this.props.root.url(`subject/${selected_subject.id}-${slugify(selected_subject.name)}`)
     } else {
@@ -46,7 +38,7 @@ class Contractors extends Component {
     }
   }
 
-  page_url (new_page) {
+  page_url = new_page => {
     let url = this.subject_url(this.state.selected_subject)
     if (new_page > 1) {
       url += `${url.substr(-1) === '/' ? '' : '/'}page/${new_page}`
@@ -54,22 +46,22 @@ class Contractors extends Component {
     return url
   }
 
-  subject_change (selected_subject) {
+  subject_change = selected_subject => {
     const url = this.subject_url(selected_subject)
     this.props.history.push(url)
     this.setState({last_url: url})
     this.update_contractors(selected_subject)
   }
 
-  location_change (loc) {
+  location_change = loc => {
     this.setState({location_str: loc})
   }
 
-  submit_location (location_str) {
+  submit_location = location_str => {
     this.update_contractors(this.state.selected_subject, location_str)
   }
 
-  async update_contractors (selected_subject, location_str) {
+  update_contractors = async (selected_subject, location_str) => {
     if (!selected_subject) {
       const m = this.props.history.location.pathname.match(/subject\/(\d+)/)
       const subject_id = m ? parseInt(m[1], 10) : null
@@ -101,20 +93,39 @@ class Contractors extends Component {
     }), 0)
   }
 
-  get_contractor_details (con) {
-    const state_ref = 'con_extra_' + con.id
-    const con_extra = this.state[state_ref]
-    if (con_extra === undefined) {
-      this.set_contractor_details(con.url, state_ref)
-    }
-    return con_extra
-  }
+  get_contractor = async (contractor_id, set_contractor) => {
 
-  async set_contractor_details (url, state_ref) {
-    this.setState({[state_ref]: null})
-    const con_details = await this.props.root.requests.get(url)
-    this.props.config.event_callback('get_contractor_details', con_details)
-    this.setState({[state_ref]: con_details})
+    const state_ref = `con_extra_${contractor_id}`
+    let contractor = this.state[state_ref]
+    if (contractor) {
+      set_contractor(contractor)
+      return
+    }
+
+    // make sure update_contractors has finished before getting the contractor to avoid unnecessary requests
+    while (!this.state.contractor_response) {
+      await sleep(50)
+    }
+
+    const contractor_summary = this.state.contractor_response.results.find(c => c.id === contractor_id)
+    let url
+    if (contractor_summary) {
+      set_contractor(contractor_summary)
+      url = contractor_summary.url
+    } else {
+      url = `contractors/${contractor_id}`
+    }
+
+    let r = await this.props.root.requests.get(url, null, {expected_statuses: [200, 404]})
+    if (r.status === 404) {
+      set_contractor(null)
+    } else {
+      contractor = r.data
+      this.props.config.event_callback('get_contractor_details', contractor)
+
+      this.setState({[state_ref]: contractor})
+      set_contractor(contractor)
+    }
   }
 
   render () {
@@ -194,18 +205,16 @@ class Contractors extends Component {
           </div>
         </If>
         <Route path={this.props.root.url(':id(\\d+):_extra')} render={props => (
-          <ConModal id={props.match.params.id}
-                    last_url={this.state.last_url}
-                    contractors={this.state.contractor_response && this.state.contractor_response.results}
-                    got_contractors={Boolean(this.state.contractor_response)}
-                    get_contractor_details={this.get_contractor_details}
-                    root={this.props.root}
-                    config={this.props.config}
-                    history={props.history}/>
+          <ConModal
+              id={props.match.params.id}
+              last_url={this.state.last_url}
+              get_contractor={this.get_contractor}
+              root={this.props.root}
+              config={this.props.config}
+              history={props.history}
+          />
         )}/>
       </div>
     )
   }
 }
-
-export default Contractors

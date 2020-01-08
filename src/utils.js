@@ -2,7 +2,7 @@ import marked from 'marked'
 
 marked.setOptions({
   gfm: true,
-  sanitize: true,
+  sanitize: true,  // SWITCH to https://github.com/cure53/DOMPurify
   smartLists: true,
 })
 
@@ -12,6 +12,10 @@ export const to_markdown = t => {
   } else {
     return marked(t)
   }
+}
+
+export function sleep (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 export const auto_url_root = path => {

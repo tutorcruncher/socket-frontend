@@ -9,18 +9,18 @@ const filter_qual_levels = skills => {
   }
 }
 
-const ConDetails = ({contractor, contractor_extra, get_text}) => (
+const ConDetails = ({contractor, get_text}) => (
   <div className="con-details">
     <Markdown content={contractor.primary_description}/>
 
-    <DisplayExtraAttrs extra_attributes={contractor_extra && contractor_extra.extra_attributes}/>
-    <If v={contractor_extra && contractor_extra.skills}>
+    <DisplayExtraAttrs extra_attributes={contractor.extra_attributes}/>
+    <If v={contractor.skills}>
       <table className="tcs-skills">
         <caption>
           <h3>{get_text('skills_label')}</h3>
         </caption>
         <tbody>
-          {contractor_extra && contractor_extra.skills.map((skill, i) => (
+          {contractor.skills && contractor.skills.map((skill, i) => (
             <tr key={i}>
               <th scope="row">{skill.subject}</th>
               <td>
