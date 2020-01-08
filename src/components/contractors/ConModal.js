@@ -11,24 +11,18 @@ const TRANSITION_TIME = 500
 class ConModal extends Component {
   constructor (props) {
     super(props)
-    this.con_id = parseInt(this.props.id, 10)
     this.state = {
       show_enquiry: false,
       transition_class: '',
-    }
-    this.get_contractor = this.get_contractor.bind(this)
-    this.switch_view = this.switch_view.bind(this)
-  }
-
-  get_contractor () {
-    for (let contractor of this.props.contractors) {
-      if (contractor.id === this.con_id) {
-        return {contractor, contractor_extra: this.props.get_contractor_details(contractor)}
-      }
+      loaded: false,
     }
   }
 
-  switch_view () {
+  componentDidMount () {
+    this.props.get_contractor(parseInt(this.props.id, 10), s => this.setState(s))
+  }
+
+  switch_view = () => {
     this.setState({transition_class: ' in-trans'})
     setTimeout(() => {
       this.setState({show_enquiry: !this.state.show_enquiry, transition_class: ''})
@@ -36,22 +30,22 @@ class ConModal extends Component {
   }
 
   render () {
-    if (!this.props.got_contractors) {
+    if (!this.state.loaded) {
       return (
         <Modal history={this.props.history} title='' config={this.props.config}>
           <p>Loading...</p>
         </Modal>
       )
     }
-    const _con = this.get_contractor()
-    if (!_con) {
+    const contractor = this.state.contractor
+    if (!contractor) {
       return (
         <Modal history={this.props.history} config={this.props.config} title='Contractor not Found'>
           <p>No Contractor found with id {this.props.id}.</p>
         </Modal>
       )
     }
-    const {contractor, contractor_extra} = _con
+
     return (
       <Modal history={this.props.history} title={contractor.name} last_url={this.props.last_url} config={this.props.config}>
         <div className="tcs-extra">
@@ -83,9 +77,7 @@ class ConModal extends Component {
                            config={this.props.config}
                            mode='con-modal'/>
             {/*else:*/}
-              <ConDetails contractor={contractor}
-                          contractor_extra={contractor_extra}
-                          get_text={this.props.config.get_text}/>
+              <ConDetails get_text={this.props.config.get_text} contractor={contractor}/>
             </IfElse>
 
           </div>
