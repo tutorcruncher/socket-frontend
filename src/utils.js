@@ -2,7 +2,7 @@ import marked from 'marked'
 
 marked.setOptions({
   gfm: true,
-  // sanitize: true,  SWITCH to https://github.com/cure53/DOMPurify
+  sanitize: true,  // SWITCH to https://github.com/cure53/DOMPurify
   smartLists: true,
 })
 
@@ -144,7 +144,6 @@ export function request (method, path, config) {
     xhr.open(method, url)
     xhr.setRequestHeader('Accept', 'application/json')
     xhr.onload = () => {
-      console.log(config.expected_statuses, xhr.status)
       if (config.expected_statuses.includes(xhr.status)) {
         const data = JSON.parse(xhr.responseText)
         if (config.expected_statuses.length === 1) {
