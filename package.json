@@ -48,7 +48,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-select": "^3.1.0",
-    "react-tooltip": "^4.2.7",
+    "react-tooltip": "^4.2.9",
     "sass-loader": "^9.0.2",
     "shelljs": "0.8.4",
     "sshpk": "^1.16.1",
