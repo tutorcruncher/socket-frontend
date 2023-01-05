@@ -15,4 +15,4 @@ It defaults to use the TutorCruncher Socket backend, but you can use your own if
 
 Alternatively, you can just use TutorCruncher's API and build your own frontend.
 
-[More documentation](https://help.tutorcruncher.com/tc-socket/).
+[More documentation](https://help.tutorcruncher.com/en/articles/4843207-socket).
