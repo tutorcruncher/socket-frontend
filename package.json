@@ -53,7 +53,7 @@
     "shelljs": "0.8.4",
     "sshpk": "^1.17.0",
     "tunnel-agent": "^0.6.0",
-    "webpack-bundle-analyzer": "^4.7.0"
+    "webpack-bundle-analyzer": "^4.8.0"
   },
   "browserslist": {
     "production": [
