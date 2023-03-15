@@ -9320,10 +9320,10 @@ prop-types-exact@^1.2.0:
     object.assign "^4.1.0"
     reflect.ownkeys "^0.2.0"
 
-prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
-  version "15.7.2"
-  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
-  integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
+prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
+  version "15.8.1"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
+  integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
   dependencies:
     loose-envify "^1.4.0"
     object-assign "^4.1.1"
@@ -9566,8 +9566,7 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
   integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
 
-react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
-
+react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.4, react-is@^16.8.6:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -9661,10 +9660,10 @@ react-scripts@3.4.3:
   optionalDependencies:
     fsevents "2.1.2"
 
-react-select@^5.5.9:
-  version "5.5.9"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-5.5.9.tgz#02f5664e9feff3cabd28f0748bb0e4a3d5438b7b"
-  integrity sha512-68/sd6KmHS2ISCz9PcDhXidGCjFvc1Q1u8yaxSdo8pT7MkKehID/zMoco304+XtdE79DP0Nq8Fz7ROAb7GJ5Xg==
+react-select@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/react-select/-/react-select-5.7.0.tgz#82921b38f1fcf1471a0b62304da01f2896cd8ce6"
+  integrity sha512-lJGiMxCa3cqnUr2Jjtg9YHsaytiZqeNOKeibv6WF5zbK/fPegZ1hg3y/9P1RZVLhqBTs0PfqQLKuAACednYGhQ==
   dependencies:
     "@babel/runtime" "^7.12.0"
     "@emotion/cache" "^11.4.0"
@@ -9686,10 +9685,10 @@ react-test-renderer@^16.0.0-0:
     react-is "^16.8.6"
     scheduler "^0.19.1"
 
-react-tooltip@^4.4.3:
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-4.4.3.tgz#44cbb6c8bdb3281c2819d16c92e3c419ebd98582"
-  integrity sha512-l7/TDBwq3JtuLBtq6FvIs7wsqcHjvoHFT8AvNGpf0JhHwzh+ZhCDN25wM/+gxelj8i1ngw/ULFv53XRQ/wCMzQ==
+react-tooltip@^4.2.18:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-4.5.1.tgz#77eccccdf16adec804132e558ec20ca5783b866a"
+  integrity sha512-Zo+CSFUGXar1uV+bgXFFDe7VeS2iByeIp5rTgTcc2HqtuOS5D76QapejNNfx320MCY91TlhTQat36KGFTqgcvw==
   dependencies:
     prop-types "^15.8.1"
     uuid "^7.0.3"
