@@ -23,9 +23,9 @@
     "lintfix": "eslint src --fix"
   },
   "engines": {
-    "node": ">=10.18",
-    "npm": ">=5",
-    "yarn": ">=1.10"
+    "node": ">=18",
+    "npm": ">=8",
+    "yarn": ">=3"
   },
   "jest": {
     "verbose": true,
