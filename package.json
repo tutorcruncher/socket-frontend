@@ -23,7 +23,7 @@
     "lintfix": "eslint src --fix"
   },
   "engines": {
-    "node": ">=18",
+    "node": ">=16",
     "npm": ">=8",
     "yarn": ">=1.10.0"
   },
