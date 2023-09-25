@@ -1,0 +1,93 @@
+Script started on 2023-05-09 14:49:24+01:00 [TERM="xterm-256color" TTY="/dev/pts/5" COLUMNS="80" LINES="24"]
+]0;seb@seb-tc-pc: /home/seb/repos/socket-frontend[?2004h]0;seb@seb-tc-pc: ~/repos/socket-frontend[01;32mseb@seb-tc-pc[00m:[01;34m~/repos/socket-frontend[00m$ node ./dist.js
+[?2004l]0;node ./dist.jsno tag, branch or commit detected, assuming on netlify
+build directory: "null"
+rm: no such file or directory: /home/seb/repos/socket-frontend/dist
+rm: no such file or directory: /home/seb/repos/socket-frontend/build
+yarn run v1.22.19
+$ react-app-rewired build
+Creating an optimized production build...
+Browserslist: caniuse-lite is outdated. Please run:
+npx browserslist@latest --update-db
+
+Why you should do it regularly:
+https://github.com/browserslist/browserslist#browsers-data-updating
+
+  `@babel/polyfill` is deprecated. Please, use required parts of `core-js`
+  and `regenerator-runtime/runtime` separately
+Compiled successfully.
+
+File sizes after gzip:
+
+  169.35 KB  build/static/socket.js
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  yarn global add serve
+  serve -s build
+
+Find out more about deployment here:
+
+  bit.ly/CRA-deploy
+
+Done in 9.65s.
+]0;seb@seb-tc-pc: /home/seb/repos/socket-frontend[?2004h]0;seb@seb-tc-pc: ~/repos/socket-frontend[01;32mseb@seb-tc-pc[00m:[01;34m~/repos/socket-frontend[00m$ ^C[?2004l[?2004h[?2004l
+]0;seb@seb-tc-pc: /home/seb/repos/socket-frontend[?2004h]0;seb@seb-tc-pc: ~/repos/socket-frontend[01;32mseb@seb-tc-pc[00m:[01;34m~/repos/socket-frontend[00m$ ^[[200~yarn global add serve~[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[7myarn global add serve[27myarn global add serve
+[?2004l]0;yarn global add serve[2K[1G[1myarn global v1.22.19[22m
+[2K[1G[2m[1/4][22m Resolving packages...
+[1G⠁ [0K[1G⠂ serve[0K[1G⠄ update-check@1.5.4[0K[1G⡀ is-wsl@^2.2.0[0K[1G⢀ strip-ansi@^6.0.1[0K[1G⠠ is-docker@^2.0.0[0K[1G⠐ punycode@^1.3.2[0K[1G⠈ ansi-regex@^5.0.1[0K[1G⠁ mimic-fn@^2.1.0[0K[1G⠂ shebang-regex@^3.0.0[0K[1G⠄ shebang-regex@^3.0.0[0K[1G⡀ shebang-regex@^3.0.0[0K[1G⢀ shebang-regex@^3.0.0[0K[1G⠠ shebang-regex@^3.0.0[0K[1G⠐ shebang-regex@^3.0.0[0K[1G⠈ shebang-regex@^3.0.0[0K[1G⠁ shebang-regex@^3.0.0[0K[1G⠂ shebang-regex@^3.0.0[0K[1G⠄ shebang-regex@^3.0.0[0K[1G⡀ shebang-regex@^3.0.0[0K[1G⢀ shebang-regex@^3.0.0[0K[1G⠠ isexe@^2.0.0[0K[2K[1G[2K[1G[2m[2/4][22m Fetching packages...
+[2K[1G[1G[------------------------------------------------------------------------] 0/91[1G[#-----------------------------------------------------------------------] 1/91[1G[####################---------------------------------------------------] 26/91[1G[#################################--------------------------------------] 42/91[1G[###############################################################--------] 81/91[1G[#####################################################################--] 89/91[2K[1G[2m[3/4][22m Linking dependencies...
+[2K[1G[2K[1G[1G[------------------------------------------------------------------------] 0/91[2K[1G[2K[1G[1G[----------------------------------------------------------------------] 0/1162[1G[##################################################################-] 1142/1162[2K[1G[2K[1G[1G[------------------------------------------------------------------------] 0/92[2K[1G[2m[4/4][22m Building fresh packages...
+[1B[2K[1G[32msuccess[39m Installed "serve@14.2.0" with binaries:
+[2K[1G      - serve
+[2K[1G[2K[1GDone in 1.79s.
+]0;seb@seb-tc-pc: /home/seb/repos/socket-frontend[?2004h]0;seb@seb-tc-pc: ~/repos/socket-frontend[01;32mseb@seb-tc-pc[00m:[01;34m~/repos/socket-frontend[00m$ serve3[K -s build
+[?2004l]0;serve -s buildCommand 'serve' not found, but can be installed with:
+sudo snap install serve
+]0;seb@seb-tc-pc: /home/seb/repos/socket-frontend[?2004h]0;seb@seb-tc-pc: ~/repos/socket-frontend[01;32mseb@seb-tc-pc[00m:[01;34m~/repos/socket-frontend[00m$ sudo snap install serve
+[?2004l]0;sudo snap install serve[sudo] password for seb: 
+Download snap "serve" (170) from channel "stable"                              /Download snap "serve" (170) from channel "stable"                              -Fetch and check assertions for snap "serve" (170)                              \Mount snap "serve" (170)                                                       |Mount snap "serve" (170)                                                       /Mount snap "serve" (170)                                                       -Setup snap "serve" (170) security profiles                                     \Setup snap "serve" (170) security profiles for auto-connections                |[0m[?25h[Kserve 0.3.0 from Philipp Gillé (philippgille[32m[0m) installed
+]0;seb@seb-tc-pc: /home/seb/repos/socket-frontend[?2004h]0;seb@seb-tc-pc: ~/repos/socket-frontend[01;32mseb@seb-tc-pc[00m:[01;34m~/repos/socket-frontend[00m$ sudo snap install serve[9Perve -s build
+[?2004l]0;serve -s build
+WARNING: You didn't use the "-d" flag, but a positional argument instead. It seems to be a valid directory though, so serve is going to serve it.
+
+Serving "build" on all network interfaces (0.0.0.0) on HTTPS port: 8443
+
+Local network interfaces and their IP addresses so you can pass one to your colleagues:
+      Interface      |  IPv4 Address   |              IPv6 Address              
+---------------------|-----------------|----------------------------------------
+lo                   | 127.0.0.1       | ::1
+wlp0s20f3            | 192.168.0.126   | fe80::d6f4:941d:134f:731c
+
+Temporary self signed certificate valid for 7 days for the following hostnames:
+[localhost 127.0.0.1 seb-tc-pc seb-tc-pc.local *.seb-tc-pc.local seb-tc-pc.lan *.seb-tc-pc.lan seb-tc-pc.home *.seb-tc-pc.home ]
+
+Certificate fingerprint for checking if the certificate presented by the client's browser is the correct one and not by some MitM attacker:
+ae0955d04b3bd74d99475d45779e07df17c534eb
+^C
+]0;seb@seb-tc-pc: /home/seb/repos/socket-frontend[?2004h]0;seb@seb-tc-pc: ~/repos/socket-frontend[01;32mseb@seb-tc-pc[00m:[01;34m~/repos/socket-frontend[00m$ serve -s build
+[?2004l]0;serve -s build
+WARNING: You didn't use the "-d" flag, but a positional argument instead. It seems to be a valid directory though, so serve is going to serve it.
+
+Serving "build" on all network interfaces (0.0.0.0) on HTTPS port: 8443
+
+Local network interfaces and their IP addresses so you can pass one to your colleagues:
+      Interface      |  IPv4 Address   |              IPv6 Address              
+---------------------|-----------------|----------------------------------------
+lo                   | 127.0.0.1       | ::1
+wlp0s20f3            | 192.168.0.126   | fe80::d6f4:941d:134f:731c
+
+Temporary self signed certificate valid for 7 days for the following hostnames:
+[localhost 127.0.0.1 seb-tc-pc seb-tc-pc.local *.seb-tc-pc.local seb-tc-pc.lan *.seb-tc-pc.lan seb-tc-pc.home *.seb-tc-pc.home ]
+
+Certificate fingerprint for checking if the certificate presented by the client's browser is the correct one and not by some MitM attacker:
+fbc9ce1d30d3c6965754a41b7edcdd04498a0f65
+2023/05/09 14:51:12 http: TLS handshake error from [::1]:48524: tls: first record does not look like a TLS handshake
+2023/05/09 14:51:12 http: TLS handshake error from [::1]:48530: tls: first record does not look like a TLS handshake
+2023/05/09 14:51:12 http: TLS handshake error from [::1]:48536: tls: first record does not look like a TLS handshake
+2023/05/09 14:51:13 http: TLS handshake error from [::1]:43694: tls: first record does not look like a TLS handshake
+2023/05/09 14:51:13 http: TLS handshake error from [::1]:43710: tls: first record does not look like a TLS hands
