@@ -15,4 +15,34 @@ It defaults to use the TutorCruncher Socket backend, but you can use your own if
 
 Alternatively, you can just use TutorCruncher's API and build your own frontend.
 
-[More documentation](https://help.tutorcruncher.com/en/articles/4843207-socket).
+[Help Article](https://help.tutorcruncher.com/en/articles/4843207-socket).
+
+
+## Setup and Run locally
+
+To set up and run this project, follow these steps:
+
+1. **Install dependencies:**
+   ```sh
+    nvm install 14
+    nvm use 14
+    yarn install
+   ```
+2. **Run the application:**
+   ```sh
+    yarn start
+   ```
+3. **Set the environment variables:**
+   ```sh
+    REACT_APP_SOCKET_API_URL='http://localhost:8000'
+   ```
+4. **Set the company public api key:**
+
+   in `public/index.html` set `public_key` with the company's public api key
+   - dino tutors is = `9c79f14df986a1ec693c`
+
+5. **Set api root:**
+
+   in `public/index.html` set `api_root` to the root of the api
+   - for local testing it is `http://localhost:8000`
+   - to use socket-beta it is `https://socket-beta.tutorcruncher.com`

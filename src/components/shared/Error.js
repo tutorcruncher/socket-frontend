@@ -1,6 +1,6 @@
 import React from 'react'
 
-const HELP_SITE = 'help.tutorcruncher.com/tc-socket/'
+const HELP_SITE = 'https://help.tutorcruncher.com/en/articles/8255881-getting-started-with-tutorcruncher-socket'
 
 const Error = ({children}) => (
   <div className="tcs-errors">
