@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>TutorCruncher Socket v2 — dev</title>
+    <style>
+      /* Host-page styles, deliberately generic — the widget must look right
+         regardless of these (its own styles are scoped to .tcs-root). */
+      body {
+        background: #eee;
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        color: #333;
+      }
+      main {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 0 16px;
+      }
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 16px;
+      }
+      .tabs button {
+        appearance: none;
+        border: none;
+        background: none;
+        padding: 10px 14px;
+        font: inherit;
+        font-size: 14px;
+        color: #666;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+      }
+      .tabs button:hover {
+        color: #222;
+      }
+      .tabs button[aria-selected='true'] {
+        color: #362e83;
+        border-bottom-color: #362e83;
+        font-weight: 600;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        min-height: 200px;
+      }
+      .panel[hidden] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p><strong>TutorCruncher Socket v2</strong> — local dev harness (one widget mounts per tab)</p>
+
+      <nav class="tabs" id="tabs">
+        <button data-tab="options" aria-selected="true">Company default</button>
+        <button data-tab="grid" aria-selected="false">Grid</button>
+        <button data-tab="list" aria-selected="false">List</button>
+        <button data-tab="enquiry" aria-selected="false">Enquiry</button>
+        <button data-tab="enquiry-modal" aria-selected="false">Enquiry modal</button>
+        <button data-tab="appointments" aria-selected="false">Appointments</button>
+      </nav>
+
+      <div class="panel" id="panel-options"></div>
+      <div class="panel" id="panel-grid" hidden></div>
+      <div class="panel" id="panel-list" hidden></div>
+      <div class="panel" id="panel-enquiry" hidden></div>
+      <div class="panel" id="panel-enquiry-modal" hidden></div>
+      <div class="panel" id="panel-appointments" hidden></div>
+    </main>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
