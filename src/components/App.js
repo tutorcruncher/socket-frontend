@@ -58,7 +58,7 @@ class App extends Component {
 
   render () {
     if (this.state.error) {
-      return <Error>{this.state.error}</Error>
+      return <Error mode={this.props.config.mode}>{this.state.error}</Error>
     } else if (this.props.config.mode === 'enquiry') {
       return <PlainEnquiry root={this} config={this.props.config}/>
     } else if (this.props.config.mode === 'enquiry-modal') {
