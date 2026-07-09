@@ -42,8 +42,29 @@ src/
   `messages`/`event_callback` hooks are preserved.
 - **Single bundle.** `vite build` emits one `dist/socket.js` (IIFE) with CSS injected
   by JS, so embeds include one `<script>`.
+- **Small bundle (~71 kB gzip).** React is aliased to `preact/compat` and
+  `react-select` was replaced by a custom `Combobox`, cutting the bundle from
+  ~243 kB → ~71 kB gzip. `@sentry/react` was swapped for a tiny dependency-free
+  error reporter (`lib/errorReporter.ts`).
 - **Typed data layer.** TanStack Query gives caching, dedup, request cancellation and
   loading/error states the legacy app lacked.
+
+## Routing on a host page
+
+The widget runs on a customer's own server (which has no SPA catch-all), so there are
+two safe `router_mode`s — and **no `history` mode** (it would 404 on a host refresh):
+
+- **`hash`** (default for grid/list/appointments/enquiry-modal): deep-links to
+  `abc.com/#/2418960-amala-h`. The `#` is never sent to the server, so direct visits
+  and refreshes always load `abc.com/` and the widget re-opens the view client-side.
+  No host config required, and links are shareable.
+- **`memory`** (default for the plain `enquiry` form, which never navigates): keeps all
+  routing in memory and **never touches the host URL** — no `#/` is appended. Trade-off:
+  no deep-linking and the back button won't close a modal. Opt into it for any mode if
+  you want zero URL impact.
+
+Legacy embeds that still pass `router_mode: 'history'` are coerced to `hash` with a
+console warning, so they keep working (and stop 404-ing on refresh).
 
 ## Setup
 
@@ -70,13 +91,15 @@ proxy. Demo key: `9c79f14df986a1ec693c` (Dino Tutors).
 | Core embed + config + design system | ✅ Done |
 | Contractors (grid/list, subject + location filters, pagination, profile modal, stars) | ✅ Done, verified against live API |
 | Enquiry (dynamic form, plain page, modal button, contractor-prefilled) | ✅ Done (reCAPTCHA wiring is a TODO) |
-| Appointments (browse + SSO booking) | 🚧 Stub — next |
+| Appointments (month/day list, SSO popup auth, booking modal) | ✅ Done, list + booking UI verified against live API |
+| Bundle optimisation (preact, custom combobox, no Sentry) | ✅ Done — 243 → 71 kB gzip |
+| UX polish (skeletons, photo fallbacks, modal focus-trap, reduced-motion) | ✅ Done |
 
 ### Known follow-ups
 
-- **Bundle size** (~243 kB gzip): consider `preact/compat`, lazy-loading `react-select`,
-  and dropping `@sentry/react` for a lighter capture.
 - **reCAPTCHA**: enquiry submit posts without a captcha token yet; wire grecaptcha v2/v3.
-- **Appointments**: port month/day grouping, SSO popup auth (`_tcs_user_data_`),
-  and the booking modal against `/appointments`, `/check-client`, `/book-appointment`.
+- **Appointments booking end-to-end**: the list + booking UI are built and verified;
+  the SSO popup + book POST need a company with `auth_url` configured to test fully.
 - **Tests**: add unit tests (Vitest) for `buildConfig`, formatting, and route parsing.
+- **Further bundle trimming**: per-mode code-split is intentionally skipped to keep the
+  single-file embed; TanStack Query/marked/dompurify are the remaining large deps.

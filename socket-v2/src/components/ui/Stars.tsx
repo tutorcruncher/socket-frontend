@@ -7,6 +7,9 @@ const STAR_PATH =
   '236q-22 12-40 12-21 0-31.5-14.5t-10.5-35.5q0-6 2-20l86-500-364-354q-25-27-25-48 0-37 56-46l502-73 225-455q19-41 ' +
   '49-41t49 41l225 455 502 73q56 9 56 46z'
 const STAR_COLOUR = '#f8be15'
+// Darker outline so stars meet WCAG non-text contrast (5:1 on white) and the
+// empty-star scale stays perceivable for low-vision users.
+const STAR_STROKE = '#8a6a00'
 const RAW_STAR_GAP = 200
 const RAW_STAR_SIZE = 1792
 const RAW_STAR_STEP = RAW_STAR_SIZE + RAW_STAR_GAP
@@ -40,16 +43,20 @@ export function Stars({ contractor }: { contractor: Pick<ContractorSummary, 'rev
   const starDisplay = `${Math.round(score * 10) / 10} Stars`
 
   return (
-    <div className="tw:flex tw:items-center tw:gap-2" title={starDisplay}>
+    <div
+      className="tw:flex tw:flex-wrap tw:items-center tw:justify-center tw:gap-x-2 tw:gap-y-0.5"
+      title={starDisplay}
+    >
       <svg
         style={{ width: STAR_WIDTH * MAX_STARS, height: STAR_SIZE }}
+        className="tw:shrink-0"
         viewBox={`0 0 ${RAW_STAR_STEP * MAX_STARS} 1792`}
         xmlns="http://www.w3.org/2000/svg"
         aria-label={starDisplay}
       >
         <defs>
-          <path id={strokedId} d={STAR_PATH} fill="white" fillOpacity="0" stroke={STAR_COLOUR} strokeWidth={80} />
-          <path id={filledId} d={STAR_PATH} fill={STAR_COLOUR} />
+          <path id={strokedId} d={STAR_PATH} fill="white" fillOpacity="0" stroke={STAR_STROKE} strokeWidth={70} />
+          <path id={filledId} d={STAR_PATH} fill={STAR_COLOUR} stroke={STAR_STROKE} strokeWidth={30} />
           <clipPath id={clipId}>
             <rect x="0" y="0" width={RAW_STAR_STEP * scoreStars} height="1792" />
           </clipPath>
@@ -63,7 +70,9 @@ export function Stars({ contractor }: { contractor: Pick<ContractorSummary, 'rev
           ))}
         </g>
       </svg>
-      {comment && <span className="tw:text-xs tw:text-muted-dark">{comment}</span>}
+      {comment && (
+        <span className="tw:text-xs tw:text-muted-dark tw:whitespace-nowrap">{comment}</span>
+      )}
     </div>
   )
 }

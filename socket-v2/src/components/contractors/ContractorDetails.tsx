@@ -18,7 +18,7 @@ export function ContractorDetails({ contractor }: { contractor: Contractor }) {
         <div className="tw:flex tw:flex-col tw:gap-3">
           {contractor.extra_attributes.map((attr, i) => (
             <div key={i}>
-              <h4 className="tw:text-base tw:font-medium tw:font-heading tw:mb-1">{attr.name}</h4>
+              <h3 className="tw:text-base tw:font-medium tw:font-heading tw:mb-1">{attr.name}</h3>
               {attr.type === 'text_short' || attr.type === 'text_extended' ? (
                 <Markdown content={attr.value} />
               ) : (
@@ -31,9 +31,9 @@ export function ContractorDetails({ contractor }: { contractor: Contractor }) {
 
       {contractor.skills?.length > 0 && (
         <div>
-          <h4 className="tw:text-base tw:font-medium tw:font-heading tw:mb-2">
+          <h3 className="tw:text-base tw:font-medium tw:font-heading tw:mb-2">
             {config.get_text('skills_label')}
-          </h4>
+          </h3>
           <div className="tw:border tw:border-default tw:rounded-lg tw:overflow-hidden">
             <table className="tw:w-full tw:text-sm">
               <tbody className="tw:divide-y tw:divide-default">

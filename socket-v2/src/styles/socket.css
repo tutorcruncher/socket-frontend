@@ -111,6 +111,14 @@
     margin: 0;
   }
 
+  /* Neutralise default list styling; .tcs-md re-enables it via `revert`. */
+  .tcs-root ul,
+  .tcs-root ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
   .tcs-root a {
     color: var(--color-link);
     text-decoration: none;
@@ -139,6 +147,17 @@
 /* ============================================================
    Markdown / prose rendered from the API (contractor bios etc.)
    ============================================================ */
+/* Respect users who prefer reduced motion — kill our transitions/animations. */
+@media (prefers-reduced-motion: reduce) {
+  .tcs-root *,
+  .tcs-root *::before,
+  .tcs-root *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
 @layer components {
   .tcs-md > * + * {
     margin-top: 0.75rem;

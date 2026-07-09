@@ -8,7 +8,7 @@ import { Grid, List } from './ContractorCards'
 import { SubjectSelect, LocationInput } from './Filters'
 import { Pagination } from './Pagination'
 import { ContractorModal } from './ContractorModal'
-import { CenteredSpinner } from '@/components/ui/Spinner'
+import { ContractorSkeleton } from './ContractorSkeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Alert } from '@/components/ui/Alert'
 
@@ -82,7 +82,8 @@ export function Contractors() {
       .join(' • ')
   }
 
-  const Display = config.mode === 'list' ? List : Grid
+  const displayMode = config.mode === 'list' ? 'list' : 'grid'
+  const Display = displayMode === 'list' ? List : Grid
   const hasMore =
     !!response && response.count > response.results.length + (page - 1) * config.pagination
 
@@ -104,7 +105,7 @@ export function Contractors() {
       {isError && <Alert variant="danger">Something went wrong loading tutors. Please try again.</Alert>}
 
       {!response && isFetching ? (
-        <CenteredSpinner />
+        <ContractorSkeleton mode={displayMode} count={config.pagination > 8 ? 8 : config.pagination} />
       ) : errorMessage ? (
         <EmptyState title={config.get_text('no_tutors_found')} description={errorMessage} />
       ) : (

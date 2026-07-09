@@ -1,8 +1,7 @@
 import { StrictMode, useEffect, type MutableRefObject } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter, HashRouter, useNavigate } from 'react-router-dom'
+import { render } from 'react-dom'
+import { HashRouter, MemoryRouter, useNavigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import * as Sentry from '@sentry/react'
 
 import './styles/socket.css'
 import type { ResolvedConfig, SocketInstance, UserConfig } from './config/types'
@@ -11,22 +10,9 @@ import { getCompanyOptions } from './api/options'
 import { SocketProvider } from './config/context'
 import { App } from './components/App'
 import { ErrorView } from './components/shared/ErrorView'
+import { installErrorReporter } from './lib/errorReporter'
 
-const env = import.meta.env
-const RELEASE = env.VITE_RELEASE ?? 'dev'
-
-if (env.VITE_SENTRY_DSN) {
-  Sentry.init({
-    dsn: env.VITE_SENTRY_DSN,
-    release: RELEASE,
-    // Only report errors that originate from the widget bundle, not the host page.
-    beforeSend: (event) => {
-      const frames = event.exception?.values?.[0]?.stacktrace?.frames ?? []
-      const fromSocket = frames.some((f) => f.filename?.includes('socket.js'))
-      return fromSocket ? event : null
-    },
-  })
-}
+installErrorReporter()
 
 type NavRef = MutableRefObject<((path: string) => void) | null>
 
@@ -54,8 +40,10 @@ function Root({
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false, staleTime: 30_000 } },
   })
-  const Router = config.router_mode === 'history' ? BrowserRouter : HashRouter
-  const urlBase = config.router_mode === 'history' ? config.url_root : '/'
+  // `memory` keeps routing entirely in-memory (no URL change); `hash` is refresh-safe
+  // on any host. Both resolve links/navigation against a '/' base.
+  const Router = config.router_mode === 'memory' ? MemoryRouter : HashRouter
+  const urlBase = '/'
 
   return (
     <StrictMode>
@@ -91,7 +79,8 @@ export async function socket(
   el.classList.add('tcs-root')
 
   const navRef: NavRef = { current: null }
-  createRoot(el).render(<Root config={config} error={error} navRef={navRef} />)
+  // preact/compat exposes the legacy render(vnode, container) API (not createRoot).
+  render(<Root config={config} error={error} navRef={navRef} />, el)
 
   return {
     goto: (path: string) => navRef.current?.(path === 'enquiry-modal' ? 'enquiry' : path),

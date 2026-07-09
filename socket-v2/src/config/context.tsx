@@ -20,8 +20,8 @@ export function SocketProvider({
 }) {
   const value = useMemo<SocketContextValue>(() => {
     const api = createApi(config)
-    const urlBase = config.router_mode === 'history' ? config.url_root : '/'
-    const url = (path?: string) => urlBase + (path || '')
+    // hash and memory routing both resolve against a '/' base.
+    const url = (path?: string) => '/' + (path || '')
     return { config, api, url }
   }, [config])
 

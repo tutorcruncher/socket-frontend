@@ -59,11 +59,28 @@ export interface Appointment {
   attendees_max: number | null
   attendees_count: number
   link: string
+  service_extra_attributes?: ExtraAttribute[]
 }
 
 export interface AppointmentListResponse {
   count: number
   results: Appointment[]
+}
+
+/** SSO session payload stored in sessionStorage under `_tcs_user_data_`. */
+export interface SsoArgs {
+  sso_data: string
+  [key: string]: string
+}
+
+/** Decoded `sso_data`: the signed-in user's name and their students. */
+export interface SessionData {
+  nm: string
+  srs: Record<string, string>
+}
+
+export interface CheckClientResponse {
+  appointment_attendees: Record<number, number[]>
 }
 
 export type EnquiryFieldType =

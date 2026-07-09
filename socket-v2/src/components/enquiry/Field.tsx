@@ -4,7 +4,7 @@ import { cx } from '@/lib/utils'
 
 const INPUT_CLASS =
   'tw:w-full tw:px-3 tw:py-2 tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:text-sm ' +
-  'tw:bg-white tw:placeholder:text-muted tw:focus:outline-2 tw:focus:outline-link'
+  'tw:bg-white tw:placeholder:text-muted-dark tw:focus:outline-2 tw:focus:outline-link'
 
 export interface FieldProps {
   field: EnquiryField

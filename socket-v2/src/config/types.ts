@@ -1,6 +1,6 @@
 /** Public configuration for the Socket widget — the second argument to window.socket(). */
 export type SocketMode = 'grid' | 'list' | 'enquiry' | 'enquiry-modal' | 'appointments'
-export type RouterMode = 'hash' | 'history'
+export type RouterMode = 'hash' | 'memory'
 
 /** A translatable string: either a literal, or a function of replacement values. */
 export type Message = string | ((replacements: Record<string, unknown>) => string)

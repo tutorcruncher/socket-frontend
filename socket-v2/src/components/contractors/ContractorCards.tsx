@@ -15,7 +15,7 @@ export function Grid({ contractors }: { contractors: ContractorSummary[] }) {
         <Link
           key={c.id}
           to={url(c.link)}
-          className="tw:group tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:overflow-hidden tw:transition-shadow tw:hover:shadow-md"
+          className="tw:group tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:overflow-hidden tw:transition-shadow tw:hover:shadow-md tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link tw:focus-visible:outline-offset-2"
         >
           <div className="tw:aspect-square tw:bg-content tw:overflow-hidden">
             <Photo
@@ -43,7 +43,7 @@ export function List({ contractors }: { contractors: ContractorSummary[] }) {
         <Link
           key={c.id}
           to={url(c.link)}
-          className="tw:flex tw:flex-col tw:sm:flex-row tw:gap-4 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:p-4 tw:transition-shadow tw:hover:shadow-md"
+          className="tw:flex tw:flex-col tw:sm:flex-row tw:gap-4 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:p-4 tw:transition-shadow tw:hover:shadow-md tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link tw:focus-visible:outline-offset-2"
         >
           <div className="tw:flex tw:sm:flex-col tw:items-center tw:gap-3 tw:sm:w-32 tw:shrink-0">
             <div className="tw:w-24 tw:h-24 tw:sm:w-32 tw:sm:h-32 tw:rounded-lg tw:overflow-hidden tw:bg-content">
@@ -60,7 +60,6 @@ export function List({ contractors }: { contractors: ContractorSummary[] }) {
             {c.primary_description && (
               <div className="tw:relative tw:mt-2 tw:max-h-16 tw:overflow-hidden">
                 <Markdown content={c.primary_description} />
-                <div className="tw:absolute tw:inset-x-0 tw:bottom-0 tw:h-6 tw:bg-gradient-to-t tw:from-white" />
               </div>
             )}
           </div>
@@ -72,7 +71,7 @@ export function List({ contractors }: { contractors: ContractorSummary[] }) {
                 <LocationIcon className="tw:w-3.5 tw:h-3.5" />
                 <span>{c.town}</span>
                 {c.distance !== null && (
-                  <span className="tw:text-xs tw:text-muted">
+                  <span className="tw:text-xs tw:text-muted-dark">
                     · {config.get_text('distance_away', { distance: Math.round(c.distance / 100) / 10 })}
                   </span>
                 )}

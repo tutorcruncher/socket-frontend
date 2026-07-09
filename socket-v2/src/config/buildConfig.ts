@@ -1,6 +1,7 @@
 import type {
   CompanyOptions,
   ResolvedConfig,
+  RouterMode,
   SocketMode,
   UserConfig,
 } from './types'
@@ -54,13 +55,24 @@ export async function buildConfig(
     urlRoot = autoUrlRoot(window.location.pathname)
   }
 
-  // router_mode: enquiry defaults to history so it doesn't add a hash to the URL
-  let routerMode = u.router_mode
-  if (!routerMode) {
-    routerMode = mode === 'enquiry' ? 'history' : 'hash'
-  } else if (!ROUTER_MODES.includes(routerMode)) {
-    error = `invalid router mode "${routerMode}", options are: ${ROUTER_MODES.join(', ')}`
+  // router_mode: a plain enquiry form never navigates, so default it to `memory`
+  // (touches the URL not at all); every other mode uses `hash`, which is refresh-safe
+  // on any host. `history` was removed — coerce legacy callers to `hash` so existing
+  // embeds keep working but stop 404-ing on refresh.
+  const requested = u.router_mode as string | undefined
+  let routerMode: RouterMode = mode === 'enquiry' ? 'memory' : 'hash'
+  if (requested === 'history') {
+    console.warn(
+      'SOCKET: router_mode "history" is no longer supported (it 404s on a host-page refresh); using "hash".',
+    )
     routerMode = 'hash'
+  } else if (requested) {
+    if (ROUTER_MODES.includes(requested as RouterMode)) {
+      routerMode = requested as RouterMode
+    } else {
+      error = `invalid router mode "${requested}", options are: ${ROUTER_MODES.join(', ')}`
+      routerMode = 'hash'
+    }
   }
 
   const contractorFilter: ResolvedConfig['contractor_filter'] = {}

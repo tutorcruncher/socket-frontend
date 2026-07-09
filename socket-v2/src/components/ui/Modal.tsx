@@ -52,8 +52,39 @@ export function Modal({
     setTimeout(onClose, FADE_MS)
   }
 
+  const dialogRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && handleClose()
+    const focusables = () =>
+      Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      ).filter((el) => el.offsetParent !== null)
+
+    // Move focus into the dialog on open.
+    requestAnimationFrame(() => (focusables()[0] ?? dialogRef.current)?.focus())
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose()
+        return
+      }
+      if (e.key !== 'Tab') return
+      // Trap Tab focus within the dialog.
+      const items = focusables()
+      if (items.length === 0) return
+      const first = items[0]
+      const last = items[items.length - 1]
+      const activeEl = document.activeElement as HTMLElement | null
+      if (e.shiftKey && activeEl === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && activeEl === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,8 +104,10 @@ export function Modal({
     >
       <div className="tw:relative tw:w-full tw:my-7 tw:mx-auto tw:p-4" style={{ maxWidth: size === 'lg' ? 900 : 650 }}>
         <div
+          ref={dialogRef}
+          tabIndex={-1}
           className={cx(
-            'tw:bg-white tw:rounded-xl tw:border tw:border-default tw:shadow-lg tw:overflow-hidden',
+            'tw:bg-white tw:rounded-xl tw:border tw:border-default tw:shadow-lg tw:overflow-hidden tw:outline-none',
             'tw:flex tw:flex-col tw:max-h-[85vh] tw:transition-transform tw:duration-200',
             show ? 'tw:translate-y-0' : 'tw:-translate-y-2',
           )}
@@ -85,7 +118,7 @@ export function Modal({
               type="button"
               aria-label="Close"
               onClick={handleClose}
-              className="tw:p-1 tw:rounded-md tw:text-muted-dark tw:hover:bg-hover tw:transition-colors"
+              className="tw:flex tw:items-center tw:justify-center tw:w-8 tw:h-8 tw:rounded-md tw:text-muted-dark tw:hover:bg-hover tw:transition-colors tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
             >
               <CrossIcon className="tw:w-4 tw:h-4" />
             </button>

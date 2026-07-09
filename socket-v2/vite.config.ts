@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import preact from '@preact/preset-vite'
 import tailwindcss from '@tailwindcss/vite'
 import cssInjectedByJs from 'vite-plugin-css-injected-by-js'
 import { resolve } from 'node:path'
@@ -12,7 +12,9 @@ export default defineConfig(({ command }) => ({
     alias: { '@': resolve(__dirname, 'src') },
   },
   plugins: [
-    react(),
+    // @preact/preset-vite aliases react/react-dom -> preact/compat (incl. the jsx
+    // dev/prod runtimes), cutting ~40 kB gzip from the embed bundle.
+    preact(),
     tailwindcss(),
     // Inline the compiled CSS into the JS bundle so embeds need one <script> only.
     cssInjectedByJs(),

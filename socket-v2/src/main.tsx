@@ -32,10 +32,11 @@ function showTab(id: string) {
   }
   if (!initialised.has(id)) {
     initialised.add(id)
+    // No router_mode override: each mode uses its safe default (hash, or memory
+    // for plain enquiry) — mirroring how a real embed behaves.
     window.socket(publicKey, {
       ...TABS[id],
       element: `#panel-${id}`,
-      router_mode: 'history',
       api_root: apiRoot,
     })
   }

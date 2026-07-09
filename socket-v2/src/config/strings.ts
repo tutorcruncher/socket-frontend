@@ -73,7 +73,10 @@ export const STRINGS: Messages = {
 }
 
 export const MODES = ['grid', 'list', 'enquiry', 'enquiry-modal', 'appointments'] as const
-export const ROUTER_MODES = ['hash', 'history'] as const
+// `history` was removed in v2: it only works on hosts with an SPA catch-all (a
+// drop-in widget can't assume that), so it 404s on refresh. `hash` is safe on any
+// host; `memory` touches the URL not at all (no deep-linking).
+export const ROUTER_MODES = ['hash', 'memory'] as const
 
 export const DEFAULT_COMPANY_OPTIONS = {
   display_mode: 'grid' as const,

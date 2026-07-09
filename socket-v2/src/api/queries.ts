@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useApi, useConfig } from '@/config/context'
 import { useEventCallback } from '@/lib/useEventCallback'
 import type {
+  AppointmentListResponse,
   Contractor,
   ContractorListResponse,
   EnquiryFormInfo,
@@ -50,6 +51,26 @@ export function useContractors(args: ContractorQueryArgs) {
         { signal },
       )
       emit('updated_contractors', data)
+      return data
+    },
+    placeholderData: (prev) => prev,
+  })
+}
+
+/** GET /{key}/appointments — the paginated upcoming appointment list. */
+export function useAppointments(page: number) {
+  const api = useApi()
+  const config = useConfig()
+  const emit = useEventCallback()
+  return useQuery({
+    queryKey: ['appointments', page, config.pagination],
+    queryFn: async ({ signal }) => {
+      const { data } = await api.get<AppointmentListResponse>(
+        'appointments',
+        { page, pagination: config.pagination },
+        { signal },
+      )
+      emit('updated_appointments', data)
       return data
     },
     placeholderData: (prev) => prev,
