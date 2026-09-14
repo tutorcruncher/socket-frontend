@@ -8,32 +8,36 @@ class Modal extends Component {
     this.state = {
       show: false,
     }
-    this.scroll_disabled = false
+    this.mask_ref = React.createRef()
     this.close = this.close.bind(this)
-    this.prevent_scroll = this.prevent_scroll.bind(this)
+    this.prevent_background_touch = this.prevent_background_touch.bind(this)
   }
 
-  prevent_scroll (e) {
-    if (!this.scroll_disabled) {
-      this.scroll_disabled = true
-      document.body.style.overflow = 'hidden'
+  // Page scrolling behind the modal is blocked by "overflow: hidden" on <body> (see componentDidMount).
+  // Touch gestures must still scroll the content inside .tcs-modal (otherwise the enquiry form's submit
+  // button is unreachable on phones), so only gestures starting on the mask background itself are cancelled.
+  prevent_background_touch (e) {
+    if (e.target === this.mask_ref.current) {
       e.preventDefault()
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.body_overflow_before = document.body.style.overflow
-    window.onwheel = this.prevent_scroll
-    window.onmousewheel = document.onmousewheel = this.prevent_scroll
-    window.ontouchmove  = this.prevent_scroll
-    setTimeout(() => this.setState({show: true}), 0)
+    document.body.style.overflow = 'hidden'
+    // React registers touch events passively, so preventDefault would be ignored; use a native listener.
+    if (this.mask_ref.current) {
+      this.mask_ref.current.addEventListener('touchmove', this.prevent_background_touch, {passive: false})
+    }
+    this.show_timeout = setTimeout(() => this.setState({show: true}), 0)
   }
 
   componentWillUnmount () {
+    clearTimeout(this.show_timeout)
     document.body.style.overflow = this.body_overflow_before
-    window.onwheel = null
-    window.onmousewheel = document.onmousewheel = null
-    window.ontouchmove  = null
+    if (this.mask_ref.current) {
+      this.mask_ref.current.removeEventListener('touchmove', this.prevent_background_touch)
+    }
   }
 
   close () {
@@ -46,7 +50,7 @@ class Modal extends Component {
   render () {
     const flex = this.props.flex !== undefined ? Boolean(this.props.flex) : true
     const modal_content = (
-      <div className={'tcs-modal-mask' + (this.state.show ? ' tcs-show' : '')} onClick={this.close}>
+      <div className={'tcs-modal-mask' + (this.state.show ? ' tcs-show' : '')} onClick={this.close} ref={this.mask_ref}>
         <div className="tcs-modal" onClick={e => e.stopPropagation()}>
           <div className="tcs-header">
             <h2 className="tcs-h2">{this.props.title}</h2>
