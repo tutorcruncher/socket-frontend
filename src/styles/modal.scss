@@ -58,7 +58,12 @@
 
 .tcs-modal-body {
   max-height: calc(94vh - 140px);
+  // dynamic viewport height accounts for mobile browser toolbars where supported
+  max-height: calc(94dvh - 140px);
   overflow-y: auto;
+  // smooth touch scrolling on older iOS, and stop scroll chaining to the page behind the modal
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .tcs-modal-flex {
