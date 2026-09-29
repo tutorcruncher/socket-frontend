@@ -198,3 +198,186 @@
 [data-tcs-theme='soft'] .tcs-time {
   border-radius: 999px;
 }
+
+/* ------------------------------------------------------------
+   bold: poster. Two-pixel black borders, hard offset shadows, square corners,
+   heavy uppercase headings, acid-yellow primary actions with black text.
+   ------------------------------------------------------------ */
+[data-tcs-theme='bold'] {
+  --tw-font-heading: var(--tw-font-body);
+  --tw-color-primary: #000000;
+  --tw-color-heading: #000000;
+  --tw-color-link: #000000;
+  --tw-color-muted: #737373;
+  --tw-color-muted-dark: #404040;
+  --tw-background-color-primary: #000000;
+  --tw-background-color-content: #fffbe6;
+  --tw-background-color-hover: #fff3a3;
+  --tw-border-color-default: #000000;
+  --tw-background-color-info: #fff3a3;
+  --tw-border-color-info: #000000;
+  --tw-text-color-info: #000000;
+  --tw-background-color-success: #d9f99d;
+  --tw-border-color-success: #000000;
+  --tw-text-color-success: #000000;
+  --tw-background-color-error: #fecaca;
+  --tw-border-color-error: #000000;
+  --tw-text-color-error: #000000;
+  --tw-background-color-warning: #fed7aa;
+  --tw-border-color-warning: #000000;
+  --tw-text-color-warning: #000000;
+  --tw-radius-md: 0;
+  --tw-radius-lg: 0;
+  --tw-radius-xl: 0;
+}
+[data-tcs-theme='bold'] :is(h1, h2, h3, h4) {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+[data-tcs-theme='bold'] .tw\:border {
+  border-width: 2px;
+}
+[data-tcs-theme='bold'] .tw\:shadow-sm,
+[data-tcs-theme='bold'] .tcs-rail,
+[data-tcs-theme='bold'] .tcs-btn {
+  box-shadow: 4px 4px 0 #000000;
+}
+[data-tcs-theme='bold'] .tcs-rail {
+  background: #ffffff;
+  border-width: 2px;
+}
+[data-tcs-theme='bold'] .tcs-btn {
+  border: 2px solid #000000;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+[data-tcs-theme='bold'] .tcs-btn.tw\:bg-primary {
+  background: #ffe600;
+  color: #000000;
+}
+[data-tcs-theme='bold'] .tcs-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #000000;
+}
+[data-tcs-theme='bold'] .tcs-btn:active,
+[data-tcs-theme='bold'] .tcs-btn:disabled {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000000;
+}
+[data-tcs-theme='bold'] .tcs-time,
+[data-tcs-theme='bold'] .tcs-chip {
+  border-width: 2px;
+  font-weight: 700;
+}
+[data-tcs-theme='bold'] .tcs-time[aria-pressed='true'] {
+  background: #ffe600;
+  color: #000000;
+  border-color: #000000;
+}
+[data-tcs-theme='bold'] .tcs-day[aria-pressed='true'] {
+  background: #ffe600;
+  color: #000000;
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+}
+[data-tcs-theme='bold'] .tcs-input {
+  border-width: 2px;
+  box-shadow: none;
+}
+[data-tcs-theme='bold'] .tcs-badge {
+  border: 2px solid #000000;
+  border-radius: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+[data-tcs-theme='bold'] .tcs-stepper-dot {
+  border: 2px solid #000000;
+  border-radius: 0;
+  font-weight: 800;
+  outline: none;
+}
+[data-tcs-theme='bold'] .tcs-stepper-line {
+  height: 2px;
+  background: #000000;
+  border: 0;
+}
+
+/* ------------------------------------------------------------
+   elegant: warm luxury. Serif headings, cream surfaces, thin warm borders,
+   letterspaced uppercase labels and buttons, gold-brown links.
+   ------------------------------------------------------------ */
+[data-tcs-theme='elegant'] {
+  --tw-font-heading: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino,
+    'Times New Roman', serif;
+  --tw-color-primary: #2b2118;
+  --tw-color-heading: #1f1712;
+  --tw-color-link: #8a6d3b;
+  --tw-color-muted: #b3a493;
+  --tw-color-muted-dark: #7d6f60;
+  --tw-background-color-primary: #2b2118;
+  --tw-background-color-content: #f6f1ea;
+  --tw-background-color-hover: #efe7dc;
+  --tw-border-color-default: #e4dbcf;
+  --tw-background-color-info: #f6f1ea;
+  --tw-border-color-info: #d8c9b4;
+  --tw-text-color-info: #5c4a2f;
+  --tw-background-color-success: #eef3e6;
+  --tw-border-color-success: #8a9c6a;
+  --tw-text-color-success: #4f6b2b;
+  --tw-radius-md: 0.125rem;
+  --tw-radius-lg: 0.125rem;
+  --tw-radius-xl: 0.25rem;
+}
+[data-tcs-theme='elegant'] :is(h1, h2, h3, h4) {
+  font-weight: 400;
+  letter-spacing: 0;
+}
+[data-tcs-theme='elegant'] .tcs-panel h2 {
+  font-size: 1.875rem;
+}
+[data-tcs-theme='elegant'] .tw\:shadow-sm {
+  box-shadow: none;
+}
+[data-tcs-theme='elegant'] .tcs-panel,
+[data-tcs-theme='elegant'] .tcs-card,
+[data-tcs-theme='elegant'] .tcs-calendar,
+[data-tcs-theme='elegant'] .tcs-slot,
+[data-tcs-theme='elegant'] .tcs-input {
+  background: #fffdf9;
+}
+[data-tcs-theme='elegant'] .tcs-btn {
+  border-radius: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+[data-tcs-theme='elegant'] .tcs-btn.tw\:bg-primary:hover {
+  background: #8a6d3b;
+}
+[data-tcs-theme='elegant'] .tcs-chip,
+[data-tcs-theme='elegant'] .tcs-badge {
+  background: transparent;
+  border: 1px solid #d8c9b4;
+  border-radius: 0;
+  color: #5c4a2f;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+[data-tcs-theme='elegant'] .tcs-time {
+  border-color: #d8c9b4;
+  font-weight: 500;
+}
+[data-tcs-theme='elegant'] .tcs-stepper-dot {
+  border: 1px solid #b89a6a;
+  font-weight: 400;
+  outline: none;
+}
+[data-tcs-theme='elegant'] .tcs-stepper-line {
+  border-color: #d8c9b4;
+}
