@@ -156,6 +156,9 @@ function MonthGrid({
   const cells = buildMonthGrid(month)
   const headers = weekdayHeaders()
   const thisMonth = monthKey(today)
+  // Late in the month the grid is mostly past days, so point at the next one.
+  const daysLeft = cells.filter((c) => c.day && c.day >= today).length
+  const nearlyOver = month === thisMonth && daysLeft <= 7
 
   return (
     <div className="tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:p-4">
@@ -186,7 +189,7 @@ function MonthGrid({
         ))}
       </div>
 
-      <div className="tw:grid tw:grid-cols-7 tw:gap-1">
+      <div className="tw:grid tw:grid-cols-7 tw:gap-1 tw:mb-3">
         {cells.map((cell, i) => {
           if (!cell.day) return <div key={i} />
           const slots = byDay.get(cell.day)
@@ -232,6 +235,17 @@ function MonthGrid({
           )
         })}
       </div>
+
+      {nearlyOver && (
+        <Button
+          variant="secondary"
+          size="small"
+          className="tw:w-full"
+          onClick={() => onMonthChange(addMonths(month, 1))}
+        >
+          {config.get_text('apt_see_next_month', { month: monthTitle(addMonths(month, 1)) })} →
+        </Button>
+      )}
     </div>
   )
 }

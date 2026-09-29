@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useConfig } from '@/config/context'
 import { cx } from '@/lib/utils'
-import { CheckIcon } from '@/components/ui/Icons'
+import { CheckIcon, ChevronLeftIcon } from '@/components/ui/Icons'
 
 export type FlowStepId = 'time' | 'details' | 'review' | 'payment' | 'confirmed'
 
@@ -22,6 +22,7 @@ export function FlowLayout({
   title,
   intro,
   headerAside,
+  back,
   rail,
   railOnMobile = true,
   includePayment,
@@ -30,6 +31,8 @@ export function FlowLayout({
   stepId: FlowStepId
   /** Replaces the step label as the heading, e.g. "Your lesson is booked". */
   title?: string
+  /** A way back out of the flow, shown inside the card above the stepper. */
+  back?: { label: string; onClick: () => void }
   intro?: string
   /** Shown beside the step title (wrapping below it when narrow), e.g. search chips. */
   headerAside?: ReactNode
@@ -59,6 +62,17 @@ export function FlowLayout({
 
   const section = (
     <section className="tw:order-1 tw:lg:order-2 tw:bg-white tw:border tw:border-default tw:rounded-xl tw:shadow-sm tw:p-4 tw:sm:p-6 tw:flex tw:flex-col tw:gap-5">
+      {back && (
+        <button
+          type="button"
+          onClick={back.onClick}
+          className="tw:self-start tw:-mb-2 tw:inline-flex tw:items-center tw:gap-1.5 tw:text-sm tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
+        >
+          <ChevronLeftIcon className="tw:w-3 tw:h-3" />
+          {back.label}
+        </button>
+      )}
+
       {/* Stepper leads so progress sits in the same place on every step; the step's
           own title and intro follow it. */}
       <Stepper steps={steps} current={idx} />

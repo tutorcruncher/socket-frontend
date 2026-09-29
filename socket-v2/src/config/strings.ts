@@ -119,6 +119,7 @@ export const STRINGS: Messages = {
   apt_search_intro: 'Choose the type of lesson you are looking for to see available dates.',
   apt_service_label: 'Type of lesson',
   apt_service_placeholder: 'All lesson types',
+  apt_service_choose: 'Choose a subject',
   apt_location_label: 'Location',
   apt_location_placeholder: 'Any location',
   apt_search_button: 'See availability',
@@ -126,6 +127,7 @@ export const STRINGS: Messages = {
   apt_next_available: 'Next available lesson',
   apt_no_lessons_day: 'No lessons on this day.',
   apt_no_lessons_month: 'No lessons available in {month}.',
+  apt_see_next_month: 'See {month}',
   apt_no_lessons_found: 'No upcoming lessons found',
   apt_no_lessons_found_desc: 'Try a different lesson type or check back soon.',
   apt_no_service_lessons:

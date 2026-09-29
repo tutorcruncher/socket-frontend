@@ -30,6 +30,9 @@ export interface AppointmentSearch {
 
 const MODE_ICONS = { online: VideoIcon, in_person: LocationIcon }
 
+/** Sentinel for the explicit "all lesson types" choice in the subject box. */
+const ALL_SUBJECTS = '__all__'
+
 /**
  * Step 1: "what are you looking for?" A parent picks the lesson type, how they'd
  * like it delivered, and (for in-person / home visits) where they are.
@@ -44,14 +47,17 @@ export function SearchForm({
   onSearch: (search: AppointmentSearch) => void
 }) {
   const config = useConfig()
-  const [subject, setSubject] = useState<string | null>(initial?.subject ?? null)
+  const [subject, setSubject] = useState<string | null>(
+    initial ? (initial.subject ?? ALL_SUBJECTS) : null,
+  )
   const [delivery, setDelivery] = useState<DeliveryMode | null>(initial?.delivery ?? null)
   const [location, setLocation] = useState(initial?.location ?? '')
   const [radius, setRadius] = useState<number>(initial?.radius ?? 25000)
   const [submitted, setSubmitted] = useState(false)
 
   const subjects = useMemo(() => groupBySubject(services), [services])
-  const serviceIds = serviceIdsFor(services, subject)
+  const searchSubject = subject === ALL_SUBJECTS ? null : subject
+  const serviceIds = serviceIdsFor(services, searchSubject)
 
   // Upcoming lessons for the chosen type, so a parent learns there is nothing to
   // book before clicking through. Same query key the calendar uses for an
@@ -74,9 +80,15 @@ export function SearchForm({
   }, [availability.data])
   const noLessons = !!modeCounts && modeCounts.online + modeCounts.in_person === 0
 
+  // "All lesson types" is a real choice, listed first, so the box never reads as
+  // if something has been picked when it hasn't. Choosing it stores ALL_SUBJECTS;
+  // the search itself sees null.
   const items = useMemo<ComboboxItem[]>(
-    () => subjects.map((g) => ({ id: g.name, label: g.name })),
-    [subjects],
+    () => [
+      { id: ALL_SUBJECTS, label: config.get_text('apt_service_placeholder') },
+      ...subjects.map((g) => ({ id: g.name, label: g.name })),
+    ],
+    [subjects, config],
   )
   const selected = useMemo(() => items.find((i) => i.id === subject) ?? null, [items, subject])
 
@@ -118,7 +130,7 @@ export function SearchForm({
           setSubmitted(true)
           if (noLessons || locationMissing) return
           onSearch({
-            subject,
+            subject: searchSubject,
             delivery: effectiveDelivery,
             location: needsLocation && location.trim() ? location.trim() : null,
             radius: needsLocation && location.trim() ? radius : null,
@@ -135,19 +147,20 @@ export function SearchForm({
               // new type offers it.
               const next = item ? String(item.id) : null
               setSubject(next)
-              if (delivery && !modesFor(serviceIdsFor(services, next)).includes(delivery)) {
+              const forSearch = next === ALL_SUBJECTS ? null : next
+              if (delivery && !modesFor(serviceIdsFor(services, forSearch)).includes(delivery)) {
                 setDelivery(null)
               }
             }}
-            placeholder={config.get_text('apt_service_placeholder')}
+            placeholder={config.get_text('apt_service_choose')}
           />
         </div>
 
 
         {noLessons && (
           <Alert variant="warning">
-            {selected
-              ? config.get_text('apt_no_service_lessons', { service: selected.label })
+            {searchSubject
+              ? config.get_text('apt_no_service_lessons', { service: searchSubject })
               : config.get_text('apt_no_lessons_any')}
           </Alert>
         )}

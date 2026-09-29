@@ -12,7 +12,6 @@ import type { ApiError } from '@/api/client'
 import { recordMockBooking } from '@/api/mock'
 import { useServices } from '@/api/queries'
 import { Alert } from '@/components/ui/Alert'
-import { ChevronLeftIcon } from '@/components/ui/Icons'
 import { FlowLayout } from './FlowLayout'
 import { BookingSummary, SummaryRail } from './SummaryRail'
 import { GuestBookingForm, type GuestDetails } from './GuestBookingForm'
@@ -178,19 +177,13 @@ export function BookingPanel({
 
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
-      {step !== 'confirmed' && (
-        <button
-          type="button"
-          onClick={onBack}
-          className="tw:self-start tw:inline-flex tw:items-center tw:gap-1.5 tw:text-sm tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
-        >
-          <ChevronLeftIcon className="tw:w-3 tw:h-3" />
-          {config.get_text('apt_back_to_calendar')}
-        </button>
-      )}
-
       <FlowLayout
         stepId={step}
+        back={
+          step !== 'confirmed'
+            ? { label: config.get_text('apt_back_to_calendar'), onClick: onBack }
+            : undefined
+        }
         title={step === 'confirmed' ? config.get_text('apt_confirmed_title') : undefined}
         intro={intros[step]}
         includePayment={paymentRequired && amount > 0}

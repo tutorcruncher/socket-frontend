@@ -233,22 +233,11 @@ export function BookingSummary({
   )
 }
 
-/** Service photo with a tinted fallback so an offline demo never shows a broken image. */
+/** Service photo, when the tenant has set one; nothing otherwise (a placeholder
+ *  block would be most of what parents see, since few services have a photo). */
 function RailPhoto({ service }: { service: Service }) {
   const [failed, setFailed] = useState(false)
-  if (!service.photo || failed) {
-    return (
-      <div
-        aria-hidden="true"
-        className="tw:w-full tw:aspect-[4/3] tw:rounded-lg tw:flex tw:items-center tw:justify-center"
-        style={{ background: `${service.colour}22` }}
-      >
-        <span className="tw:text-4xl tw:font-semibold tw:font-heading" style={{ color: service.colour }}>
-          {service.name.charAt(0).toUpperCase()}
-        </span>
-      </div>
-    )
-  }
+  if (!service.photo || failed) return null
   return (
     <img
       src={service.photo}
