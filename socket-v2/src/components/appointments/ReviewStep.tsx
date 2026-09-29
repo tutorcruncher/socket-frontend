@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useConfig } from '@/config/context'
 import { Button } from '@/components/ui/Button'
 import { Alert } from '@/components/ui/Alert'
@@ -7,12 +7,15 @@ import { Alert } from '@/components/ui/Alert'
  * Review + consent, shown before payment. Taking money without showing the
  * cancellation policy and getting explicit acceptance is a legal risk, so this step
  * gates the payment step rather than being optional. The order itself is summarised
- * in the flow's left-hand rail, so this step only carries policy + consent.
+ * in the flow's left-hand rail on wide screens; on phones the rail sits below the
+ * step, so `summary` repeats it here where "check the details" can be acted on.
  */
 export function ReviewStep({
+  summary,
   onBack,
   onContinue,
 }: {
+  summary?: ReactNode
   onBack: () => void
   onContinue: () => void
 }) {
@@ -34,6 +37,12 @@ export function ReviewStep({
 
   return (
     <form onSubmit={submit} className="tw:flex tw:flex-col tw:gap-4">
+      {summary && (
+        <div className="tw:lg:hidden tw:bg-content tw:border tw:border-default tw:rounded-lg tw:p-4">
+          {summary}
+        </div>
+      )}
+
       {policy && (
         <div>
           <h3 className="tw:text-base tw:font-medium tw:font-heading tw:mb-1">

@@ -121,40 +121,48 @@ export function AccountStep({
 
       {result === 'existing' && (
         <div className="tw:flex tw:flex-col tw:gap-3">
-          <Alert variant="info">{config.get_text('apt_account_found')}</Alert>
+          <Alert variant="info">
+            {config.get_text('apt_account_found', { email: email.trim() })}
+          </Alert>
           <Button onClick={auth.signin} className="tw:py-2.5">
             {config.get_text('apt_signin_to_book')}
           </Button>
-          <button
-            type="button"
-            onClick={() => {
-              setResult(null)
-              setEmail('')
-            }}
-            className="tw:text-sm tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
-          >
-            {config.get_text('apt_use_different_email')}
-          </button>
+          <ResultLinks onRetry={() => setResult(null)} onSkip={onContinue} />
         </div>
       )}
 
       {result === 'new' && (
         <div className="tw:flex tw:flex-col tw:gap-3">
-          <Alert variant="info">{config.get_text('apt_account_not_found')}</Alert>
+          <Alert variant="info">
+            {config.get_text('apt_account_not_found', { email: email.trim() })}
+          </Alert>
           <Button onClick={onContinue} className="tw:py-2.5">
             {config.get_text('apt_continue_as_guest')}
           </Button>
-          <button
-            type="button"
-            onClick={() => {
-              setResult(null)
-              setEmail('')
-            }}
-            className="tw:text-sm tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
-          >
-            {config.get_text('apt_use_different_email')}
-          </button>
+          <ResultLinks onRetry={() => setResult(null)} />
         </div>
+      )}
+    </div>
+  )
+}
+
+/**
+ * Ways out of a lookup result. The typed email is kept so a typo is a quick fix,
+ * and a client who can't sign in can still skip rather than being stuck.
+ */
+function ResultLinks({ onRetry, onSkip }: { onRetry: () => void; onSkip?: () => void }) {
+  const config = useConfig()
+  const link =
+    'tw:text-sm tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link'
+  return (
+    <div className="tw:flex tw:flex-wrap tw:justify-center tw:gap-x-4 tw:gap-y-1">
+      <button type="button" onClick={onRetry} className={link}>
+        {config.get_text('apt_use_different_email')}
+      </button>
+      {onSkip && (
+        <button type="button" onClick={onSkip} className={link}>
+          {config.get_text('apt_skip_account_check')}
+        </button>
       )}
     </div>
   )

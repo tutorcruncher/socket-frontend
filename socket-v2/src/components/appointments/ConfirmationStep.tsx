@@ -38,7 +38,7 @@ export function ConfirmationStep({
 
       {confirmation.amount_paid > 0 && (
         <div className="tw:text-sm">
-          <span className="tw:text-muted-dark">{config.get_text('apt_total_due')}: </span>
+          <span className="tw:text-muted-dark">{config.get_text('apt_paid')}: </span>
           <span className="tw:font-semibold">{config.format_money(confirmation.amount_paid)}</span>
         </div>
       )}

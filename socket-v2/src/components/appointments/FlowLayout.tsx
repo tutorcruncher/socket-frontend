@@ -22,6 +22,7 @@ export function FlowLayout({
   intro,
   headerAside,
   rail,
+  railOnMobile = true,
   includePayment,
   children,
 }: {
@@ -31,6 +32,8 @@ export function FlowLayout({
   headerAside?: ReactNode
   /** Summary sidebar; omit to let the step content span the full width. */
   rail?: ReactNode
+  /** False hides the rail below `lg`, for steps that carry their own summary. */
+  railOnMobile?: boolean
   /** Whether a payment step exists for this booking; defaults to the tenant config. */
   includePayment?: boolean
   children: ReactNode
@@ -74,7 +77,12 @@ export function FlowLayout({
   return (
     <div className="tw:grid tw:gap-4 tw:lg:gap-6 tw:lg:grid-cols-[minmax(300px,360px)_minmax(0,1fr)] tw:items-start">
       {/* On mobile the step comes first: the summary is context, not the task. */}
-      <aside className="tw:order-2 tw:lg:order-1 tw:bg-content tw:border tw:border-default tw:rounded-xl tw:p-5 tw:lg:sticky tw:lg:top-4">
+      <aside
+        className={cx(
+          'tw:order-2 tw:lg:order-1 tw:bg-content tw:border tw:border-default tw:rounded-xl tw:p-5 tw:lg:sticky tw:lg:top-4',
+          !railOnMobile && 'tw:hidden tw:lg:block',
+        )}
+      >
         {rail}
       </aside>
       {section}

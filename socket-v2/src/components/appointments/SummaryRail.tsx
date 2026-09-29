@@ -4,6 +4,7 @@ import type { Appointment, DeliveryMode, Service } from '@/api/types'
 import { deliveryLabelKey } from '@/lib/delivery'
 import { Markdown } from '@/components/ui/Markdown'
 import { CheckIcon } from '@/components/ui/Icons'
+import { cx } from '@/lib/utils'
 
 /**
  * Left-hand booking summary. Starts as a service card (photo, blurb, key facts)
@@ -19,6 +20,8 @@ export function SummaryRail({
   amount,
   showTotal,
   onChangeSearch,
+  onChangeStudent,
+  onChangeTime,
 }: {
   service: Service | null
   /** The chosen slot; absent while the visitor is still on the calendar. */
@@ -32,6 +35,9 @@ export function SummaryRail({
   amount?: number | null
   showTotal?: boolean
   onChangeSearch?: () => void
+  /** Edit links on the summary rows, offered once the checkout is under way. */
+  onChangeStudent?: () => void
+  onChangeTime?: () => void
 }) {
   const config = useConfig()
 
@@ -41,7 +47,6 @@ export function SummaryRail({
 
   const spacesAvailable =
     apt == null || apt.attendees_max === null ? null : apt.attendees_max - apt.attendees_count
-  const sameDay = apt ? apt.start.substring(0, 10) === apt.finish.substring(0, 10) : true
 
   // Key facts, checkmark-listed like a product card.
   const facts: string[] = []
@@ -55,26 +60,7 @@ export function SummaryRail({
   }
   if (apt) facts.push(config.get_text('spaces', { spaces: spacesAvailable }))
 
-  const aptLocation =
-    apt && apt.delivery !== 'online' ? (apt.address?.pretty ?? apt.location ?? null) : null
-
-  const price = apt?.price ?? null
-  const rows: Array<{ label: string; value: string }> = []
-  if (apt) {
-    rows.push({
-      label: config.get_text('apt_summary_date'),
-      value: sameDay
-        ? config.format_dt(apt.start, 'full')
-        : `${config.format_dt(apt.start, 'full')} – ${config.format_dt(apt.finish, 'full')}`,
-    })
-  }
-  if (aptLocation) rows.push({ label: config.get_text('apt_summary_location'), value: aptLocation })
-  else if (!apt && location)
-    rows.push({ label: config.get_text('apt_summary_location'), value: location })
-  if (studentName)
-    rows.push({ label: config.get_text('apt_summary_student'), value: studentName })
-  if (price !== null)
-    rows.push({ label: config.get_text('apt_summary_price'), value: config.format_money(price) })
+  const searchLocation = !apt && location ? location : null
 
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
@@ -120,21 +106,16 @@ export function SummaryRail({
         </ul>
       )}
 
-      {rows.length > 0 && (
-        <dl className="tw:flex tw:flex-col tw:gap-2 tw:pt-3 tw:border-t tw:border-default tw:text-sm">
-          {rows.map((r) => (
-            <div key={r.label} className="tw:flex tw:justify-between tw:gap-3">
-              <dt className="tw:text-muted-dark tw:shrink-0">{r.label}</dt>
-              <dd className="tw:text-right tw:min-w-0">{r.value}</dd>
-            </div>
-          ))}
-          {showTotal && amount != null && (
-            <div className="tw:flex tw:justify-between tw:gap-3 tw:pt-2 tw:border-t tw:border-default">
-              <dt className="tw:font-medium">{config.get_text('apt_total_due')}</dt>
-              <dd className="tw:font-semibold">{config.format_money(amount)}</dd>
-            </div>
-          )}
-        </dl>
+      {(apt || searchLocation) && (
+        <BookingSummary
+          apt={apt ?? null}
+          location={searchLocation}
+          studentName={studentName}
+          amount={showTotal ? amount : null}
+          onChangeStudent={onChangeStudent}
+          onChangeTime={onChangeTime}
+          className="tw:pt-3 tw:border-t tw:border-default"
+        />
       )}
 
       {apt && (
@@ -153,6 +134,90 @@ export function SummaryRail({
         </button>
       )}
     </div>
+  )
+}
+
+/**
+ * The booking as a label/value list: date, venue, student, price and total. Used
+ * in the rail, and inside the Review step on phones where the rail is out of view.
+ * `lesson` names the lesson when there is no heading above to do so.
+ */
+export function BookingSummary({
+  apt,
+  lesson,
+  location,
+  studentName,
+  amount,
+  onChangeStudent,
+  onChangeTime,
+  className,
+}: {
+  apt: Appointment | null
+  lesson?: string | null
+  location?: string | null
+  studentName?: string | null
+  /** Total due now; omitted until the checkout is under way. */
+  amount?: number | null
+  onChangeStudent?: () => void
+  onChangeTime?: () => void
+  className?: string
+}) {
+  const config = useConfig()
+  const sameDay = apt ? apt.start.substring(0, 10) === apt.finish.substring(0, 10) : true
+  const aptLocation =
+    apt && apt.delivery !== 'online' ? (apt.address?.pretty ?? apt.location ?? null) : null
+
+  const rows: Array<{ label: string; value: string; onChange?: () => void }> = []
+  if (lesson) rows.push({ label: config.get_text('apt_summary_lesson'), value: lesson })
+  if (apt) {
+    rows.push({
+      label: config.get_text('apt_summary_date'),
+      value: sameDay
+        ? config.format_dt(apt.start, 'full')
+        : `${config.format_dt(apt.start, 'full')} – ${config.format_dt(apt.finish, 'full')}`,
+      onChange: onChangeTime,
+    })
+  }
+  const venue = aptLocation ?? location
+  if (venue) rows.push({ label: config.get_text('apt_summary_location'), value: venue })
+  if (studentName)
+    rows.push({
+      label: config.get_text('apt_summary_student'),
+      value: studentName,
+      onChange: onChangeStudent,
+    })
+  if (apt && apt.price !== null)
+    rows.push({ label: config.get_text('apt_summary_price'), value: config.format_money(apt.price) })
+
+  return (
+    <dl className={cx('tw:flex tw:flex-col tw:gap-2 tw:text-sm', className)}>
+      {rows.map((r) => (
+        <div key={r.label} className="tw:flex tw:justify-between tw:gap-3">
+          <dt className="tw:text-muted-dark tw:shrink-0">{r.label}</dt>
+          <dd className="tw:text-right tw:min-w-0">
+            {r.value}
+            {r.onChange && (
+              <>
+                {' '}
+                <button
+                  type="button"
+                  onClick={r.onChange}
+                  className="tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
+                >
+                  {config.get_text('apt_change_search')}
+                </button>
+              </>
+            )}
+          </dd>
+        </div>
+      ))}
+      {amount != null && (
+        <div className="tw:flex tw:justify-between tw:gap-3 tw:pt-2 tw:border-t tw:border-default">
+          <dt className="tw:font-medium">{config.get_text('apt_total_due')}</dt>
+          <dd className="tw:font-semibold">{config.format_money(amount)}</dd>
+        </div>
+      )}
+    </dl>
   )
 }
 

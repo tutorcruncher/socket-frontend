@@ -14,7 +14,7 @@ import { useServices } from '@/api/queries'
 import { Alert } from '@/components/ui/Alert'
 import { ChevronLeftIcon } from '@/components/ui/Icons'
 import { FlowLayout } from './FlowLayout'
-import { SummaryRail } from './SummaryRail'
+import { BookingSummary, SummaryRail } from './SummaryRail'
 import { GuestBookingForm, type GuestDetails } from './GuestBookingForm'
 import { ReviewStep } from './ReviewStep'
 import { PaymentStep, type PaymentDetails } from './PaymentStep'
@@ -162,6 +162,11 @@ export function BookingPanel({
     payment: config.get_text('apt_step_payment_intro'),
   }
   const summaryStarted = step !== 'details'
+  // Edit links appear once there is something to edit; on the details step the
+  // form itself is the edit, and after confirmation nothing can change.
+  const editable = step === 'review' || step === 'payment'
+  const onChangeStudent = editable ? () => setStep('details') : undefined
+  const onChangeTime = editable ? onBack : undefined
 
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
@@ -180,15 +185,22 @@ export function BookingPanel({
         stepId={step}
         intro={intros[step]}
         includePayment={paymentRequired && amount > 0}
+        // The confirmation is the record of the booking; a rail beside it would
+        // repeat it and show stale "spaces available".
         rail={
-          <SummaryRail
-            service={service}
-            apt={apt}
-            studentName={summaryStarted ? studentName : null}
-            amount={amount}
-            showTotal={summaryStarted}
-          />
+          step === 'confirmed' ? undefined : (
+            <SummaryRail
+              service={service}
+              apt={apt}
+              studentName={summaryStarted ? studentName : null}
+              amount={amount}
+              showTotal={summaryStarted}
+              onChangeStudent={onChangeStudent}
+              onChangeTime={onChangeTime}
+            />
+          )
         }
+        railOnMobile={step !== 'review'}
       >
         {error && step !== 'payment' && <Alert variant="danger">{error}</Alert>}
 
@@ -211,6 +223,16 @@ export function BookingPanel({
 
         {step === 'review' && (
           <ReviewStep
+            summary={
+              <BookingSummary
+                apt={apt}
+                lesson={service?.name ?? apt.service_name}
+                studentName={studentName}
+                amount={amount}
+                onChangeStudent={onChangeStudent}
+                onChangeTime={onChangeTime}
+              />
+            }
             onBack={() => setStep('details')}
             onContinue={() => {
               if (paymentRequired && amount > 0) setStep('payment')

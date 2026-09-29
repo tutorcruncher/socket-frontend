@@ -110,8 +110,9 @@ export function GuestBookingForm({
         required
       />
 
+      {/* Review and payment still follow, so this must not read as the final step. */}
       <Button type="submit" disabled={submitting} className="tw:py-2.5 tw:mt-1">
-        {config.get_text('apt_confirm_booking')}
+        {config.get_text('apt_details_continue')}
       </Button>
 
       <div className="tw:text-sm tw:text-muted-dark tw:text-center">

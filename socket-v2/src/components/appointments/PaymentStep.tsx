@@ -56,7 +56,8 @@ export function PaymentStep({
   const [useSaved, setUseSaved] = useState(savedCards.length > 0)
   const [savedId, setSavedId] = useState(savedCards[0]?.id ?? '')
   const [card, setCard] = useState({ number: '', expiry: '', cvc: '', name: '' })
-  const [saveCard, setSaveCard] = useState(true)
+  // Opt-in: storing a card is the client's choice, never a default.
+  const [saveCard, setSaveCard] = useState(false)
   const [localError, setLocalError] = useState<string | null>(null)
 
   const submit = (e: React.FormEvent) => {
