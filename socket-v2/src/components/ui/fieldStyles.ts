@@ -11,7 +11,7 @@
  * so the two never collide on the same element.
  */
 export const FIELD_BASE =
-  'tw:px-3 tw:py-2.5 tw:text-sm tw:bg-white tw:border tw:rounded-lg tw:shadow-sm ' +
+  'tcs-input tw:px-3 tw:py-2.5 tw:text-sm tw:bg-white tw:border tw:rounded-lg tw:shadow-sm ' +
   'tw:transition-colors tw:placeholder:text-muted tw:hover:border-muted ' +
   'tw:focus:outline-2 tw:focus:outline-offset-0 tw:focus:outline-link'
 

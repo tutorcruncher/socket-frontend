@@ -106,7 +106,7 @@ export function Combobox<T extends ComboboxItem>({
           }}
           onKeyDown={onKeyDown}
           className={cx(
-            'tw:w-full tw:pr-8 tw:py-2 tw:text-sm tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:placeholder:text-muted-dark tw:focus:outline-2 tw:focus:outline-link',
+            'tcs-input tw:w-full tw:pr-8 tw:py-2 tw:text-sm tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:placeholder:text-muted-dark tw:focus:outline-2 tw:focus:outline-link',
             open ? 'tw:pl-9' : 'tw:pl-3',
           )}
         />

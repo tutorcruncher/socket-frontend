@@ -5,7 +5,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'wh
 export type ButtonSize = 'default' | 'small' | 'x_small' | 'icon'
 
 const BASE =
-  'tw:rounded-lg tw:font-medium tw:transition-colors tw:inline-flex tw:items-center ' +
+  'tcs-btn tw:rounded-lg tw:font-medium tw:transition-colors tw:inline-flex tw:items-center ' +
   'tw:justify-center tw:gap-2 tw:cursor-pointer tw:flex-shrink-0 tw:disabled:opacity-50 ' +
   'tw:disabled:cursor-not-allowed tw:disabled:active:translate-y-0 tw:active:translate-y-px ' +
   'tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link tw:focus-visible:outline-offset-2'

@@ -497,17 +497,7 @@ body {
    ============================================================ */
 .hp-band {
   background: var(--hp-paper-2);
-  transition: background 0.2s ease;
   padding-block: clamp(2.5rem, 5vw, 4rem) clamp(3rem, 6vw, 4.5rem);
-}
-
-/* Demo only: a dark host surface behind the widget's dark theme. */
-.hp-band--dark {
-  background: oklch(17% 0.02 292);
-}
-.hp-band--dark .hp-embed {
-  background: oklch(21% 0.02 292);
-  box-shadow: none;
 }
 
 /* The widget's own surface: a single containment layer. The widget draws its

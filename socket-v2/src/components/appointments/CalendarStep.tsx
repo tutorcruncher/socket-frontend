@@ -161,7 +161,7 @@ function MonthGrid({
   const nearlyOver = month === thisMonth && daysLeft <= 7
 
   return (
-    <div className="tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:p-4">
+    <div className="tcs-calendar tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:p-4">
       <div className="tw:flex tw:items-center tw:justify-between tw:mb-3">
         <button
           type="button"
@@ -213,7 +213,7 @@ function MonthGrid({
                 available ? `${dayNum}, ${config.get_text('apt_day_lessons', { count: open })}` : undefined
               }
               className={cx(
-                'tw:flex tw:flex-col tw:items-center tw:justify-center tw:gap-0.5 tw:aspect-square tw:rounded-md tw:text-sm tw:transition-colors tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link',
+                'tcs-day tw:flex tw:flex-col tw:items-center tw:justify-center tw:gap-0.5 tw:aspect-square tw:rounded-md tw:text-sm tw:transition-colors tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link',
                 selected
                   ? 'tw:bg-primary tw:text-white tw:font-semibold'
                   : available
@@ -349,7 +349,7 @@ function DaySlots({
                     aria-pressed={active}
                     onClick={() => setTime(active ? null : g.start)}
                     className={cx(
-                      'tw:inline-flex tw:items-baseline tw:gap-1.5 tw:px-3 tw:py-1.5 tw:rounded-lg tw:border tw:text-sm tw:tabular-nums tw:whitespace-nowrap tw:transition-colors tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link',
+                      'tcs-time tw:inline-flex tw:items-baseline tw:gap-1.5 tw:px-3 tw:py-1.5 tw:rounded-lg tw:border tw:text-sm tw:tabular-nums tw:whitespace-nowrap tw:transition-colors tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link',
                       active
                         ? 'tw:border-primary tw:bg-primary tw:text-white tw:cursor-pointer'
                         : 'tw:border-default tw:bg-white tw:hover:bg-hover tw:cursor-pointer',
@@ -425,7 +425,7 @@ function SlotRow({
 
   return (
     // Narrow: price and Book wrap onto their own line under the lesson details.
-    <div className="tw:flex tw:flex-wrap tw:@lg:flex-nowrap tw:items-center tw:gap-x-3 tw:gap-y-2 tw:p-3 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm">
+    <div className="tcs-slot tw:flex tw:flex-wrap tw:@lg:flex-nowrap tw:items-center tw:gap-x-3 tw:gap-y-2 tw:p-3 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm">
       <div className="tw:shrink-0 tw:text-center tw:w-18">
         <div className="tw:font-semibold tw:tabular-nums tw:whitespace-nowrap">{config.format_dt(apt.start, 'time')}</div>
         <div className="tw:text-xs tw:text-muted-dark">

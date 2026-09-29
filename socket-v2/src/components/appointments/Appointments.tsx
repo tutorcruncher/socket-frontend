@@ -167,7 +167,7 @@ export function Appointments() {
   // a slot is chosen.
   const searchChips = (
     <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-2">
-      <span className="tw:inline-flex tw:items-center tw:gap-2 tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm tw:font-medium">
+      <span className="tcs-chip tw:inline-flex tw:items-center tw:gap-2 tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm tw:font-medium">
         {chipColour && (
           <span
             className="tw:w-2.5 tw:h-2.5 tw:rounded-full tw:shrink-0"
@@ -178,12 +178,12 @@ export function Appointments() {
       </span>
 
       {search.delivery && (
-        <span className="tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm">
+        <span className="tcs-chip tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm">
           {config.get_text(deliveryLabelKey(search.delivery))}
         </span>
       )}
       {search.location && (
-        <span className="tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm">
+        <span className="tcs-chip tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm">
           {searchedLocation?.pretty ?? search.location}
           {search.radius ? ` · ${formatDistanceShort(config, search.radius)}` : ''}
         </span>

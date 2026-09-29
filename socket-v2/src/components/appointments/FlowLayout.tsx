@@ -61,7 +61,7 @@ export function FlowLayout({
   )
 
   const section = (
-    <section className="tw:order-1 tw:lg:order-2 tw:bg-white tw:border tw:border-default tw:rounded-xl tw:shadow-sm tw:p-4 tw:sm:p-6 tw:flex tw:flex-col tw:gap-5">
+    <section className="tcs-panel tw:order-1 tw:lg:order-2 tw:bg-white tw:border tw:border-default tw:rounded-xl tw:shadow-sm tw:p-4 tw:sm:p-6 tw:flex tw:flex-col tw:gap-5">
       {back && (
         <button
           type="button"
@@ -96,7 +96,7 @@ export function FlowLayout({
       {/* On mobile the step comes first: the summary is context, not the task. */}
       <aside
         className={cx(
-          'tw:order-2 tw:lg:order-1 tw:bg-content tw:border tw:border-default tw:rounded-xl tw:p-5 tw:lg:sticky tw:lg:top-4',
+          'tcs-rail tw:order-2 tw:lg:order-1 tw:bg-content tw:border tw:border-default tw:rounded-xl tw:p-5 tw:lg:sticky tw:lg:top-4',
           !railOnMobile && 'tw:hidden tw:lg:block',
         )}
       >
@@ -109,7 +109,7 @@ export function FlowLayout({
 
 function Stepper({ steps, current }: { steps: FlowStep[]; current: number }) {
   return (
-    <ol className="tw:flex">
+    <ol className="tcs-stepper tw:flex">
       {steps.map((s, i) => {
         const done = i < current
         const active = i === current
@@ -124,7 +124,7 @@ function Stepper({ steps, current }: { steps: FlowStep[]; current: number }) {
               <span
                 aria-hidden="true"
                 className={cx(
-                  'tw:absolute tw:top-[15px] tw:left-[calc(-50%+22px)] tw:right-[calc(50%+22px)]',
+                  'tcs-stepper-line tw:absolute tw:top-[15px] tw:left-[calc(-50%+22px)] tw:right-[calc(50%+22px)]',
                   // No `bg-default` token exists; inactive lines borrow the border colour.
                   done || active
                     ? 'tw:h-0.5 tw:bg-primary'
@@ -134,7 +134,7 @@ function Stepper({ steps, current }: { steps: FlowStep[]; current: number }) {
             )}
             <span
               className={cx(
-                'tw:flex tw:items-center tw:justify-center tw:w-8 tw:h-8 tw:rounded-full tw:text-sm tw:font-semibold tw:shrink-0',
+                'tcs-stepper-dot tw:flex tw:items-center tw:justify-center tw:w-8 tw:h-8 tw:rounded-full tw:text-sm tw:font-semibold tw:shrink-0',
                 done || active
                   ? 'tw:bg-primary tw:text-white'
                   : 'tw:bg-white tw:border tw:border-default tw:text-muted-dark',

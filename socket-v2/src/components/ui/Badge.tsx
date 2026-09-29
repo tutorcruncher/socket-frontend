@@ -12,7 +12,7 @@ const VARIANTS: Record<BadgeVariant, string> = {
 }
 
 const BASE =
-  'tw:inline-flex tw:items-center tw:rounded-full tw:px-2.5 tw:py-0.5 tw:text-xs tw:font-medium'
+  'tcs-badge tw:inline-flex tw:items-center tw:rounded-full tw:px-2.5 tw:py-0.5 tw:text-xs tw:font-medium'
 
 export function Badge({
   children,

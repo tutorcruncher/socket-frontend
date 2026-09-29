@@ -117,7 +117,7 @@ export function SearchForm({
   const locationMissing = locationRequired && !location.trim()
 
   return (
-    <div className="tw:max-w-lg tw:mx-auto tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:p-6">
+    <div className="tcs-card tw:max-w-lg tw:mx-auto tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:p-6">
       <h2 className="tw:text-xl tw:font-medium tw:font-heading tw:mb-1">
         {config.get_text('apt_search_title')}
       </h2>
@@ -249,7 +249,7 @@ export function SearchForm({
                 aria-required={locationRequired}
                 aria-invalid={submitted && locationMissing}
                 className={cx(
-                  'tw:w-full tw:pl-9 tw:pr-3 tw:py-2 tw:text-sm tw:bg-white tw:border tw:rounded-lg tw:shadow-sm tw:placeholder:text-muted-dark tw:focus:outline-2 tw:focus:outline-link',
+                  'tcs-input tcs-input-icon tw:w-full tw:pl-9 tw:pr-3 tw:py-2 tw:text-sm tw:bg-white tw:border tw:rounded-lg tw:shadow-sm tw:placeholder:text-muted-dark tw:focus:outline-2 tw:focus:outline-link',
                   submitted && locationMissing ? 'tw:border-error' : 'tw:border-default',
                 )}
               />

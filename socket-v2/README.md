@@ -68,7 +68,7 @@ console warning, so they keep working (and stop 404-ing on refresh).
 
 ## Themes
 
-The widget ships four visual variants, chosen with `theme` in the embed config:
+The widget ships three visual variants, chosen with `theme` in the embed config:
 
 ```js
 window.socket('<public key>', { mode: 'appointments', theme: 'minimal' })
@@ -77,9 +77,8 @@ window.socket('<public key>', { mode: 'appointments', theme: 'minimal' })
 | Theme     | Intended for                                                                 |
 | --------- | ---------------------------------------------------------------------------- |
 | `classic` | The TutorCruncher look (default): Inter, navy, bordered cards, soft shadows |
-| `minimal` | Any host page: inherits the host font, near-black ink, hairlines, no shadows |
+| `minimal` | Any host page: no boxes, inherits the host font, rules between sections, underline inputs |
 | `soft`    | Consumer sites: large radii, pill buttons, tinted lavender surfaces          |
-| `dark`    | Dark host pages: dark surfaces with an indigo accent                         |
 
 Themes are CSS variable overrides in `src/styles/themes.css`, keyed on a
 `data-tcs-theme` attribute that the embed sets on the mount element (and on the

@@ -58,7 +58,7 @@ function showTab(id: string) {
 /**
  * Switch theme: every mounted widget is torn down (a fresh panel element, so
  * preact's render tree goes with it) and the visible tab mounts again with the
- * new theme. The host band goes dark behind the dark theme.
+ * new theme.
  */
 function setTheme(next: SocketTheme) {
   theme = next
@@ -66,7 +66,6 @@ function setTheme(next: SocketTheme) {
   for (const btn of document.querySelectorAll<HTMLButtonElement>('#themes button')) {
     btn.setAttribute('aria-selected', String(btn.dataset.theme === next))
   }
-  document.querySelector('.hp-band')?.classList.toggle('hp-band--dark', next === 'dark')
   for (const id of initialised) {
     const panel = document.getElementById(`panel-${id}`)
     panel?.replaceWith(panel.cloneNode(false))

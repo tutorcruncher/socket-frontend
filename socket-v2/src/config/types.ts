@@ -4,8 +4,8 @@ import type { PaymentConfig } from '@/api/types'
 export type SocketMode = 'tutors' | 'enquiry' | 'enquiry-modal' | 'appointments'
 export type RouterMode = 'hash' | 'memory'
 /** Visual variant. `classic` is the TutorCruncher look; the others adapt to the host page. */
-export type SocketTheme = 'classic' | 'minimal' | 'soft' | 'dark'
-export const THEMES: SocketTheme[] = ['classic', 'minimal', 'soft', 'dark']
+export type SocketTheme = 'classic' | 'minimal' | 'soft'
+export const THEMES: SocketTheme[] = ['classic', 'minimal', 'soft']
 
 /** A translatable string: either a literal, or a function of replacement values. */
 export type Message = string | ((replacements: Record<string, unknown>) => string)

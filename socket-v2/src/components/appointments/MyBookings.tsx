@@ -65,7 +65,7 @@ export function MyBookings({ auth }: { auth: AppointmentAuth }) {
       {bookings.map((b) => (
         <div
           key={b.booking_id}
-          className="tw:flex tw:items-start tw:gap-3 tw:p-3 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm"
+          className="tcs-slot tw:flex tw:items-start tw:gap-3 tw:p-3 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm"
         >
           {b.contractor && (
             <Photo
