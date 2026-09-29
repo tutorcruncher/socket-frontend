@@ -19,6 +19,7 @@ interface FlowStep {
  */
 export function FlowLayout({
   stepId,
+  title,
   intro,
   headerAside,
   rail,
@@ -27,6 +28,8 @@ export function FlowLayout({
   children,
 }: {
   stepId: FlowStepId
+  /** Replaces the step label as the heading, e.g. "Your lesson is booked". */
+  title?: string
   intro?: string
   /** Shown beside the step title (wrapping below it when narrow), e.g. search chips. */
   headerAside?: ReactNode
@@ -62,7 +65,7 @@ export function FlowLayout({
 
       <header className="tw:border-t tw:border-default tw:pt-5 tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-x-6 tw:gap-y-3">
         <div className="tw:min-w-0">
-          <h2 className="tw:text-2xl tw:font-medium tw:font-heading">{steps[idx].label}</h2>
+          <h2 className="tw:text-2xl tw:font-medium tw:font-heading">{title ?? steps[idx].label}</h2>
           {intro && <p className="tw:text-sm tw:text-muted-dark tw:mt-1">{intro}</p>}
         </div>
         {headerAside}
@@ -126,10 +129,13 @@ function Stepper({ steps, current }: { steps: FlowStep[]; current: number }) {
             >
               {done ? <CheckIcon className="tw:w-3.5 tw:h-3.5" /> : i + 1}
             </span>
+            {/* Phones only have room for the current step's label. */}
             <span
               className={cx(
-                'tw:hidden tw:sm:block tw:text-xs tw:text-center tw:leading-tight tw:px-1',
-                active ? 'tw:text-primary tw:font-semibold' : 'tw:text-muted-dark',
+                'tw:text-xs tw:text-center tw:leading-tight tw:px-1',
+                active
+                  ? 'tw:block tw:text-primary tw:font-semibold'
+                  : 'tw:hidden tw:sm:block tw:text-muted-dark',
               )}
             >
               {s.label}

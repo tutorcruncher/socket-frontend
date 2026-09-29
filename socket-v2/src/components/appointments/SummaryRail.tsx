@@ -5,6 +5,7 @@ import { deliveryLabelKey } from '@/lib/delivery'
 import { Markdown } from '@/components/ui/Markdown'
 import { CheckIcon } from '@/components/ui/Icons'
 import { cx } from '@/lib/utils'
+import { Photo } from '@/components/shared/Photo'
 
 /**
  * Left-hand booking summary. Starts as a service card (photo, blurb, key facts)
@@ -42,7 +43,8 @@ export function SummaryRail({
   const config = useConfig()
 
   const name = service?.name ?? apt?.service_name ?? config.get_text('apt_service_placeholder')
-  const colour = service?.colour ?? apt?.service_colour ?? null
+  const tutor = service?.contractor ?? null
+  const colour = tutor ? null : (service?.colour ?? apt?.service_colour ?? null)
   const extraAttrs = apt?.service_extra_attributes ?? service?.extra_attributes ?? []
 
   const spacesAvailable =
@@ -64,22 +66,32 @@ export function SummaryRail({
 
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
-      {service && <RailPhoto service={service} />}
+      {/* A lesson with a tutor leads with their face; otherwise the service photo. */}
+      {service && !tutor && <RailPhoto service={service} />}
 
-      <div>
-        <h2 className="tw:flex tw:items-center tw:gap-2 tw:text-xl tw:font-medium tw:font-heading">
-          {colour && (
-            <span
-              aria-hidden="true"
-              className="tw:w-2.5 tw:h-2.5 tw:rounded-full tw:shrink-0"
-              style={{ background: colour }}
-            />
-          )}
-          {name}
-        </h2>
-        {service?.description && (
-          <p className="tw:text-sm tw:text-muted-dark tw:mt-1.5">{service.description}</p>
+      <div className="tw:flex tw:items-start tw:gap-3">
+        {tutor && (
+          <Photo
+            src={tutor.photo ?? ''}
+            alt={tutor.name}
+            className="tw:w-14 tw:h-14 tw:rounded-full tw:overflow-hidden tw:shrink-0 tw:text-base"
+          />
         )}
+        <div className="tw:min-w-0">
+          <h2 className="tw:flex tw:items-center tw:gap-2 tw:text-xl tw:font-medium tw:font-heading">
+            {colour && (
+              <span
+                aria-hidden="true"
+                className="tw:w-2.5 tw:h-2.5 tw:rounded-full tw:shrink-0"
+                style={{ background: colour }}
+              />
+            )}
+            {name}
+          </h2>
+          {service?.description && (
+            <p className="tw:text-sm tw:text-muted-dark tw:mt-1.5">{service.description}</p>
+          )}
+        </div>
       </div>
 
       {extraAttrs.map((attr, i) => (

@@ -69,9 +69,7 @@ export function GuestBookingForm({
     // blocking submit, so our styled, tenant-customisable errors never render and
     // only the first offending field is reported.
     <form onSubmit={submit} noValidate className="tw:flex tw:flex-col tw:gap-4">
-      {/* The step heading comes from the flow shell; only the account note is ours. */}
-      <p className="tw:text-sm tw:text-muted-dark">{config.get_text('apt_guest_intro')}</p>
-
+      {/* The heading and intro come from the flow shell. */}
       <Field
         id={`tcs-${uid}-gb-name`}
         label={config.get_text('apt_your_name')}
@@ -99,6 +97,7 @@ export function GuestBookingForm({
         onChange={(v) => set('client_phone', v)}
         error={errors.client_phone}
         autoComplete="tel"
+        optional
       />
       <Field
         id={`tcs-${uid}-gb-student`}
@@ -138,6 +137,7 @@ function Field({
   help,
   type = 'text',
   required,
+  optional,
   autoComplete,
 }: {
   id: string
@@ -148,6 +148,8 @@ function Field({
   help?: string
   type?: string
   required?: boolean
+  /** Most fields are required, so the odd one out is what gets marked. */
+  optional?: boolean
   autoComplete?: string
 }) {
   const config = useConfig()
@@ -155,11 +157,12 @@ function Field({
     <div className="tw:flex tw:flex-col tw:gap-1">
       <label htmlFor={id} className={FIELD_LABEL}>
         {label}
-        {required && config.get_text('required')}
+        {optional && config.get_text('apt_optional')}
       </label>
       <input
         id={id}
         type={type}
+        aria-required={required}
         value={value}
         autoComplete={autoComplete}
         aria-invalid={!!error}

@@ -5,7 +5,8 @@ const locale = intlOptions.locale || 'en-US'
 export const browserTimezone = intlOptions.timeZone || 'UTC'
 
 const FORMAT_OPTIONS: Record<DateFormat, Intl.DateTimeFormatOptions> = {
-  full: { day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric' },
+  // Weekday included: for a lesson it is the first thing a parent checks.
+  full: { weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric' },
   month: { month: 'short' },
   /** Month + year: for review dates, where a bare month is ambiguous. */
   month_year: { month: 'short', year: 'numeric' },

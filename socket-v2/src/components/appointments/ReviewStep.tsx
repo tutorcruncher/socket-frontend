@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useConfig } from '@/config/context'
 import { Button } from '@/components/ui/Button'
-import { Alert } from '@/components/ui/Alert'
 
 /**
  * Review + consent, shown before payment. Taking money without showing the
@@ -62,12 +61,12 @@ export function ReviewStep({
         </div>
       )}
 
-      {error && <Alert variant="danger">{error}</Alert>}
-
       <label className="tw:flex tw:items-start tw:gap-2.5 tw:text-sm tw:cursor-pointer tw:select-none">
         <input
           type="checkbox"
           checked={accepted}
+          aria-invalid={!!error}
+          aria-describedby={error ? `tcs-${config.random_id}-terms-err` : undefined}
           onChange={(e) => {
             setAccepted(e.target.checked)
             if (e.target.checked) setError(null)
@@ -88,6 +87,11 @@ export function ReviewStep({
           )}
         </span>
       </label>
+      {error && (
+        <p id={`tcs-${config.random_id}-terms-err`} className="tw:text-xs tw:text-error tw:-mt-2">
+          {error}
+        </p>
+      )}
 
       <div className="tw:flex tw:gap-2 tw:pt-2 tw:border-t tw:border-default">
         <Button type="button" variant="secondary" onClick={onBack} className="tw:py-2.5">

@@ -8,10 +8,13 @@ import { downloadIcs } from '@/lib/ics'
 export function ConfirmationStep({
   apt,
   confirmation,
+  email,
   onDone,
 }: {
   apt: Appointment
   confirmation: BookingConfirmation
+  /** Where the confirmation went, when we know it. */
+  email: string | null
   onDone: () => void
 }) {
   const config = useConfig()
@@ -21,11 +24,9 @@ export function ConfirmationStep({
         <CheckIcon className="tw:w-5 tw:h-5 tw:text-success" />
       </div>
 
+      {/* The step heading already says the lesson is booked. */}
       <div>
-        <h3 className="tw:text-lg tw:font-medium tw:font-heading">
-          {config.get_text('apt_confirmed_title')}
-        </h3>
-        <p className="tw:text-sm tw:text-muted-dark tw:mt-1">
+        <p className="tw:text-sm tw:text-muted-dark">
           {config.get_text('apt_confirmed_desc', {
             student_name: confirmation.student_name,
             service_name: apt.service_name,
@@ -43,7 +44,11 @@ export function ConfirmationStep({
         </div>
       )}
 
-      <p className="tw:text-sm tw:text-muted-dark">{config.get_text('apt_confirmed_email')}</p>
+      <p className="tw:text-sm tw:text-muted-dark">
+        {email
+          ? config.get_text('apt_confirmed_email_to', { email })
+          : config.get_text('apt_confirmed_email')}
+      </p>
       {confirmation.account_created && (
         <p className="tw:text-sm tw:text-muted-dark">{config.get_text('apt_account_created')}</p>
       )}
@@ -64,7 +69,7 @@ export function ConfirmationStep({
             {config.get_text('apt_view_receipt')}
           </Button>
         )}
-        <Button onClick={onDone}>{config.get_text('apt_done')}</Button>
+        <Button onClick={onDone}>{config.get_text('apt_book_another')}</Button>
       </div>
     </div>
   )

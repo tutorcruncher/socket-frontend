@@ -23,6 +23,12 @@ import { SignedInStudentPicker } from './SignedInStudentPicker'
 
 type Step = 'details' | 'review' | 'payment' | 'confirmed'
 
+/** Minutes left on a held seat, never below 1 so the message stays sensible. */
+function holdMinutes(intent: BookingIntent | null): number {
+  if (!intent?.expires_at) return 10
+  return Math.max(1, Math.ceil((new Date(intent.expires_at).getTime() - Date.now()) / 60_000))
+}
+
 /**
  * Booking checkout. Everything happens inline on the host page:
  *
@@ -145,6 +151,7 @@ export function BookingPanel({
         address: apt.address,
         price: apt.price,
         can_cancel: true,
+        contractor: service?.contractor ?? null,
       })
       void auth.refreshAttendees()
     } catch (e) {
@@ -157,7 +164,8 @@ export function BookingPanel({
   }
 
   const intros: Partial<Record<Step, string>> = {
-    details: config.get_text('apt_step_details_intro'),
+    // Guests are also creating an account here, so their intro says so.
+    details: config.get_text(auth.session ? 'apt_step_details_intro' : 'apt_guest_intro'),
     review: config.get_text('apt_step_review_intro'),
     payment: config.get_text('apt_step_payment_intro'),
   }
@@ -183,6 +191,7 @@ export function BookingPanel({
 
       <FlowLayout
         stepId={step}
+        title={step === 'confirmed' ? config.get_text('apt_confirmed_title') : undefined}
         intro={intros[step]}
         includePayment={paymentRequired && amount > 0}
         // The confirmation is the record of the booking; a rail beside it would
@@ -243,7 +252,9 @@ export function BookingPanel({
 
         {step === 'payment' && (
           <>
-            <Alert variant="info">{config.get_text('apt_seat_held')}</Alert>
+            <p className="tw:text-sm tw:text-muted-dark">
+              {config.get_text('apt_seat_held', { minutes: holdMinutes(intentRef.current) })}
+            </p>
             <PaymentStep
               amount={amount}
               savedCards={savedCards}
@@ -259,7 +270,12 @@ export function BookingPanel({
         )}
 
         {step === 'confirmed' && confirmation && (
-          <ConfirmationStep apt={apt} confirmation={confirmation} onDone={onBack} />
+          <ConfirmationStep
+            apt={apt}
+            confirmation={confirmation}
+            email={guestRef.current?.client_email ?? null}
+            onDone={onBack}
+          />
         )}
       </FlowLayout>
     </div>

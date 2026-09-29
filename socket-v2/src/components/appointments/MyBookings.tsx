@@ -8,6 +8,7 @@ import { Alert } from '@/components/ui/Alert'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { DeliveryBadge } from './DeliveryBadge'
 import { CalendarPlusIcon, LocationIcon } from '@/components/ui/Icons'
+import { Photo } from '@/components/shared/Photo'
 import { downloadIcs } from '@/lib/ics'
 import type { Appointment } from '@/api/types'
 
@@ -22,12 +23,13 @@ export function MyBookings({ auth }: { auth: AppointmentAuth }) {
   const api = useApi()
   const [bookings, setBookings] = useState<ClientBooking[]>(() => getMockBookings())
   const [cancelling, setCancelling] = useState<string | null>(null)
+  // Booking awaiting a yes/no on cancellation; inline rather than a browser dialog.
+  const [confirming, setConfirming] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const cancel = async (b: ClientBooking) => {
-    if (!window.confirm(config.get_text('bookings_cancel_confirm', { student_name: b.student_name })))
-      return
+    setConfirming(null)
     setCancelling(b.booking_id)
     setError(null)
     try {
@@ -63,10 +65,16 @@ export function MyBookings({ auth }: { auth: AppointmentAuth }) {
       {bookings.map((b) => (
         <div
           key={b.booking_id}
-          className="tw:flex tw:items-stretch tw:gap-3 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:overflow-hidden"
+          className="tw:flex tw:items-start tw:gap-3 tw:p-3 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm"
         >
-          <div className="tw:w-1.5 tw:shrink-0" style={{ background: b.service_colour }} />
-          <div className="tw:flex-1 tw:min-w-0 tw:py-3 tw:pr-3">
+          {b.contractor && (
+            <Photo
+              src={b.contractor.photo ?? ''}
+              alt={b.contractor.name}
+              className="tw:w-10 tw:h-10 tw:rounded-full tw:overflow-hidden tw:shrink-0 tw:text-sm"
+            />
+          )}
+          <div className="tw:flex-1 tw:min-w-0">
             <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-2">
               <span className="tw:font-medium tw:truncate">{b.service_name}</span>
               {b.delivery && <DeliveryBadge mode={b.delivery} />}
@@ -80,34 +88,46 @@ export function MyBookings({ auth }: { auth: AppointmentAuth }) {
                 <span className="tw:truncate">{b.address.pretty}</span>
               </div>
             )}
-            <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:mt-2">
-              <Button
-                size="small"
-                variant="secondary"
-                onClick={() => downloadIcs(bookingToAppointment(b), config.name)}
-              >
-                {config.get_text('apt_add_to_calendar')}
-              </Button>
-              {b.can_cancel ? (
+            {confirming === b.booking_id ? (
+              <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:mt-2 tw:text-sm">
+                <span>
+                  {config.get_text('bookings_cancel_confirm', { student_name: b.student_name })}
+                </span>
+                <Button size="small" variant="danger" onClick={() => void cancel(b)}>
+                  {config.get_text('bookings_cancel_yes')}
+                </Button>
+                <Button size="small" variant="secondary" onClick={() => setConfirming(null)}>
+                  {config.get_text('bookings_cancel_keep')}
+                </Button>
+              </div>
+            ) : (
+              <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:mt-2">
                 <Button
                   size="small"
-                  variant="danger"
-                  disabled={cancelling === b.booking_id}
-                  onClick={() => void cancel(b)}
+                  variant="secondary"
+                  onClick={() => downloadIcs(bookingToAppointment(b), config.name)}
                 >
-                  {config.get_text('bookings_cancel')}
+                  {config.get_text('apt_add_to_calendar')}
                 </Button>
-              ) : (
-                <span className="tw:text-xs tw:text-muted-dark">
-                  {config.get_text('bookings_cannot_cancel')}
-                </span>
-              )}
-            </div>
+                {b.can_cancel ? (
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    disabled={cancelling === b.booking_id}
+                    onClick={() => setConfirming(b.booking_id)}
+                  >
+                    {config.get_text('bookings_cancel')}
+                  </Button>
+                ) : (
+                  <span className="tw:text-xs tw:text-muted-dark">
+                    {config.get_text('bookings_cannot_cancel')}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           {b.price !== null && (
-            <div className="tw:py-3 tw:pr-4 tw:font-semibold tw:shrink-0">
-              {config.format_money(b.price)}
-            </div>
+            <div className="tw:font-semibold tw:shrink-0">{config.format_money(b.price)}</div>
           )}
         </div>
       ))}

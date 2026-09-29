@@ -259,6 +259,8 @@ export interface ClientBooking {
   /** False when the cancellation window has passed. */
   can_cancel: boolean
   cancellation_deadline?: string
+  /** Tutor teaching the lesson, when there is one. V2 contract. */
+  contractor?: { id: number; name: string; photo?: string | null } | null
 }
 
 export type EnquiryFieldType =

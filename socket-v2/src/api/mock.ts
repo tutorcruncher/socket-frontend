@@ -434,8 +434,9 @@ export function enrichServices(services: Service[], tutors: ContractorSummary[])
     return {
       ...s,
       delivery_modes,
-      // Seeded placeholder photo; the rail falls back to a tinted block offline.
-      photo: s.photo ?? `https://picsum.photos/seed/tcs-svc-${s.id}/640/480`,
+      // No placeholder: the real API serves no service photo, and the rail leads
+      // with the tutor's photo instead.
+      photo: s.photo ?? null,
       description: s.description ?? SERVICE_BLURBS[hash(s.id) % SERVICE_BLURBS.length],
       ...splitServiceName(s, tutors),
     }
@@ -492,7 +493,7 @@ function busyServices(tutors: ContractorSummary[]): Service[] {
       name: `${BUSY_SUBJECT.name} with ${name}`,
       colour: BUSY_COLOURS[i],
       delivery_modes: ['online', 'in_person'] as DeliveryMode[],
-      photo: `https://picsum.photos/seed/tcs-svc-busy-${i}/640/480`,
+      photo: null,
       description: SERVICE_BLURBS[i % SERVICE_BLURBS.length],
       subject: BUSY_SUBJECT,
       contractor: tutor ? { id: tutor.id, name: tutor.name, photo: tutor.photo } : null,
