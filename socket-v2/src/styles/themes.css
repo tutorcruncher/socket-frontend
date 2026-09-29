@@ -1,0 +1,141 @@
+/* ============================================================
+   THEMES: visual variants selected with `theme` in the embed config.
+
+   Tailwind v4 compiles utilities to `var(--tw-…)` references, so a theme is
+   mostly a block of variable overrides on the mount element (`data-tcs-theme`),
+   which every `.tcs-root` inside it inherits. The modal portal carries the
+   same attribute. A few things Tailwind inlines (shadows, the white token
+   doing double duty as text and surface) get one targeted rule each.
+
+   These rules are deliberately unlayered so they win over the layered
+   utilities and the scoped reset without specificity games.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   minimal: disappears into the host page. Inherits the host's font, near-black
+   ink, hairline borders, small radii, no shadows, no tinted boxes.
+   ------------------------------------------------------------ */
+[data-tcs-theme='minimal'] {
+  --tw-color-primary: #111827;
+  --tw-color-heading: #111827;
+  --tw-color-link: #111827;
+  --tw-color-muted: #9ca3af;
+  --tw-color-muted-dark: #6b7280;
+  --tw-background-color-primary: #111827;
+  --tw-background-color-content: #fafafa;
+  --tw-background-color-hover: #f3f4f6;
+  --tw-border-color-default: #e5e7eb;
+  --tw-background-color-info: #f3f4f6;
+  --tw-border-color-info: #d1d5db;
+  --tw-text-color-info: #111827;
+  --tw-background-color-success: #f3f4f6;
+  --tw-border-color-success: #d1d5db;
+  --tw-text-color-success: #15803d;
+  --tw-radius-md: 0.25rem;
+  --tw-radius-lg: 0.25rem;
+  --tw-radius-xl: 0.375rem;
+}
+[data-tcs-theme='minimal'] .tcs-root,
+[data-tcs-theme='minimal'].tcs-root,
+[data-tcs-theme='minimal'] .tw\:font-body,
+[data-tcs-theme='minimal'] .tw\:font-heading,
+[data-tcs-theme='minimal'] :is(h1, h2, h3, h4) {
+  font-family: inherit;
+}
+[data-tcs-theme='minimal'] :is(h1, h2, h3, h4) {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+[data-tcs-theme='minimal'] .tw\:shadow-sm {
+  box-shadow: none;
+}
+/* Links read as links again now they are not blue. */
+/* Toggle cards (aria-pressed) use the link colour as a selected state, not as a link. */
+[data-tcs-theme='minimal'] .tw\:text-link:not([aria-pressed]) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #9ca3af;
+}
+[data-tcs-theme='minimal'] .tw\:text-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ------------------------------------------------------------
+   soft: friendly consumer look. Large radii, pill buttons, tinted lavender
+   surfaces instead of borders, bolder sans headings, wide soft shadows.
+   ------------------------------------------------------------ */
+[data-tcs-theme='soft'] {
+  --tw-font-heading: var(--tw-font-body);
+  --tw-color-primary: #1f2937;
+  --tw-color-heading: #111827;
+  --tw-color-link: #4338ca;
+  --tw-background-color-primary: #4f46e5;
+  --tw-background-color-content: #f5f4fb;
+  --tw-background-color-hover: #ece9f8;
+  --tw-border-color-default: #ebe9f5;
+  --tw-background-color-info: #eef2ff;
+  --tw-border-color-info: #c7d2fe;
+  --tw-text-color-info: #3730a3;
+  --tw-radius-md: 0.75rem;
+  --tw-radius-lg: 1rem;
+  --tw-radius-xl: 1.5rem;
+}
+[data-tcs-theme='soft'] :is(h1, h2, h3, h4) {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+[data-tcs-theme='soft'] .tw\:shadow-sm {
+  box-shadow: 0 6px 20px -6px rgb(30 27 75 / 0.1);
+}
+/* Buttons and chips go pill; inputs keep the (already large) radius. */
+[data-tcs-theme='soft'] button.tw\:rounded-lg {
+  border-radius: 999px;
+}
+
+/* ------------------------------------------------------------
+   dark: for dark host pages. The white token becomes the surface colour, so
+   text that is meant to be white is pinned back to white below.
+   ------------------------------------------------------------ */
+[data-tcs-theme='dark'] {
+  --tw-color-white: #1a1a22;
+  --tw-color-primary: #e5e7eb;
+  --tw-color-heading: #f9fafb;
+  --tw-color-link: #a5b4fc;
+  --tw-color-muted: #6b7280;
+  --tw-color-muted-dark: #9ca3af;
+  --tw-color-placeholder: #6b7280;
+  --tw-background-color-primary: #6366f1;
+  --tw-background-color-content: #22222c;
+  --tw-background-color-hover: #2c2c38;
+  --tw-background-color-overlay: rgba(0, 0, 0, 0.6);
+  --tw-border-color-default: #33333f;
+  --tw-background-color-info: #232347;
+  --tw-border-color-info: #4f46e5;
+  --tw-text-color-info: #c7d2fe;
+  --tw-background-color-success: #0f2e1d;
+  --tw-border-color-success: #15803d;
+  --tw-text-color-success: #86efac;
+  --tw-background-color-error: #3b0f18;
+  --tw-border-color-error: #dc2626;
+  --tw-text-color-error: #fca5a5;
+  --tw-background-color-warning: #3a2a08;
+  --tw-border-color-warning: #d97706;
+  --tw-text-color-warning: #fde68a;
+}
+[data-tcs-theme='dark'] .tcs-root,
+[data-tcs-theme='dark'].tcs-root {
+  color: var(--tw-color-primary);
+  color-scheme: dark;
+}
+[data-tcs-theme='dark'] .tw\:text-white {
+  color: #ffffff;
+}
+[data-tcs-theme='dark'] .tw\:text-white\/80 {
+  color: rgb(255 255 255 / 0.8);
+}
+[data-tcs-theme='dark'] .tw\:bg-white {
+  background-color: var(--tw-color-white);
+}
+[data-tcs-theme='dark'] .tw\:shadow-sm {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5);
+}

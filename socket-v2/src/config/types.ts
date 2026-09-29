@@ -3,6 +3,9 @@ import type { PaymentConfig } from '@/api/types'
 /** Public configuration for the Socket widget: the second argument to window.socket(). */
 export type SocketMode = 'tutors' | 'enquiry' | 'enquiry-modal' | 'appointments'
 export type RouterMode = 'hash' | 'memory'
+/** Visual variant. `classic` is the TutorCruncher look; the others adapt to the host page. */
+export type SocketTheme = 'classic' | 'minimal' | 'soft' | 'dark'
+export const THEMES: SocketTheme[] = ['classic', 'minimal', 'soft', 'dark']
 
 /** A translatable string: either a literal, or a function of replacement values. */
 export type Message = string | ((replacements: Record<string, unknown>) => string)
@@ -37,6 +40,8 @@ export interface UserConfig {
   /** Which view "tutors" mode opens on. Defaults to the company's display_mode. */
   display_mode?: 'grid' | 'list'
   router_mode?: RouterMode
+  /** Visual variant; defaults to `classic`. See styles/themes.css. */
+  theme?: SocketTheme
   api_root?: string | null
   url_root?: string
   pagination?: number
@@ -96,6 +101,7 @@ export interface ResolvedConfig extends FormatHelpers {
   /** Initial grid/list view for the "tutors" mode; the visitor can switch it in-widget. */
   display_mode: 'grid' | 'list'
   router_mode: RouterMode
+  theme: SocketTheme
   api_root: string
   url_root: string
   pagination: number

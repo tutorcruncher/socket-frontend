@@ -10,7 +10,7 @@
  * calls window.socket() once.
  */
 import './embed'
-import type { UserConfig } from './config/types'
+import type { SocketTheme, UserConfig } from './config/types'
 
 const env = import.meta.env
 const publicKey = env.VITE_DEMO_PUBLIC_KEY ?? '9c79f14df986a1ec693c'
@@ -30,8 +30,12 @@ const TABS: Record<string, UserConfig> = {
 }
 
 const initialised = new Set<string>()
+let currentTab = 'tutors'
+// Remembered across reloads so a theme can be reviewed page by page.
+let theme: SocketTheme = (localStorage.getItem('tcs-demo-theme') as SocketTheme) || 'classic'
 
 function showTab(id: string) {
+  currentTab = id
   for (const btn of document.querySelectorAll<HTMLButtonElement>('#tabs button')) {
     btn.setAttribute('aria-selected', String(btn.dataset.tab === id))
   }
@@ -46,12 +50,37 @@ function showTab(id: string) {
       ...TABS[id],
       element: `#panel-${id}`,
       api_root: apiRoot,
+      theme,
     })
   }
 }
+
+/**
+ * Switch theme: every mounted widget is torn down (a fresh panel element, so
+ * preact's render tree goes with it) and the visible tab mounts again with the
+ * new theme. The host band goes dark behind the dark theme.
+ */
+function setTheme(next: SocketTheme) {
+  theme = next
+  localStorage.setItem('tcs-demo-theme', next)
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('#themes button')) {
+    btn.setAttribute('aria-selected', String(btn.dataset.theme === next))
+  }
+  document.querySelector('.hp-band')?.classList.toggle('hp-band--dark', next === 'dark')
+  for (const id of initialised) {
+    const panel = document.getElementById(`panel-${id}`)
+    panel?.replaceWith(panel.cloneNode(false))
+  }
+  initialised.clear()
+  showTab(currentTab)
+}
+
+document.querySelectorAll<HTMLButtonElement>('#themes button').forEach((btn) => {
+  btn.addEventListener('click', () => setTheme(btn.dataset.theme as SocketTheme))
+})
 
 document.querySelectorAll<HTMLButtonElement>('#tabs button').forEach((btn) => {
   btn.addEventListener('click', () => showTab(btn.dataset.tab!))
 })
 
-showTab('tutors')
+setTheme(theme)

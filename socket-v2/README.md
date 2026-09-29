@@ -66,6 +66,28 @@ two safe `router_mode`s, and **no `history` mode** (it would 404 on a host refre
 Legacy embeds that still pass `router_mode: 'history'` are coerced to `hash` with a
 console warning, so they keep working (and stop 404-ing on refresh).
 
+## Themes
+
+The widget ships four visual variants, chosen with `theme` in the embed config:
+
+```js
+window.socket('<public key>', { mode: 'appointments', theme: 'minimal' })
+```
+
+| Theme     | Intended for                                                                 |
+| --------- | ---------------------------------------------------------------------------- |
+| `classic` | The TutorCruncher look (default): Inter, navy, bordered cards, soft shadows |
+| `minimal` | Any host page: inherits the host font, near-black ink, hairlines, no shadows |
+| `soft`    | Consumer sites: large radii, pill buttons, tinted lavender surfaces          |
+| `dark`    | Dark host pages: dark surfaces with an indigo accent                         |
+
+Themes are CSS variable overrides in `src/styles/themes.css`, keyed on a
+`data-tcs-theme` attribute that the embed sets on the mount element (and on the
+modal portal). Tailwind v4 compiles utilities to `var(--tw-…)` references, so a
+new theme is a block of variable values plus a rule or two for the things
+Tailwind inlines (shadows). The demo page has a Theme switcher next to the mode
+tabs; the choice is remembered in `localStorage`.
+
 ## Setup
 
 ```sh

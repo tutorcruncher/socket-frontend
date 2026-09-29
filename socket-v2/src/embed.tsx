@@ -77,6 +77,8 @@ export async function socket(
     return
   }
   el.classList.add('tcs-root')
+  // Themes are CSS variable overrides keyed on this attribute (see themes.css).
+  el.setAttribute('data-tcs-theme', config.theme)
 
   const navRef: NavRef = { current: null }
   // preact/compat exposes the legacy render(vnode, container) API (not createRoot).

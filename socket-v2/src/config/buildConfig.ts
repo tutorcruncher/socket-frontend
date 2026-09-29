@@ -1,3 +1,4 @@
+import { THEMES, type SocketTheme } from './types'
 import type {
   CompanyOptions,
   ResolvedConfig,
@@ -45,6 +46,12 @@ export async function buildConfig(
   }
 
   const apiRoot = u.api_root || env.VITE_SOCKET_API_URL || 'https://socket.tutorcruncher.com'
+
+  let theme: SocketTheme = u.theme ?? 'classic'
+  if (u.theme && !THEMES.includes(u.theme)) {
+    console.warn(`SOCKET: unknown theme "${u.theme}", options are: ${THEMES.join(', ')}`)
+    theme = 'classic'
+  }
 
   // url_root resolution
   let urlRoot = u.url_root ?? 'auto'
@@ -110,6 +117,7 @@ export async function buildConfig(
     show_hours_reviewed: u.show_hours_reviewed ?? company.show_hours_reviewed ?? true,
     terms_link: u.terms_link ?? company.terms_link,
     modal_container: u.modal_container,
+    theme,
     timezone,
     currency: u.currency ?? company.currency,
     // auth_url is served by /options and is required by the appointment booking flow.

@@ -45,6 +45,8 @@ export function Modal({
       ? document.getElementById(config.modal_container) || document.body
       : document.body
     container.className = 'tcs-root tcs-modal-portal'
+    // The portal sits outside the mount element, so it carries the theme itself.
+    container.setAttribute('data-tcs-theme', config.theme)
     host.appendChild(container)
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
