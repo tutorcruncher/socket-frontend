@@ -2,7 +2,7 @@
  * Minimal, dependency-free error reporter (replaces @sentry/react to keep the embed
  * bundle small). Listens for uncaught errors that originate from the widget bundle
  * (`socket.js`) and logs them. If `VITE_SENTRY_DSN` is set it forwards a compact
- * payload to Sentry's HTTP store endpoint via `fetch` — no SDK required.
+ * payload to Sentry's HTTP store endpoint via `fetch`: no SDK required.
  */
 let installed = false
 

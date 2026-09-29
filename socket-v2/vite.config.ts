@@ -50,7 +50,7 @@ export default defineConfig(({ command }) => ({
           },
           rollupOptions: {
             output: {
-              // No external deps — everything is bundled for a drop-in widget.
+              // No external deps: everything is bundled for a drop-in widget.
               extend: true,
             },
           },

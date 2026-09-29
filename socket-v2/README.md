@@ -16,7 +16,7 @@ hand-rolled SCSS. This project modernises that with hooks, a typed API layer
 
 ```
 src/
-  embed.tsx              # Library entry — defines window.socket(), mounts <Root>
+  embed.tsx              # Library entry: defines window.socket(), mounts <Root>
   main.tsx               # Dev-only harness (tabbed demo); not in the bundle
   styles/socket.css      # Tailwind v4 + UI2 tokens, scoped under .tcs-root
   config/                # Config types, defaults/strings, buildConfig, React context
@@ -28,15 +28,15 @@ src/
     shared/              # Photo, ErrorView
     contractors/         # Contractors list/grid, filters, pagination, detail modal
     enquiry/             # Dynamic schema-driven form + plain/modal entry points
-    appointments/        # (stub — next to build)
+    appointments/        # (stub: next to build)
     App.tsx              # Mode router
 ```
 
 ### Key design decisions
 
 - **Embeddable, style-isolated.** Tailwind utilities use the `tw:` prefix and the
-  reset is scoped to `.tcs-root`, so the widget never leaks styles into — or inherits
-  a broken reset from — the host page. Modals portal into a `.tcs-root` container.
+  reset is scoped to `.tcs-root`, so the widget never leaks styles into (or inherits
+  a broken reset from) the host page. Modals portal into a `.tcs-root` container.
 - **Back-compatible API.** `window.socket(public_key, config)` returns
   `{ goto, config }` exactly like the legacy widget; all config keys and the
   `messages`/`event_callback` hooks are preserved.
@@ -52,14 +52,14 @@ src/
 ## Routing on a host page
 
 The widget runs on a customer's own server (which has no SPA catch-all), so there are
-two safe `router_mode`s — and **no `history` mode** (it would 404 on a host refresh):
+two safe `router_mode`s, and **no `history` mode** (it would 404 on a host refresh):
 
-- **`hash`** (default for grid/list/appointments/enquiry-modal): deep-links to
+- **`hash`** (default for tutors/appointments/enquiry-modal): deep-links to
   `abc.com/#/2418960-amala-h`. The `#` is never sent to the server, so direct visits
   and refreshes always load `abc.com/` and the widget re-opens the view client-side.
   No host config required, and links are shareable.
 - **`memory`** (default for the plain `enquiry` form, which never navigates): keeps all
-  routing in memory and **never touches the host URL** — no `#/` is appended. Trade-off:
+  routing in memory and **never touches the host URL**: no `#/` is appended. Trade-off:
   no deep-linking and the back button won't close a modal. Opt into it for any mode if
   you want zero URL impact.
 
@@ -89,11 +89,14 @@ proxy. Demo key: `9c79f14df986a1ec693c` (Dino Tutors).
 | Section | State |
 |---|---|
 | Core embed + config + design system | ✅ Done |
-| Contractors (grid/list, subject + location filters, pagination, profile modal, stars) | ✅ Done, verified against live API |
+| Contractors (`tutors` mode, in-widget grid/list toggle, subject + location filters, pagination, profile modal, stars) | ✅ Done, verified against live API |
 | Enquiry (dynamic form, plain page, modal button, contractor-prefilled) | ✅ Done (reCAPTCHA wiring is a TODO) |
 | Appointments (month/day list, SSO popup auth, booking modal) | ✅ Done, list + booking UI verified against live API |
-| Bundle optimisation (preact, custom combobox, no Sentry) | ✅ Done — 243 → 71 kB gzip |
+| Bundle optimisation (preact, custom combobox, no Sentry) | ✅ Done: 243 → 71 kB gzip |
 | UX polish (skeletons, photo fallbacks, modal focus-trap, reduced-motion) | ✅ Done |
+
+See **[ROADMAP.md](./ROADMAP.md)** for the prioritised next steps, known gaps, and the
+API fields needed to unlock reviews / pricing / availability.
 
 ### Known follow-ups
 

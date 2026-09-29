@@ -3,14 +3,18 @@ export function ContractorSkeleton({ mode, count = 6 }: { mode: 'grid' | 'list';
   const items = Array.from({ length: count })
   if (mode === 'grid') {
     return (
-      <div className="tw:grid tw:grid-cols-2 tw:sm:grid-cols-3 tw:md:grid-cols-4 tw:gap-4">
+      <div className="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:gap-3">
         {items.map((_, i) => (
           <div
             key={i}
-            className="tw:bg-white tw:border tw:border-default tw:rounded-lg tw:overflow-hidden tw:animate-pulse"
+            className="tw:flex tw:gap-3 tw:bg-white tw:border tw:border-default tw:rounded-lg tw:p-3 tw:animate-pulse"
           >
-            <div className="tw:aspect-square tw:bg-hover" />
-            <div className="tw:h-4 tw:bg-hover tw:rounded tw:m-3" />
+            <div className="tw:w-12 tw:h-12 tw:bg-hover tw:rounded-lg tw:shrink-0" />
+            <div className="tw:flex-1 tw:space-y-2 tw:py-0.5">
+              <div className="tw:h-4 tw:bg-hover tw:rounded tw:w-1/2" />
+              <div className="tw:h-3 tw:bg-hover tw:rounded tw:w-1/3" />
+              <div className="tw:h-3 tw:bg-hover tw:rounded tw:w-2/3" />
+            </div>
           </div>
         ))}
       </div>

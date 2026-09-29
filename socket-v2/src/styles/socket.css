@@ -12,7 +12,7 @@
  */
 @layer theme, base, components, utilities;
 
-/* Fonts — Inter (body) from Google, Halyard Display (headings) from Adobe Typekit.
+/* Fonts: Inter (body) from Google, Halyard Display (headings) from Adobe Typekit.
    Must come before non-@layer rules per the CSS spec, hence kept at the top. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 @import url('https://use.typekit.net/rem7wyb.css');
@@ -21,7 +21,7 @@
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(tw);
 
 /* ============================================================
-   DESIGN TOKENS — copied 1:1 from TutorCruncher2 ui2.0 @theme
+   DESIGN TOKENS: copied 1:1 from TutorCruncher2 ui2.0 @theme
    ============================================================ */
 @theme {
   --font-heading: 'halyard-display', -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
@@ -77,7 +77,7 @@
 }
 
 /* ============================================================
-   SCOPED RESET — only applies inside `.tcs-root`
+   SCOPED RESET: only applies inside `.tcs-root`
    ============================================================ */
 @layer base {
   .tcs-root,
@@ -90,19 +90,30 @@
     border-color: var(--color-default, #e5e7eb);
   }
 
+  /* Tailwind's `@theme` consumes these tokens to generate utilities and never emits
+     them as custom properties, so `var(--font-body)` / `var(--color-primary)` alone
+     resolve to nothing. Inline widget roots got away with it by also carrying the
+     `tw:font-body tw:text-primary` utilities; the modal portal (built in JS with just
+     `.tcs-root`) did not, and rendered in the host page's font: Times on an
+     unstyled host. Literal fallbacks make `.tcs-root` self-sufficient everywhere. */
   .tcs-root {
-    font-family: var(--font-body);
-    color: var(--color-primary);
+    font-family:
+      'Inter', -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+      'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    color: #1f374e;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     text-align: left;
   }
 
+  /* Literal for the same reason as `.tcs-root` above. */
   .tcs-root h1,
   .tcs-root h2,
   .tcs-root h3,
   .tcs-root h4 {
-    font-family: var(--font-heading);
+    font-family:
+      'halyard-display', -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+      'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     font-weight: 500;
     margin: 0;
   }
@@ -117,6 +128,21 @@
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  /* Browsers give fieldset/legend their own margin, padding, border and inline
+     indent: strip it so grouped controls align with the rest of the form. */
+  .tcs-root fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .tcs-root legend {
+    padding: 0;
+    display: block;
+    width: 100%;
   }
 
   .tcs-root a {
@@ -142,12 +168,28 @@
     font-family: inherit;
     font-size: inherit;
   }
+
+  /* Tint native checkboxes/radios to the widget's own palette: otherwise they
+     render in the browser's default blue, which clashes on themed embeds. The
+     explicit size stops them shrinking against our 14px label text.
+     The colour is literal, not `var(--background-color-primary)`: Tailwind's
+     `@theme` consumes namespaced tokens to build utilities and never emits them
+     as custom properties, so the var() would resolve to nothing (accent-color:auto). */
+  .tcs-root input[type='checkbox'],
+  .tcs-root input[type='radio'] {
+    accent-color: #362e83;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    margin: 0;
+    cursor: pointer;
+  }
 }
 
 /* ============================================================
    Markdown / prose rendered from the API (contractor bios etc.)
    ============================================================ */
-/* Respect users who prefer reduced motion — kill our transitions/animations. */
+/* Respect users who prefer reduced motion: kill our transitions/animations. */
 @media (prefers-reduced-motion: reduce) {
   .tcs-root *,
   .tcs-root *::before,

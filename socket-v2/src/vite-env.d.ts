@@ -8,6 +8,8 @@ interface ImportMetaEnv {
   /** Public key + api root used only by the dev demo page. */
   readonly VITE_DEMO_PUBLIC_KEY?: string
   readonly VITE_DEMO_API_ROOT?: string
+  /** Mock the V2 appointments contract until the backend serves it ("false" to disable). */
+  readonly VITE_USE_MOCK_API?: string
 }
 
 interface ImportMeta {

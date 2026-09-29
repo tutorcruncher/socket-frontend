@@ -1,165 +1,289 @@
-import { useRef } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { deliveryLabelKey, formatDistanceShort } from '@/lib/delivery'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useConfig, useUrl } from '@/config/context'
-import { useAppointments } from '@/api/queries'
+import { useAppointmentsMonth, useAppointmentsWindow, useServices } from '@/api/queries'
 import { useAppointmentAuth } from '@/lib/useAppointmentAuth'
-import { colourContrast, groupBy, cx } from '@/lib/utils'
+import { dayKey, monthKey, todayKey } from '@/lib/calendar'
 import type { Appointment } from '@/api/types'
 import { CenteredSpinner } from '@/components/ui/Spinner'
-import { EmptyState } from '@/components/ui/EmptyState'
+import { CalendarSkeleton } from './CalendarSkeleton'
 import { Alert } from '@/components/ui/Alert'
-import { Pagination } from '@/components/contractors/Pagination'
-import { CalendarPlusIcon } from '@/components/ui/Icons'
-import { AppointmentModal } from './AppointmentModal'
+import { Button } from '@/components/ui/Button'
+import { AccountStep } from './AccountStep'
+import { SearchForm, type AppointmentSearch } from './SearchForm'
+import { CalendarStep, isBookable } from './CalendarStep'
+import { BookingPanel } from './BookingPanel'
+import { FlowLayout } from './FlowLayout'
+import { MyBookings } from './MyBookings'
+import { getMockBookings } from '@/api/mock'
+import { serviceIdsFor, subjectOf } from '@/lib/services'
 
-const parsePage = (path: string): number => {
-  const m = path.match(/page\/(\d+)/)
-  return m ? parseInt(m[1], 10) : 1
-}
-
-/** Group appointments by month, then by day, preserving chronological order. */
-function groupByMonth(apts: Appointment[]) {
-  return groupBy(apts, (a) => a.start.substr(0, 7)).map((monthApts) => ({
-    date: monthApts[0].start,
-    days: groupBy(monthApts, (a) => a.start.substr(0, 10)),
-  }))
-}
-
+/**
+ * Appointments: search-first booking flow:
+ *   0. AccountStep:  existing client? sign in, else continue as guest
+ *   1. SearchForm:   pick lesson type (+ venue)
+ *   2. CalendarStep: month grid of available dates + day slot list
+ *   3. BookingPanel: inline booking (SSO fires once under the hood)
+ *
+ * Only the booking step is routed (`#/appointment/:id`) so old deep links keep
+ * working; search/calendar state lives in the component. The booking branch is
+ * checked before step 0 so a deep link is never gated behind the account check.
+ */
 export function Appointments() {
   const config = useConfig()
   const url = useUrl()
   const navigate = useNavigate()
   const loc = useLocation()
   const auth = useAppointmentAuth()
+  // Show the bookings tab once the visitor has something to manage.
+  const hasBookings = getMockBookings().length > 0
 
+  const [view, setView] = useState<'book' | 'bookings'>('book')
+  const [accountChecked, setAccountChecked] = useState(false)
+  const [search, setSearch] = useState<AppointmentSearch | null>(null)
+  // "Change" reopens the search form pre-filled rather than discarding the search.
+  const [editingSearch, setEditingSearch] = useState(false)
+  // Both null until the visitor navigates; derived defaults are used meanwhile.
+  const [month, setMonth] = useState<string | null>(null)
+  const [selectedDay, setSelectedDay] = useState<string | null>(null)
+
+  const { data: services = [] } = useServices()
+  const NO_FILTERS = { serviceIds: null, delivery: null, location: null, radius: null }
+  // Unfiltered window backs deep links (a booked slot may be outside the search).
+  const allWindow = useAppointmentsWindow(NO_FILTERS)
+  const searchFilters = search
+    ? {
+        serviceIds: serviceIdsFor(services, search.subject),
+        delivery: search.delivery,
+        location: search.location,
+        radius: search.radius,
+      }
+    : NO_FILTERS
+  // Upcoming lessons from today: finds the next available lesson and backs the
+  // "nothing to book" check. The calendar itself loads a month at a time below.
+  const searchWindow = useAppointmentsWindow(searchFilters)
+  const windowQuery = search ? searchWindow : allWindow
+  const appointments = windowQuery.data?.appointments ?? []
+  const searchedLocation = windowQuery.data?.location ?? null
+
+  // Next bookable lesson from today: derived, not an effect, so the calendar and
+  // its slot list render together instead of popping a frame apart.
+  const nextAvailable = useMemo(
+    () => appointments.find((a) => dayKey(a.start) >= todayKey() && isBookable(a)) ?? null,
+    [appointments],
+  )
+
+  // Open on the month of the next lesson until the visitor pages elsewhere.
+  const activeMonth =
+    month ?? (nextAvailable ? monthKey(dayKey(nextAvailable.start)) : monthKey(todayKey()))
+  const monthQuery = useAppointmentsMonth(searchFilters, search ? activeMonth : null)
+  const monthAppointments: Appointment[] = monthQuery.data ?? []
+  // The chosen day while it's in view; otherwise the month's first bookable day, so
+  // paging to a new month always shows something to book.
+  const activeDay = useMemo(() => {
+    if (selectedDay && monthKey(selectedDay) === activeMonth) return selectedDay
+    const today = todayKey()
+    const first = monthAppointments.find((a) => dayKey(a.start) >= today && isBookable(a))
+    return first ? dayKey(first.start) : null
+  }, [selectedDay, activeMonth, monthAppointments])
+
+  // Booking step is routed: #/appointment/<id>-<slug>
   const stripped = loc.pathname.replace(url(''), '').replace(/^\//, '')
   const aptMatch = stripped.match(/^appointment\/(\d+)/)
-  const aptId = aptMatch ? parseInt(aptMatch[1], 10) : null
+  const bookingId = aptMatch ? parseInt(aptMatch[1], 10) : null
+  const bookingApt: Appointment | null = useMemo(() => {
+    if (bookingId === null) return null
+    return (
+      appointments.find((a) => a.id === bookingId) ??
+      monthAppointments.find((a) => a.id === bookingId) ??
+      allWindow.data?.appointments.find((a) => a.id === bookingId) ??
+      null
+    )
+  }, [bookingId, appointments, monthAppointments, allWindow.data])
 
-  // Freeze the page while a modal is open so the list behind doesn't refetch
-  // (the appointment URL no longer encodes the page).
-  const pageRef = useRef(parsePage(loc.pathname))
-  if (aptId === null) pageRef.current = parsePage(loc.pathname)
-  const page = pageRef.current
-  const { data: response, isFetching, isError } = useAppointments(page)
+  // --- Step 3: booking ---
+  if (bookingId !== null) {
+    if (allWindow.isPending) {
+      return (
+        <div className="tcs-root tw:font-body tw:text-primary">
+          <CenteredSpinner message={config.get_text('loading')} />
+        </div>
+      )
+    }
+    return (
+      <div className="tcs-root tw:font-body tw:text-primary">
+        {bookingApt ? (
+          <BookingPanel apt={bookingApt} auth={auth} onBack={() => navigate(url(''))} />
+        ) : (
+          <div className="tw:max-w-lg tw:mx-auto tw:flex tw:flex-col tw:gap-3">
+            <Alert variant="warning">
+              {config.get_text('appointment_not_found_id', { apt_id: bookingId })}
+            </Alert>
+            <Button variant="secondary" onClick={() => navigate(url(''))}>
+              {config.get_text('apt_back_to_calendar')}
+            </Button>
+          </div>
+        )}
+      </div>
+    )
+  }
 
-  const pageUrl = (p: number) => url(p > 1 ? `page/${p}` : '')
-  const results = response?.results ?? []
-  const months = groupByMonth(results)
-  const hasMore =
-    !!response && response.count > results.length + (page - 1) * config.pagination
+  // --- Step 0: account check ---
+  // Always shown for now (the lookup is mocked); once it is real, a visitor with a
+  // live SSO session should skip straight to search.
+  if (!accountChecked) {
+    return (
+      <div className="tcs-root tw:font-body tw:text-primary">
+        <AccountStep auth={auth} onContinue={() => setAccountChecked(true)} />
+      </div>
+    )
+  }
+
+  // --- Step 1: search ---
+  if (!search || editingSearch) {
+    return (
+      <div className="tcs-root tw:font-body tw:text-primary">
+        <SearchForm
+          services={services}
+          initial={search}
+          onSearch={(s) => {
+            setSearch(s)
+            setEditingSearch(false)
+            setSelectedDay(null)
+            setMonth(null)
+          }}
+        />
+      </div>
+    )
+  }
+
+  // --- Step 2: calendar ---
+  const subjectServices = services.filter((s) => subjectOf(s) === search.subject)
+  // One colour dot when the subject is one service; across tutors there are many.
+  const chipColour = subjectServices.length === 1 ? subjectServices[0].colour : null
+
+  // Search context chips, beside the step title. The summary rail only appears once
+  // a slot is chosen.
+  const searchChips = (
+    <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-2">
+      <span className="tw:inline-flex tw:items-center tw:gap-2 tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm tw:font-medium">
+        {chipColour && (
+          <span
+            className="tw:w-2.5 tw:h-2.5 tw:rounded-full tw:shrink-0"
+            style={{ background: chipColour }}
+          />
+        )}
+        {search.subject ?? config.get_text('apt_service_placeholder')}
+      </span>
+
+      {search.delivery && (
+        <span className="tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm">
+          {config.get_text(deliveryLabelKey(search.delivery))}
+        </span>
+      )}
+      {search.location && (
+        <span className="tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm">
+          {searchedLocation?.pretty ?? search.location}
+          {search.radius ? ` · ${formatDistanceShort(config, search.radius)}` : ''}
+        </span>
+      )}
+      <button
+        type="button"
+        onClick={() => setEditingSearch(true)}
+        className="tw:text-sm tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
+      >
+        {config.get_text('apt_change_search')}
+      </button>
+    </div>
+  )
 
   return (
-    <div className="tcs-root tw:font-body tw:text-primary">
-      {isError && <Alert variant="danger">Something went wrong loading appointments.</Alert>}
-
-      {!response && isFetching ? (
-        <CenteredSpinner />
-      ) : results.length === 0 ? (
-        <EmptyState
-          title="No upcoming appointments"
-          description="There are no lessons available to book right now."
-          icon={<CalendarPlusIcon className="tw:w-10 tw:h-10" />}
-        />
+    <div className="tcs-root tw:font-body tw:text-primary tw:flex tw:flex-col tw:gap-4">
+      <BookingsNav view={view} onChange={setView} hasBookings={hasBookings} />
+      {view === 'bookings' ? (
+        <MyBookings auth={auth} />
       ) : (
-        <div className={cx('tw:flex tw:flex-col tw:gap-6', isFetching && 'tw:opacity-60')}>
-          {months.map((month, i) => (
-            <div key={i}>
-              <h3 className="tw:text-sm tw:font-semibold tw:font-heading tw:text-muted-dark tw:uppercase tw:tracking-wider tw:mb-2">
-                {config.format_dt(month.date, 'month')}
-              </h3>
-              <div className="tw:flex tw:flex-col tw:gap-4">
-                {month.days.map((day, j) => (
-                  <DayGroup key={j} appointments={day} attendees={auth.attendees} />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+        <FlowLayout
+          stepId="time"
+          intro={config.get_text('apt_step_time_intro')}
+          headerAside={searchChips}
+        >
+          {windowQuery.isError && (
+            <Alert variant="danger">Something went wrong loading lessons. Please try again.</Alert>
+          )}
 
-      <Pagination page={page} hasMore={hasMore} onChange={(p) => navigate(pageUrl(p))} />
+          {searchedLocation?.error === 'no_results' && search.location && (
+            <Alert variant="warning">
+              {config.get_text('apt_location_not_found', { location: search.location })}
+            </Alert>
+          )}
 
-      {aptId !== null && (
-        <AppointmentModal
-          id={aptId}
-          appointments={results}
-          gotData={!!response}
-          auth={auth}
-          onClose={() => navigate(url(''))}
-        />
+          {windowQuery.isPending || monthQuery.isPending ? (
+            <CalendarSkeleton />
+          ) : (
+            <CalendarStep
+              appointments={monthAppointments}
+              nextAvailable={nextAvailable}
+              month={activeMonth}
+              onMonthChange={setMonth}
+              selectedDay={activeDay}
+              onSelectDay={(d) => {
+                setSelectedDay(d)
+                setMonth(monthKey(d))
+              }}
+              onBook={(apt) => navigate(url(`appointment/${apt.link}`))}
+              attendees={auth.attendees}
+              describe={(apt) => {
+                const svc = services.find((s) => s.id === apt.service_id)
+                return {
+                  // The subject is already in the chip when one was searched.
+                  subject: svc && !search.subject ? subjectOf(svc) : null,
+                  tutor: svc?.contractor ?? null,
+                }
+              }}
+            />
+          )}
+        </FlowLayout>
       )}
     </div>
   )
 }
 
-function DayGroup({
-  appointments,
-  attendees,
+/** Tab strip between booking a lesson and managing existing bookings. */
+function BookingsNav({
+  view,
+  onChange,
+  hasBookings,
 }: {
-  appointments: Appointment[]
-  attendees: Record<number, number[]> | null
+  view: 'book' | 'bookings'
+  onChange: (v: 'book' | 'bookings') => void
+  hasBookings: boolean
 }) {
   const config = useConfig()
-  const first = appointments[0]
+  // Only surface "My bookings" once there is something to manage.
+  if (!hasBookings) return null
+  const tabs: Array<{ id: 'book' | 'bookings'; label: string }> = [
+    { id: 'book', label: config.get_text('nav_book') },
+    { id: 'bookings', label: config.get_text('nav_my_bookings') },
+  ]
   return (
-    <div className="tw:flex tw:gap-3">
-      <div className="tw:shrink-0 tw:w-12 tw:text-center">
-        <div className="tw:text-xs tw:text-muted-dark tw:uppercase">
-          {config.format_dt(first.start, 'weekday')}
-        </div>
-        <div className="tw:text-2xl tw:font-medium tw:font-heading tw:text-heading tw:leading-tight">
-          {config.format_dt(first.start, 'day')}
-        </div>
-      </div>
-      <div className="tw:flex-1 tw:flex tw:flex-col tw:gap-2 tw:min-w-0">
-        {appointments.map((apt) => (
-          <AppointmentRow key={apt.id} apt={apt} attendees={attendees} />
-        ))}
-      </div>
+    <div className="tw:flex tw:gap-1 tw:border-b tw:border-default">
+      {tabs.map((t) => (
+        <button
+          key={t.id}
+          type="button"
+          aria-selected={view === t.id}
+          onClick={() => onChange(t.id)}
+          className={`tw:px-3 tw:py-2 tw:text-sm tw:-mb-px tw:border-b-2 tw:transition-colors tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link ${
+            view === t.id
+              ? 'tw:border-primary tw:text-primary tw:font-medium'
+              : 'tw:border-transparent tw:text-muted-dark tw:hover:text-primary'
+          }`}
+        >
+          {t.label}
+        </button>
+      ))}
     </div>
-  )
-}
-
-function AppointmentRow({
-  apt,
-  attendees,
-}: {
-  apt: Appointment
-  attendees: Record<number, number[]> | null
-}) {
-  const config = useConfig()
-  const url = useUrl()
-  const onDark = colourContrast(apt.service_colour) === 'dark'
-  const spaces = apt.attendees_max === null ? null : apt.attendees_max - apt.attendees_count
-  const isAttending = !!attendees && attendees[apt.id] !== undefined
-  const status = isAttending
-    ? config.get_text('spaces_attending', { spaces })
-    : config.get_text('spaces', { spaces })
-
-  return (
-    <Link
-      to={url(`appointment/${apt.link}`)}
-      className="tw:block tw:rounded-lg tw:overflow-hidden tw:shadow-sm tw:transition-transform tw:hover:scale-[1.01] tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link tw:focus-visible:outline-offset-2"
-      style={{ background: apt.service_colour, color: onDark ? '#fff' : '#1f374e' }}
-    >
-      <div className="tw:flex tw:items-center tw:gap-3 tw:px-3 tw:py-2">
-        <div className="tw:font-semibold tw:tabular-nums tw:shrink-0 tw:w-16">
-          {config.format_dt(apt.start, 'time')}
-        </div>
-        <div className="tw:flex-1 tw:min-w-0">
-          <div className="tw:truncate tw:font-medium">
-            {apt.topic} · {apt.service_name}
-          </div>
-          <div className="tw:truncate tw:text-xs tw:opacity-90">{status}</div>
-        </div>
-        <div className="tw:text-right tw:shrink-0">
-          {apt.price !== null && <div className="tw:font-semibold">{config.format_money(apt.price)}</div>}
-          <div className="tw:text-xs tw:opacity-90">
-            {config.format_duration(apt.finish, apt.start)}
-          </div>
-        </div>
-      </div>
-    </Link>
   )
 }

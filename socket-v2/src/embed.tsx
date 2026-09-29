@@ -60,7 +60,7 @@ function Root({
 }
 
 /**
- * Public embed API — back-compatible with the original socket-frontend:
+ * Public embed API: back-compatible with the original socket-frontend:
  *   window.socket(public_key, config) -> Promise<{ goto, config }>
  */
 export async function socket(

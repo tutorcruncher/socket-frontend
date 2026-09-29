@@ -7,6 +7,10 @@ export const browserTimezone = intlOptions.timeZone || 'UTC'
 const FORMAT_OPTIONS: Record<DateFormat, Intl.DateTimeFormatOptions> = {
   full: { day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric' },
   month: { month: 'short' },
+  /** Month + year: for review dates, where a bare month is ambiguous. */
+  month_year: { month: 'short', year: 'numeric' },
+  /** Month + day, no time: compact enough for a grid card. */
+  month_day: { month: 'short', day: 'numeric' },
   day: { day: 'numeric' },
   weekday: { weekday: 'short' },
   time: { hour: 'numeric', minute: 'numeric' },

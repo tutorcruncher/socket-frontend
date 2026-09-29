@@ -1,6 +1,7 @@
 import { useConfig } from '@/config/context'
 import type { Contractor, Skill } from '@/api/types'
 import { Markdown } from '@/components/ui/Markdown'
+import { Reviews } from './Reviews'
 
 /** Truncate long qualification-level lists the way the legacy app did. */
 function filterQualLevels(levels: string[]): string[] {
@@ -31,7 +32,7 @@ export function ContractorDetails({ contractor }: { contractor: Contractor }) {
 
       {contractor.skills?.length > 0 && (
         <div>
-          <h3 className="tw:text-base tw:font-medium tw:font-heading tw:mb-2">
+          <h3 className="tw:text-base tw:font-medium tw:font-heading tw:mb-1.5">
             {config.get_text('skills_label')}
           </h3>
           <div className="tw:border tw:border-default tw:rounded-lg tw:overflow-hidden">
@@ -64,6 +65,10 @@ export function ContractorDetails({ contractor }: { contractor: Contractor }) {
           </div>
         </div>
       )}
+
+      {/* Reviews last: what a tutor teaches answers the qualifying question, and
+          only then does a parent care what other parents thought. */}
+      <Reviews reviews={contractor.reviews} />
     </div>
   )
 }

@@ -18,7 +18,7 @@ export interface ComboboxItem {
 }
 
 /**
- * Lightweight, accessible single-select combobox — replaces react-select (and its
+ * Lightweight, accessible single-select combobox: replaces react-select (and its
  * Emotion dependency) to keep the embed bundle small. Supports type-to-filter,
  * keyboard navigation (↑/↓/Enter/Escape) and a clear button.
  */

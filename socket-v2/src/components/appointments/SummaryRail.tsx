@@ -1,0 +1,184 @@
+import { useState } from 'react'
+import { useConfig } from '@/config/context'
+import type { Appointment, DeliveryMode, Service } from '@/api/types'
+import { deliveryLabelKey } from '@/lib/delivery'
+import { Markdown } from '@/components/ui/Markdown'
+import { CheckIcon } from '@/components/ui/Icons'
+
+/**
+ * Left-hand booking summary. Starts as a service card (photo, blurb, key facts)
+ * and accumulates the visitor's choices (date & time, location, student, price)
+ * as they move through the flow, so the order being built is always in view.
+ */
+export function SummaryRail({
+  service,
+  apt,
+  delivery,
+  location,
+  studentName,
+  amount,
+  showTotal,
+  onChangeSearch,
+}: {
+  service: Service | null
+  /** The chosen slot; absent while the visitor is still on the calendar. */
+  apt?: Appointment | null
+  /** Search context shown before a slot is chosen. */
+  delivery?: DeliveryMode | null
+  /** Pre-formatted searched location, e.g. "Highgate · 5 mi". */
+  location?: string | null
+  studentName?: string | null
+  /** Amount actually due now (deposit or full price). */
+  amount?: number | null
+  showTotal?: boolean
+  onChangeSearch?: () => void
+}) {
+  const config = useConfig()
+
+  const name = service?.name ?? apt?.service_name ?? config.get_text('apt_service_placeholder')
+  const colour = service?.colour ?? apt?.service_colour ?? null
+  const extraAttrs = apt?.service_extra_attributes ?? service?.extra_attributes ?? []
+
+  const spacesAvailable =
+    apt == null || apt.attendees_max === null ? null : apt.attendees_max - apt.attendees_count
+  const sameDay = apt ? apt.start.substring(0, 10) === apt.finish.substring(0, 10) : true
+
+  // Key facts, checkmark-listed like a product card.
+  const facts: string[] = []
+  if (apt) facts.push(config.format_duration(apt.finish, apt.start))
+  const activeDelivery = apt?.delivery ?? delivery ?? null
+  if (activeDelivery) {
+    facts.push(config.get_text(deliveryLabelKey(activeDelivery)))
+    if (activeDelivery === 'online') facts.push(config.get_text('apt_online_no_travel'))
+  } else if (service?.delivery_modes?.length) {
+    for (const mode of service.delivery_modes) facts.push(config.get_text(deliveryLabelKey(mode)))
+  }
+  if (apt) facts.push(config.get_text('spaces', { spaces: spacesAvailable }))
+
+  const aptLocation =
+    apt && apt.delivery !== 'online' ? (apt.address?.pretty ?? apt.location ?? null) : null
+
+  const price = apt?.price ?? null
+  const rows: Array<{ label: string; value: string }> = []
+  if (apt) {
+    rows.push({
+      label: config.get_text('apt_summary_date'),
+      value: sameDay
+        ? config.format_dt(apt.start, 'full')
+        : `${config.format_dt(apt.start, 'full')} – ${config.format_dt(apt.finish, 'full')}`,
+    })
+  }
+  if (aptLocation) rows.push({ label: config.get_text('apt_summary_location'), value: aptLocation })
+  else if (!apt && location)
+    rows.push({ label: config.get_text('apt_summary_location'), value: location })
+  if (studentName)
+    rows.push({ label: config.get_text('apt_summary_student'), value: studentName })
+  if (price !== null)
+    rows.push({ label: config.get_text('apt_summary_price'), value: config.format_money(price) })
+
+  return (
+    <div className="tw:flex tw:flex-col tw:gap-4">
+      {service && <RailPhoto service={service} />}
+
+      <div>
+        <h2 className="tw:flex tw:items-center tw:gap-2 tw:text-xl tw:font-medium tw:font-heading">
+          {colour && (
+            <span
+              aria-hidden="true"
+              className="tw:w-2.5 tw:h-2.5 tw:rounded-full tw:shrink-0"
+              style={{ background: colour }}
+            />
+          )}
+          {name}
+        </h2>
+        {service?.description && (
+          <p className="tw:text-sm tw:text-muted-dark tw:mt-1.5">{service.description}</p>
+        )}
+      </div>
+
+      {extraAttrs.map((attr, i) => (
+        <div key={i}>
+          <h3 className="tw:text-sm tw:font-semibold tw:font-heading tw:mb-1">{attr.name}</h3>
+          {attr.type === 'text_short' || attr.type === 'text_extended' ? (
+            <div className="tw:text-sm tw:text-muted-dark">
+              <Markdown content={attr.value} />
+            </div>
+          ) : (
+            <p className="tw:text-sm tw:text-muted-dark">{attr.value}</p>
+          )}
+        </div>
+      ))}
+
+      {facts.length > 0 && (
+        <ul className="tw:flex tw:flex-col tw:gap-1.5">
+          {facts.map((f, i) => (
+            <li key={i} className="tw:flex tw:items-start tw:gap-2 tw:text-sm">
+              <CheckIcon className="tw:w-3.5 tw:h-3.5 tw:mt-0.5 tw:shrink-0 tw:text-primary" />
+              {f}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {rows.length > 0 && (
+        <dl className="tw:flex tw:flex-col tw:gap-2 tw:pt-3 tw:border-t tw:border-default tw:text-sm">
+          {rows.map((r) => (
+            <div key={r.label} className="tw:flex tw:justify-between tw:gap-3">
+              <dt className="tw:text-muted-dark tw:shrink-0">{r.label}</dt>
+              <dd className="tw:text-right tw:min-w-0">{r.value}</dd>
+            </div>
+          ))}
+          {showTotal && amount != null && (
+            <div className="tw:flex tw:justify-between tw:gap-3 tw:pt-2 tw:border-t tw:border-default">
+              <dt className="tw:font-medium">{config.get_text('apt_total_due')}</dt>
+              <dd className="tw:font-semibold">{config.format_money(amount)}</dd>
+            </div>
+          )}
+        </dl>
+      )}
+
+      {apt && (
+        <p className="tw:text-xs tw:text-muted-dark">
+          {config.get_text('assuming_timezone', { timezone: config.timezone })}
+        </p>
+      )}
+
+      {onChangeSearch && (
+        <button
+          type="button"
+          onClick={onChangeSearch}
+          className="tw:self-start tw:text-sm tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
+        >
+          {config.get_text('apt_change_search')}
+        </button>
+      )}
+    </div>
+  )
+}
+
+/** Service photo with a tinted fallback so an offline demo never shows a broken image. */
+function RailPhoto({ service }: { service: Service }) {
+  const [failed, setFailed] = useState(false)
+  if (!service.photo || failed) {
+    return (
+      <div
+        aria-hidden="true"
+        className="tw:w-full tw:aspect-[4/3] tw:rounded-lg tw:flex tw:items-center tw:justify-center"
+        style={{ background: `${service.colour}22` }}
+      >
+        <span className="tw:text-4xl tw:font-semibold tw:font-heading" style={{ color: service.colour }}>
+          {service.name.charAt(0).toUpperCase()}
+        </span>
+      </div>
+    )
+  }
+  return (
+    <img
+      src={service.photo}
+      alt={service.name}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="tw:w-full tw:aspect-[4/3] tw:object-cover tw:rounded-lg"
+    />
+  )
+}

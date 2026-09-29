@@ -4,7 +4,7 @@ import DOMPurify from 'dompurify'
 marked.setOptions({ gfm: true, breaks: false })
 
 /** Render markdown to sanitized HTML. Replaces the old `marked({sanitize:true})`,
- *  which was removed upstream — we now sanitize the output with DOMPurify. */
+ *  which was removed upstream: we now sanitize the output with DOMPurify. */
 export function toMarkdown(t: string | null | undefined): string {
   if (t === null || t === undefined) return ''
   return DOMPurify.sanitize(marked.parse(t, { async: false }) as string)

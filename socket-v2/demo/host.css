@@ -1,0 +1,758 @@
+/* Hallmark · genre: playful (soft consumer) · macrostructure: Photographic
+ * H2 Split-diptych hero knobs: ratio=6/6, right=photo, divider=negative space
+ * nav: N1b canonical three-section · footer: Ft5 Statement
+ * enrichment: E-photo (Unsplash, real photography: no invented mockups)
+ * pre-emit critique: P4 H5 E4 S5 R4 V4
+ *
+ * ---------------------------------------------------------------------------
+ * THIS FILE STYLES THE FAKE HOST PAGE ONLY: never the widget.
+ *
+ * Socket is embedded on tutoring agencies' own websites, so this page pretends
+ * to be one ("Bramble & Finch"). Seeing Socket inside a realistic, current-
+ * looking site is the point: on a bare dev harness you cannot tell whether the
+ * widget will look right on a customer's page.
+ *
+ * Two hard rules, both load-bearing:
+ *
+ *   1. Every selector is scoped under `.hp`. Nothing styles a bare element
+ *      globally. The widget mounts into `.tcs-root`, which ships its own reset;
+ *      a stray `h2 { }` here would be exactly the kind of style leak Socket's
+ *      scoping exists to prevent, and the demo would then hide a real embedding
+ *      bug instead of surfacing it.
+ *   2. Tokens are prefixed `--hp-*`, deliberately distinct from the widget's
+ *      (`--font-body`, `--color-primary`, …). Reusing those names would cascade
+ *      into `.tcs-root` and silently restyle the widget.
+ *
+ * The host page uses different fonts to the widget on purpose. A real customer's
+ * site would; matching them would flatter the demo dishonestly.
+ * --------------------------------------------------------------------------- */
+
+/* Plus Jakarta Sans: the warm geometric sans this class of consumer site uses.
+   Nothing like the widget's Halyard/Inter, which is the point. */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+:root {
+  /* Tokens on :root so `body` (outside `.hp`) can reference them without
+     duplicating a raw value. The `--hp-` prefix is the scoping guarantee. */
+
+  /* Type */
+  --hp-font: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Colour · anchor hue 295 (violet), matching the reference */
+  --hp-paper: oklch(99% 0.004 295);
+  --hp-paper-2: oklch(97.2% 0.008 295);
+  --hp-paper-3: oklch(94.5% 0.014 295);
+  --hp-rule: oklch(90% 0.012 295);
+  --hp-neutral: oklch(50% 0.014 295);
+  --hp-muted: oklch(43% 0.018 295);
+  --hp-ink: oklch(28% 0.028 292);
+  --hp-ink-deep: oklch(21% 0.036 292);
+
+  --hp-accent: oklch(50% 0.212 295); /* brand violet: CTAs, active states */
+  --hp-accent-hover: oklch(44% 0.216 295);
+  --hp-accent-ink: oklch(99% 0.004 295); /* text ON the accent fill */
+  --hp-accent-wash: oklch(96% 0.028 295); /* tinted panels */
+  --hp-accent-deep: oklch(32% 0.13 293); /* dark violet band */
+  --hp-focus: oklch(46% 0.22 295);
+
+  /* Scale */
+  --hp-text-xs: 0.75rem;
+  --hp-text-sm: 0.875rem;
+  --hp-text-base: 1rem;
+  --hp-text-md: 1.125rem;
+  --hp-text-lg: 1.375rem;
+  --hp-text-xl: 1.75rem;
+  --hp-text-2xl: 2.25rem;
+  --hp-display: clamp(2.25rem, 4.2vw + 1rem, 3.75rem);
+
+  /* Space (4pt) */
+  --hp-space-2xs: 0.25rem;
+  --hp-space-xs: 0.5rem;
+  --hp-space-sm: 0.75rem;
+  --hp-space-md: 1rem;
+  --hp-space-lg: 1.5rem;
+  --hp-space-xl: 2.5rem;
+  --hp-space-2xl: 4rem;
+  --hp-space-3xl: 6rem;
+
+  --hp-gutter: clamp(1.125rem, 4vw, 2.5rem);
+  --hp-measure: 62ch;
+
+  --hp-radius-sm: 10px;
+  --hp-radius: 16px;
+  --hp-radius-lg: 24px;
+  --hp-radius-pill: 999px;
+
+  --hp-shadow-card: 0 1px 2px oklch(28% 0.028 292 / 0.05);
+  --hp-shadow-lift: 0 12px 32px oklch(28% 0.028 292 / 0.1);
+
+  --hp-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --hp-dur-micro: 120ms;
+  --hp-dur-short: 220ms;
+
+  --hp-z-nav: 300;
+}
+
+/* Deliberately-overflowing elements must not scroll the document sideways.
+   `clip` not `hidden`: hidden would break the sticky nav by creating a
+   scroll container. */
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--hp-paper);
+}
+
+.hp {
+  background: var(--hp-paper);
+  color: var(--hp-ink);
+  font-family: var(--hp-font);
+  font-size: var(--hp-text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hp *,
+.hp *::before,
+.hp *::after {
+  box-sizing: border-box;
+}
+
+.hp__shell {
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: var(--hp-gutter);
+}
+
+/* Default link colour applies to PROSE links only (`.hp p a`). Deliberately not
+   a blanket `.hp a` rule: at that specificity it out-specifies every
+   component's own anchor styling: it painted the button labels
+   accent-on-accent (invisible) and overrode the nav's muted links. Components
+   own their link colour; this is only the fallback for body copy. */
+.hp p a {
+  color: var(--hp-accent);
+  text-underline-offset: 0.18em;
+}
+
+.hp :focus-visible {
+  outline: 2px solid var(--hp-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.hp img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Shared button voice: pill-shaped, the register this class of site uses.
+   Solid fill on the accent (never a gradient: gradient-on-pill is the tell). */
+.hp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hp-space-xs);
+  min-height: 48px;
+  padding: var(--hp-space-sm) var(--hp-space-xl);
+  border: 1px solid transparent;
+  border-radius: var(--hp-radius-pill);
+  font-family: inherit;
+  font-size: var(--hp-text-sm);
+  font-weight: 600;
+  line-height: 1;
+  /* Clickable text is a one-line object: a wrapped CTA reads as broken. */
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--hp-dur-micro) var(--hp-ease-out),
+    color var(--hp-dur-micro) var(--hp-ease-out),
+    transform var(--hp-dur-micro) var(--hp-ease-out);
+}
+
+.hp-btn--primary {
+  background: var(--hp-accent);
+  color: var(--hp-accent-ink);
+}
+
+.hp-btn--primary:hover {
+  background: var(--hp-accent-hover);
+}
+
+.hp-btn--ghost {
+  background: transparent;
+  border-color: var(--hp-rule);
+  color: var(--hp-ink);
+}
+
+.hp-btn--ghost:hover {
+  background: var(--hp-paper-2);
+}
+
+.hp-btn:active {
+  transform: translateY(1px);
+}
+
+.hp-btn:disabled,
+.hp-btn[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   N1b · Canonical three-section nav: brand · links · actions
+   ============================================================ */
+.hp-nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--hp-z-nav);
+  background: oklch(99% 0.004 295 / 0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--hp-rule);
+}
+
+.hp-nav__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--hp-space-lg);
+  min-height: 68px;
+}
+
+.hp-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hp-space-xs);
+  font-size: var(--hp-text-md);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--hp-ink-deep);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hp-nav__dot {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 7px;
+  background: var(--hp-accent);
+}
+
+.hp-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--hp-space-lg);
+  margin: 0 auto 0 var(--hp-space-md);
+  padding: 0;
+  list-style: none;
+}
+
+.hp-nav__links a {
+  font-size: var(--hp-text-sm);
+  font-weight: 500;
+  color: var(--hp-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--hp-dur-micro) var(--hp-ease-out);
+}
+
+.hp-nav__links a:hover,
+.hp-nav__links a[aria-current='page'] {
+  color: var(--hp-ink-deep);
+}
+
+.hp-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--hp-space-sm);
+  margin-left: auto;
+}
+
+@media (max-width: 60rem) {
+  .hp-nav__links {
+    display: none;
+  }
+
+  .hp-nav__actions {
+    margin-left: auto;
+  }
+}
+
+/* Hide the secondary action on the narrowest phones so the bar stays one row. */
+@media (max-width: 26rem) {
+  .hp-nav__actions .hp-btn--ghost {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Hero: H2 split diptych. Copy left, photograph right.
+   Left-biased, asymmetric: NOT a centred 100vh hero.
+   ============================================================ */
+.hp-hero {
+  padding-block: clamp(2.5rem, 5vw, 4rem) clamp(3.25rem, 6.5vw, 5.5rem);
+}
+
+.hp-hero__grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  /* minmax(0,·) so the photo's intrinsic width can't blow out the track. */
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
+@media (min-width: 60rem) {
+  .hp-hero__grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  }
+}
+
+.hp-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hp-space-xs);
+  margin: 0 0 var(--hp-space-md);
+  padding: var(--hp-space-2xs) var(--hp-space-sm);
+  border-radius: var(--hp-radius-pill);
+  background: var(--hp-accent-wash);
+  font-size: var(--hp-text-xs);
+  font-weight: 600;
+  color: var(--hp-accent);
+}
+
+.hp-hero__title {
+  margin: 0;
+  font-size: var(--hp-display);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.032em;
+  color: var(--hp-ink-deep);
+  /* Long compound words break rather than push the page wide. */
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+/* Emphasis via accent colour, not italics: an italicised word inside an
+   upright headline is one of the most reliable AI tells. */
+.hp-hero__accent {
+  color: var(--hp-accent);
+}
+
+.hp-hero__lede {
+  margin: var(--hp-space-lg) 0 0;
+  max-width: 46ch;
+  font-size: var(--hp-text-md);
+  color: var(--hp-muted);
+}
+
+.hp-hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hp-space-sm);
+  margin-top: var(--hp-space-xl);
+}
+
+.hp-hero__note {
+  margin: var(--hp-space-md) 0 0;
+  font-size: var(--hp-text-sm);
+  color: var(--hp-neutral);
+}
+
+/* Photo: organic rounded frame, the current consumer register. */
+.hp-hero__figure {
+  position: relative;
+  margin: 0;
+}
+
+.hp-hero__photo {
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-paper-3);
+}
+
+/* Small floating stat card over the photo: anchored to real, visible content
+   (the tutor count comes from the live API), not an invented metric. */
+.hp-hero__badge {
+  position: absolute;
+  left: clamp(-0.5rem, -1vw, -1.25rem);
+  bottom: clamp(1rem, 3vw, 1.75rem);
+  display: flex;
+  align-items: center;
+  gap: var(--hp-space-sm);
+  padding: var(--hp-space-sm) var(--hp-space-md);
+  border-radius: var(--hp-radius);
+  background: var(--hp-paper);
+  box-shadow: var(--hp-shadow-lift);
+}
+
+.hp-hero__badge-mark {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--hp-radius-pill);
+  background: var(--hp-accent-wash);
+  color: var(--hp-accent);
+  font-size: var(--hp-text-sm);
+  font-weight: 700;
+}
+
+.hp-hero__badge-text {
+  margin: 0;
+  font-size: var(--hp-text-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--hp-ink-deep);
+  white-space: nowrap;
+}
+
+.hp-hero__badge-sub {
+  display: block;
+  font-size: var(--hp-text-xs);
+  font-weight: 500;
+  color: var(--hp-neutral);
+}
+
+/* ============================================================
+   Demo-only mode switcher.
+   A real host page has no such control, so it reads as an
+   obvious strip rather than as site furniture.
+   ============================================================ */
+.hp-modes {
+  background: var(--hp-accent-deep);
+}
+
+.hp-modes__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hp-space-sm) var(--hp-space-md);
+  padding-block: var(--hp-space-sm);
+}
+
+.hp-modes__label {
+  font-size: var(--hp-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  /* On a dark surface the ink must flip: see contrast gate 41. */
+  color: oklch(88% 0.04 295);
+}
+
+.hp-modes__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hp-space-2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hp-modes__btn {
+  appearance: none;
+  border: 1px solid transparent;
+  background: none;
+  min-height: 44px;
+  padding: var(--hp-space-2xs) var(--hp-space-md);
+  border-radius: var(--hp-radius-pill);
+  font-family: inherit;
+  font-size: var(--hp-text-sm);
+  white-space: nowrap;
+  color: oklch(85% 0.045 295);
+  cursor: pointer;
+  transition:
+    background-color var(--hp-dur-micro) var(--hp-ease-out),
+    color var(--hp-dur-micro) var(--hp-ease-out);
+}
+
+.hp-modes__btn:hover {
+  background: oklch(40% 0.14 293);
+  color: var(--hp-accent-ink);
+}
+
+.hp-modes__btn:active {
+  transform: translateY(1px);
+}
+
+.hp-modes__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.hp-modes__btn[aria-selected='true'] {
+  background: var(--hp-paper);
+  color: var(--hp-accent-deep);
+  font-weight: 700;
+}
+
+/* ============================================================
+   The widget band: where Socket mounts.
+   ============================================================ */
+.hp-band {
+  background: var(--hp-paper-2);
+  padding-block: clamp(2.5rem, 5vw, 4rem) clamp(3rem, 6vw, 4.5rem);
+}
+
+/* The widget's own surface: a single containment layer. The widget draws its
+   own internal cards, so this wrapper must not become a card-in-card. */
+.hp-embed {
+  background: var(--hp-paper);
+  border: 1px solid var(--hp-rule);
+  border-radius: var(--hp-radius);
+  box-shadow: var(--hp-shadow-card);
+  padding: clamp(0.875rem, 2.5vw, 1.5rem);
+  min-height: 320px;
+}
+
+/* ============================================================
+   Trust strip: three points, but NOT the icon-tile grid.
+   Uneven spans, one photo tile, varied heights.
+   ============================================================ */
+.hp-trust {
+  padding-block: clamp(3rem, 6vw, 4.5rem);
+}
+
+.hp-trust__grid {
+  display: grid;
+  gap: var(--hp-space-md);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 48rem) {
+  .hp-trust__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  /* Deliberately uneven: the photo tile is wider than the two text tiles. */
+  .hp-trust__grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.hp-tile {
+  border-radius: var(--hp-radius);
+  padding: var(--hp-space-lg);
+  background: var(--hp-paper-2);
+}
+
+.hp-tile--photo {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  min-height: 260px;
+}
+
+.hp-tile--accent {
+  background: var(--hp-accent-wash);
+}
+
+.hp-tile__photo {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  object-fit: cover;
+}
+
+.hp-tile__caption {
+  position: absolute;
+  inset-inline: var(--hp-space-md);
+  bottom: var(--hp-space-md);
+  margin: 0;
+  padding: var(--hp-space-sm) var(--hp-space-md);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-paper);
+  font-size: var(--hp-text-sm);
+  font-weight: 600;
+  color: var(--hp-ink-deep);
+}
+
+.hp-tile__title {
+  margin: 0 0 var(--hp-space-xs);
+  font-size: var(--hp-text-lg);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  color: var(--hp-ink-deep);
+}
+
+.hp-tile__body {
+  margin: 0;
+  font-size: var(--hp-text-sm);
+  color: var(--hp-muted);
+}
+
+/* ============================================================
+   How it works: split, photo left, steps right.
+   Alternates direction against the hero so the page has rhythm.
+   ============================================================ */
+.hp-how {
+  padding-block: clamp(2rem, 4vw, 3rem) clamp(3.5rem, 7vw, 5.5rem);
+}
+
+.hp-how__grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
+@media (min-width: 60rem) {
+  .hp-how__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  }
+}
+
+.hp-how__photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-paper-3);
+}
+
+.hp-how__title {
+  margin: 0 0 var(--hp-space-lg);
+  font-size: var(--hp-text-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--hp-ink-deep);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.hp-steps {
+  display: grid;
+  gap: var(--hp-space-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: hp-step;
+}
+
+.hp-steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--hp-space-md);
+  align-items: start;
+  counter-increment: hp-step;
+}
+
+/* Numerals are genuinely ordinal here (the steps happen in order), which is
+   the one case a numbered label earns its place. */
+.hp-steps li::before {
+  content: counter(hp-step);
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--hp-radius-pill);
+  background: var(--hp-accent);
+  color: var(--hp-accent-ink);
+  font-size: var(--hp-text-sm);
+  font-weight: 700;
+}
+
+.hp-steps__title {
+  margin: 0 0 var(--hp-space-2xs);
+  font-size: var(--hp-text-md);
+  font-weight: 700;
+  color: var(--hp-ink-deep);
+}
+
+.hp-steps__body {
+  margin: 0;
+  font-size: var(--hp-text-sm);
+  color: var(--hp-muted);
+}
+
+/* ============================================================
+   Ft5 · Statement footer: one closing line, not a sitemap.
+   ============================================================ */
+.hp-foot {
+  background: var(--hp-accent-deep);
+  color: oklch(92% 0.03 295);
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.hp-foot__statement {
+  margin: 0;
+  max-width: 20ch;
+  font-size: clamp(1.75rem, 3.2vw + 0.5rem, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.032em;
+  line-height: 1.1;
+  color: var(--hp-accent-ink);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.hp-foot__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hp-space-md);
+  margin-top: var(--hp-space-xl);
+  padding-top: var(--hp-space-md);
+  border-top: 1px solid oklch(42% 0.12 293);
+  font-size: var(--hp-text-sm);
+}
+
+.hp-foot__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hp-space-xs);
+  font-weight: 700;
+  color: var(--hp-accent-ink);
+}
+
+.hp-foot__contact {
+  margin: 0;
+  color: oklch(84% 0.04 295);
+}
+
+.hp-foot__note {
+  margin: var(--hp-space-lg) 0 0;
+  max-width: var(--hp-measure);
+  font-size: var(--hp-text-xs);
+  line-height: 1.55;
+  color: oklch(80% 0.04 295);
+}
+
+/* One orchestrated entrance on load: hero only. Not every section. */
+.hp-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: hp-reveal 420ms var(--hp-ease-out) forwards;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes hp-reveal {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp *,
+  .hp *::before,
+  .hp *::after {
+    animation-duration: 150ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+  }
+
+  .hp-reveal {
+    transform: none;
+  }
+}

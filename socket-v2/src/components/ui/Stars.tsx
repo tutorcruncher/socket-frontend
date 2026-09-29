@@ -20,7 +20,11 @@ const STAR_WIDTH = Math.round((RAW_STAR_SIZE / RAW_STAR_STEP) * STAR_SIZE)
 const intRange = (v: number) => Array.from({ length: v }, (_, i) => i)
 
 /** Star rating display with fractional fill and an hours-reviewed caption. */
-export function Stars({ contractor }: { contractor: Pick<ContractorSummary, 'review_rating' | 'review_duration'> }) {
+export function Stars({
+  contractor,
+}: {
+  contractor: Pick<ContractorSummary, 'review_rating' | 'review_duration' | 'review_count'>
+}) {
   const config = useConfig()
   const uid = useId().replace(/:/g, '')
   if (!config.show_stars || typeof contractor.review_rating !== 'number') return null
@@ -36,10 +40,16 @@ export function Stars({ contractor }: { contractor: Pick<ContractorSummary, 'rev
   if (scoreProp > 0.7 && scoreProp < 0.95) scoreStars -= 0.15
   else if (scoreProp > 0.05 && scoreProp < 0.3) scoreStars += 0.15
 
+  // Prefer the review count: "(14 hours)" is hours *tutored*, which reads as a
+  // review count and isn't one. Fall back to hours only when no count is served
+  // (ROADMAP §3.1), so existing tenants lose nothing.
+  const count = contractor.review_count
   const comment =
-    config.show_hours_reviewed && typeof contractor.review_duration === 'number'
-      ? config.get_text('review_hours', { hours: Math.round(contractor.review_duration / 3600) })
-      : null
+    typeof count === 'number' && count > 0
+      ? config.get_text('review_count', { count })
+      : config.show_hours_reviewed && typeof contractor.review_duration === 'number'
+        ? config.get_text('review_hours', { hours: Math.round(contractor.review_duration / 3600) })
+        : null
   const starDisplay = `${Math.round(score * 10) / 10} Stars`
 
   return (

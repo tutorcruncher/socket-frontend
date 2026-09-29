@@ -1,4 +1,5 @@
 import type { ResolvedConfig } from '@/config/types'
+import { mockPost } from './mock'
 
 export interface RequestOptions {
   args?: Record<string, unknown>
@@ -70,7 +71,7 @@ export async function request<T>(
     })
   } catch (e) {
     // An aborted request (e.g. React Query cancelling on unmount / StrictMode
-    // double-invoke) is not an error — rethrow quietly so it doesn't spam logs.
+    // double-invoke) is not an error: rethrow quietly so it doesn't spam logs.
     if (e instanceof DOMException && e.name === 'AbortError') throw e
     const err: ApiError = { msg: `Network error requesting ${url}: ${e}`, url, status: 0 }
     console.error('request error', err)
@@ -97,12 +98,16 @@ export function createApi(config: ResolvedConfig) {
   return {
     get: <T>(path: string, args?: Record<string, unknown>, opts: RequestOptions = {}) =>
       request<T>(config, 'GET', path, { ...opts, args }),
-    post: <T>(path: string, sendData?: unknown, opts: RequestOptions = {}) =>
-      request<T>(config, 'POST', path, {
+    post: <T>(path: string, sendData?: unknown, opts: RequestOptions = {}) => {
+      // Endpoints the backend hasn't built yet are served by the mock layer.
+      const mocked = mockPost<T>(path, sendData)
+      if (mocked) return mocked
+      return request<T>(config, 'POST', path, {
         ...opts,
         sendData,
         expectedStatuses: opts.expectedStatuses ?? [201],
-      }),
+      })
+    },
   }
 }
 

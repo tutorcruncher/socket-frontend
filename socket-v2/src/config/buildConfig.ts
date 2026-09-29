@@ -15,6 +15,7 @@ import {
   type FormatContext,
 } from '@/lib/formatting'
 import { autoUrlRoot } from '@/lib/utils'
+import { MOCK_PAYMENT_CONFIG } from '@/api/mock'
 
 const env = import.meta.env
 
@@ -37,10 +38,10 @@ export async function buildConfig(
   const u: UserConfig = user ?? {}
   let error: string | null = null
 
-  let mode: SocketMode = u.mode ?? 'grid'
+  let mode: SocketMode = u.mode ?? 'tutors'
   if (u.mode && !MODES.includes(u.mode)) {
     error = `invalid mode "${u.mode}", options are: ${MODES.join(', ')}`
-    mode = 'grid'
+    mode = 'tutors'
   }
 
   const apiRoot = u.api_root || env.VITE_SOCKET_API_URL || 'https://socket.tutorcruncher.com'
@@ -57,7 +58,7 @@ export async function buildConfig(
 
   // router_mode: a plain enquiry form never navigates, so default it to `memory`
   // (touches the URL not at all); every other mode uses `hash`, which is refresh-safe
-  // on any host. `history` was removed — coerce legacy callers to `hash` so existing
+  // on any host. `history` was removed: coerce legacy callers to `hash` so existing
   // embeds keep working but stop 404-ing on refresh.
   const requested = u.router_mode as string | undefined
   let routerMode: RouterMode = mode === 'enquiry' ? 'memory' : 'hash'
@@ -95,7 +96,8 @@ export async function buildConfig(
   const config: ResolvedConfig = {
     public_key: publicKey,
     element: u.element ?? '#socket',
-    mode: u.mode ?? company.display_mode ?? mode,
+    mode,
+    display_mode: u.display_mode ?? company.display_mode ?? 'grid',
     router_mode: routerMode,
     api_root: apiRoot,
     url_root: urlRoot,
@@ -106,11 +108,16 @@ export async function buildConfig(
     show_labels: u.show_labels ?? company.show_labels ?? true,
     show_stars: u.show_stars ?? company.show_stars ?? true,
     show_hours_reviewed: u.show_hours_reviewed ?? company.show_hours_reviewed ?? true,
-    terms_link: u.terms_link,
+    terms_link: u.terms_link ?? company.terms_link,
     modal_container: u.modal_container,
     timezone,
     currency: u.currency ?? company.currency,
-    auth_url: u.auth_url,
+    // auth_url is served by /options and is required by the appointment booking flow.
+    auth_url: u.auth_url ?? company.auth_url,
+    distance_units: company.distance_units,
+    name: company.name,
+    name_display: company.name_display,
+    payment: company.payment ?? MOCK_PAYMENT_CONFIG,
     messages,
     contractor_filter: contractorFilter,
     event_callback: u.event_callback ?? (() => null),
@@ -121,6 +128,16 @@ export async function buildConfig(
     format_duration: format_duration as ResolvedConfig['format_duration'],
     format_money: format_money as ResolvedConfig['format_money'],
     get_text: get_text as ResolvedConfig['get_text'],
+  }
+
+  // Generic passthrough (matches the legacy widget): copy any company option we
+  // haven't already mapped, so a new server-side option is never silently dropped.
+  // Explicit user config and the mappings above always win.
+  const bag = config as unknown as Record<string, unknown>
+  for (const [k, v] of Object.entries(company)) {
+    if (bag[k] === undefined && (u as Record<string, unknown>)[k] === undefined) {
+      bag[k] = v
+    }
   }
 
   // Bind format helpers to the config so they can read currency/timezone/messages.
