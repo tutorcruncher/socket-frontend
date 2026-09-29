@@ -479,8 +479,8 @@ function SlotRow({
             </span>
           )}
           {typeof apt.distance === 'number' && (
-            <span className="tw:text-xs tw:text-muted-dark">
-              · {formatDistance(config, apt.distance)}
+            <span className="tw:text-xs tw:text-muted-dark tw:whitespace-nowrap">
+              {formatDistance(config, apt.distance)}
             </span>
           )}
         </div>

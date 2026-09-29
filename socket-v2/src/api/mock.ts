@@ -75,13 +75,33 @@ const GAZETTEER: Array<{ match: RegExp; place: SearchedLocation }> = [
   { match: /(london|wc|w1|se1|nw1)/i, place: { pretty: 'London, UK', lat: 51.5072, lng: -0.1276 } },
 ]
 
+const UK_POSTCODE = /^([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})?$/i
+
+/**
+ * Demo geocoder. Known places resolve to their real coordinates; anything else
+ * gets a stable made-up point within ~15 km of central London, so any postcode
+ * or town a visitor types produces distances and a working radius filter. The
+ * real API geocodes properly and can return `no_results`.
+ */
 export function geocode(query: string): SearchedLocation {
   const q = query.trim()
   if (!q) return { pretty: null }
   for (const g of GAZETTEER) {
     if (g.match.test(q)) return { ...g.place, pretty: g.place.pretty }
   }
-  return { pretty: null, error: 'no_results' }
+  const pc = q.match(UK_POSTCODE)
+  const pretty = pc
+    ? `${pc[1].toUpperCase()}${pc[2] ? ' ' + pc[2].toUpperCase() : ''}`
+    : q.replace(/\b\w/g, (c) => c.toUpperCase())
+  // Same input, same point: the outward code (or the whole town name) seeds it.
+  const seed = nameId((pc ? pc[1] : q).toLowerCase())
+  const angle = (seed % 360) * (Math.PI / 180)
+  const km = 2 + ((seed >>> 9) % 130) / 10
+  return {
+    pretty: pc ? `${pretty}, London` : `${pretty}, UK`,
+    lat: 51.5072 + (km * Math.cos(angle)) / 111,
+    lng: -0.1276 + (km * Math.sin(angle)) / (111 * Math.cos((51.5072 * Math.PI) / 180)),
+  }
 }
 
 /** Layer the V2 fields onto a real appointment, deterministically. */
