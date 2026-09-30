@@ -103,17 +103,9 @@ export const STRINGS: Messages = {
   contractor_not_found: 'Contractor not Found',
   contractor_not_found_id: 'No Contractor found with id {contractor_id}.',
   // Appointments: search / calendar / booking flow
-  // Account check (step 0, before lesson search)
-  apt_account_title: 'Do you already have an account?',
-  apt_account_intro:
-    'Enter your email so we can check. If you already book with us, signing in saves re-entering your details.',
-  apt_account_check: 'Continue',
-  apt_account_found: 'There is already an account for {email}. Sign in to continue.',
-  apt_account_not_found: "We couldn't find an account for {email}. You can book as a new client.",
-  apt_continue_as_guest: 'Continue as a new client',
-  apt_use_different_email: 'Use a different email',
-  apt_skip_account_check: 'Skip and show me the lessons',
-  apt_continue_to_search: 'Continue',
+  // Account: sign-in is offered, never required, before browsing
+  apt_already_client: 'Already a client?',
+  apt_sign_out: 'Sign out',
   apt_signed_in_as: 'Signed in as {name}',
   apt_search_title: 'Book a lesson',
   apt_search_intro: 'Choose the type of lesson you are looking for to see available dates.',

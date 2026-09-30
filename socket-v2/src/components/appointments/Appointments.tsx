@@ -10,7 +10,7 @@ import { CenteredSpinner } from '@/components/ui/Spinner'
 import { CalendarSkeleton } from './CalendarSkeleton'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
-import { AccountStep } from './AccountStep'
+import { AccountLine } from './AccountLine'
 import { SearchForm, type AppointmentSearch } from './SearchForm'
 import { CalendarStep, isBookable } from './CalendarStep'
 import { BookingPanel } from './BookingPanel'
@@ -21,14 +21,14 @@ import { serviceIdsFor, subjectOf } from '@/lib/services'
 
 /**
  * Appointments: search-first booking flow:
- *   0. AccountStep:  existing client? sign in, else continue as guest
  *   1. SearchForm:   pick lesson type (+ venue)
  *   2. CalendarStep: month grid of available dates + day slot list
- *   3. BookingPanel: inline booking (SSO fires once under the hood)
+ *   3. BookingPanel: inline booking, as a guest or a signed-in client
  *
- * Only the booking step is routed (`#/appointment/:id`) so old deep links keep
- * working; search/calendar state lives in the component. The booking branch is
- * checked before step 0 so a deep link is never gated behind the account check.
+ * Nothing stands between a visitor and the lessons: signing in is offered
+ * (`AccountLine`) but never required, and a new client's account is created at
+ * booking. Only the booking step is routed (`#/appointment/:id`) so old deep links
+ * keep working; search/calendar state lives in the component.
  */
 export function Appointments() {
   const config = useConfig()
@@ -40,7 +40,6 @@ export function Appointments() {
   const hasBookings = getMockBookings().length > 0
 
   const [view, setView] = useState<'book' | 'bookings'>('book')
-  const [accountChecked, setAccountChecked] = useState(false)
   const [search, setSearch] = useState<AppointmentSearch | null>(null)
   // "Change" reopens the search form pre-filled rather than discarding the search.
   const [editingSearch, setEditingSearch] = useState(false)
@@ -129,13 +128,27 @@ export function Appointments() {
     )
   }
 
-  // --- Step 0: account check ---
-  // Always shown for now (the lookup is mocked); once it is real, a visitor with a
-  // live SSO session should skip straight to search.
-  if (!accountChecked) {
+  // Kept visible while on the bookings tab, even after the last one is cancelled.
+  const nav = (
+    <BookingsNav
+      view={view}
+      onChange={setView}
+      hasBookings={hasBookings || view === 'bookings'}
+    />
+  )
+  const topRow = (
+    <div className="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-x-4 tw:gap-y-2">
+      {nav}
+      <AccountLine auth={auth} className="tw:ml-auto" />
+    </div>
+  )
+
+  // --- My bookings ---
+  if (view === 'bookings') {
     return (
-      <div className="tcs-root tw:font-body tw:text-primary">
-        <AccountStep auth={auth} onContinue={() => setAccountChecked(true)} />
+      <div className="tcs-root tw:font-body tw:text-primary tw:flex tw:flex-col tw:gap-4">
+        {topRow}
+        <MyBookings auth={auth} />
       </div>
     )
   }
@@ -143,7 +156,8 @@ export function Appointments() {
   // --- Step 1: search ---
   if (!search || editingSearch) {
     return (
-      <div className="tcs-root tw:font-body tw:text-primary">
+      <div className="tcs-root tw:font-body tw:text-primary tw:flex tw:flex-col tw:gap-4">
+        {nav}
         <SearchForm
           services={services}
           initial={search}
@@ -154,6 +168,8 @@ export function Appointments() {
             setMonth(null)
           }}
         />
+        {/* Under the narrow search card, centred with it. */}
+        <AccountLine auth={auth} className="tw:justify-center" />
       </div>
     )
   }
@@ -200,52 +216,48 @@ export function Appointments() {
 
   return (
     <div className="tcs-root tw:font-body tw:text-primary tw:flex tw:flex-col tw:gap-4">
-      <BookingsNav view={view} onChange={setView} hasBookings={hasBookings} />
-      {view === 'bookings' ? (
-        <MyBookings auth={auth} />
-      ) : (
-        <FlowLayout
-          stepId="time"
-          intro={config.get_text('apt_step_time_intro')}
-          headerAside={searchChips}
-        >
-          {windowQuery.isError && (
-            <Alert variant="danger">Something went wrong loading lessons. Please try again.</Alert>
-          )}
+      {topRow}
+      <FlowLayout
+        stepId="time"
+        intro={config.get_text('apt_step_time_intro')}
+        headerAside={searchChips}
+      >
+        {windowQuery.isError && (
+          <Alert variant="danger">Something went wrong loading lessons. Please try again.</Alert>
+        )}
 
-          {searchedLocation?.error === 'no_results' && search.location && (
-            <Alert variant="warning">
-              {config.get_text('apt_location_not_found', { location: search.location })}
-            </Alert>
-          )}
+        {searchedLocation?.error === 'no_results' && search.location && (
+          <Alert variant="warning">
+            {config.get_text('apt_location_not_found', { location: search.location })}
+          </Alert>
+        )}
 
-          {windowQuery.isPending || monthQuery.isPending ? (
-            <CalendarSkeleton />
-          ) : (
-            <CalendarStep
-              appointments={monthAppointments}
-              nextAvailable={nextAvailable}
-              month={activeMonth}
-              onMonthChange={setMonth}
-              selectedDay={activeDay}
-              onSelectDay={(d) => {
-                setSelectedDay(d)
-                setMonth(monthKey(d))
-              }}
-              onBook={(apt) => navigate(url(`appointment/${apt.link}`))}
-              attendees={auth.attendees}
-              describe={(apt) => {
-                const svc = services.find((s) => s.id === apt.service_id)
-                return {
-                  // The subject is already in the chip when one was searched.
-                  subject: svc && !search.subject ? subjectOf(svc) : null,
-                  tutor: svc?.contractor ?? null,
-                }
-              }}
-            />
-          )}
-        </FlowLayout>
-      )}
+        {windowQuery.isPending || monthQuery.isPending ? (
+          <CalendarSkeleton />
+        ) : (
+          <CalendarStep
+            appointments={monthAppointments}
+            nextAvailable={nextAvailable}
+            month={activeMonth}
+            onMonthChange={setMonth}
+            selectedDay={activeDay}
+            onSelectDay={(d) => {
+              setSelectedDay(d)
+              setMonth(monthKey(d))
+            }}
+            onBook={(apt) => navigate(url(`appointment/${apt.link}`))}
+            attendees={auth.attendees}
+            describe={(apt) => {
+              const svc = services.find((s) => s.id === apt.service_id)
+              return {
+                // The subject is already in the chip when one was searched.
+                subject: svc && !search.subject ? subjectOf(svc) : null,
+                tutor: svc?.contractor ?? null,
+              }
+            }}
+          />
+        )}
+      </FlowLayout>
     </div>
   )
 }

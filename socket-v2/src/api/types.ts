@@ -181,18 +181,6 @@ export interface CheckClientResponse {
   appointment_attendees: Record<number, number[]>
 }
 
-/**
- * Does this email already belong to a client? **V2 contract: mocked.**
- *
- * Deliberately minimal: it returns only a boolean, never a name or any other
- * account detail, so a positive answer confirms nothing beyond "an account
- * exists". The endpoint is still an enumeration oracle and the backend must
- * rate-limit it before this ships.
- */
-export interface LookupClientResponse {
-  exists: boolean
-}
-
 // ---------------------------------------------------------------------------
 // Payments & booking management: V2 contract (mocked; see ROADMAP §3.5)
 // ---------------------------------------------------------------------------

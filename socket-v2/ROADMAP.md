@@ -227,6 +227,18 @@ failure (the UI already renders per-field errors).
 account? Sign in" falling back to SSO; required-field + email validation; pending
 state; and a confirmation that tells them the account was created.
 
+**No account step before browsing.** An earlier build opened on "Do you already
+have an account?" with an email lookup. It was removed: it put a form in front of
+every visitor, did not actually sign existing clients in (they still went through
+SSO), discarded the email a new client typed, and needed a `lookup-client` endpoint
+that reveals which emails are clients. The flow now opens on search; "Already a
+client? Sign in" is offered on the search form, the calendar and the details step,
+and the backend matches a guest's email to an existing client at booking.
+
+**Demo sign-in.** With `VITE_USE_MOCK_API` on, "Sign in" skips the SSO popup and
+signs in as a mock client (two students, one saved card, one upcoming lesson), so
+the signed-in path can be demoed without a TutorCruncher login.
+
 **Follow-ups worth considering:** reCAPTCHA on this endpoint (it's unauthenticated,
 see §2.1), and rate limiting per email/IP.
 

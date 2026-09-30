@@ -27,6 +27,8 @@ import type {
   SavedCard,
   SearchedLocation,
   Service,
+  SessionData,
+  SsoArgs,
 } from './types'
 
 export const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API !== 'false'
@@ -208,6 +210,65 @@ export function recordMockBooking(b: ClientBooking): void {
   mockBookings.unshift(b)
 }
 
+/*
+ * Demo sign-in. With the mock on, "Sign in" skips the SSO popup and signs the
+ * visitor in as this client, so the signed-in flow (student picker, saved card,
+ * "already attending", My bookings) can be demoed without a TutorCruncher login.
+ */
+export const MOCK_SESSION: SessionData = {
+  nm: 'Chris Stanlake',
+  srs: { '9001': 'Sam Stanlake', '9002': 'Ada Stanlake' },
+}
+export const MOCK_SSO_ARGS: SsoArgs = { sso_data: JSON.stringify(MOCK_SESSION), signature: 'mock' }
+
+let seededBooking = false
+
+/** Give the demo client one upcoming lesson, so My bookings is not empty on sign-in. */
+export async function seedMockClientBooking(): Promise<void> {
+  if (seededBooking) return
+  seededBooking = true
+  const tutors = (await tutorsPromise) ?? []
+  const soon = Date.now() + 2 * 86_400_000
+  const apt = mockBusyAppointments(tutors).find(
+    (a) =>
+      new Date(`${a.start}Z`).getTime() > soon &&
+      (a.attendees_max === null || a.attendees_count < a.attendees_max),
+  )
+  if (!apt) return
+  const enriched = enrichAppointment(apt)
+  mockBookings.push({
+    booking_id: 'bk_mock_seed',
+    appointment: apt.id,
+    service_name: apt.service_name,
+    service_colour: apt.service_colour,
+    student_name: MOCK_SESSION.srs['9002'],
+    start: apt.start,
+    finish: apt.finish,
+    delivery: enriched.delivery,
+    address: enriched.address,
+    price: apt.price,
+    can_cancel: true,
+    contractor: busyServices(tutors).find((svc) => svc.id === apt.service_id)?.contractor ?? null,
+  })
+}
+
+/** Lessons the demo client's students are on: appointment id -> student ids. */
+export function mockAttendees(): Record<number, number[]> {
+  const idByName = new Map(Object.entries(MOCK_SESSION.srs).map(([id, name]) => [name, Number(id)]))
+  const out: Record<number, number[]> = {}
+  for (const b of mockBookings) {
+    const id = idByName.get(b.student_name)
+    if (id) (out[b.appointment] ??= []).push(id)
+  }
+  return out
+}
+
+/** Signing out of the demo client forgets their bookings. */
+export function clearMockBookings(): void {
+  mockBookings.length = 0
+  seededBooking = false
+}
+
 /**
  * Intercept POSTs to endpoints the backend hasn't built yet.
  * Returns null for anything real, so the request falls through to the live API.
@@ -218,18 +279,6 @@ export function mockPost<T>(
 ): Promise<{ status: number; data: T }> | null {
   if (!USE_MOCK_API) return null
   const body = (data ?? {}) as Record<string, unknown>
-
-  if (path === 'lookup-client') {
-    // Does this email already belong to a TC client? The real endpoint must not
-    // leak account existence to arbitrary callers: see ROADMAP §3.7 for the
-    // rate-limiting / enumeration-hardening the backend needs to apply.
-    console.debug('[socket:mock] lookup-client', data)
-    const email = String(body.email ?? '').trim().toLowerCase()
-    // Deterministic stand-in: anything at these domains is treated as existing,
-    // so the demo can exercise both branches without a real client table.
-    const exists = /@(example\.com|tutorcruncher\.com)$/.test(email)
-    return delay({ exists } as T, 600)
-  }
 
   if (path === 'book-appointment-guest') {
     // Legacy no-payment path (ROADMAP §3.4), kept for payment-optional tenants.

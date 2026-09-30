@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useApi, useConfig } from '@/config/context'
 import type { CheckClientResponse, SessionData, SsoArgs } from '@/api/types'
+import {
+  clearMockBookings,
+  mockAttendees,
+  MOCK_SSO_ARGS,
+  seedMockClientBooking,
+  USE_MOCK_API,
+} from '@/api/mock'
 
 const LS_KEY = '_tcs_user_data_'
 
@@ -42,6 +49,12 @@ export function useAppointmentAuth(): AppointmentAuth {
 
   const refreshAttendees = useCallback(async () => {
     if (!ssoArgs) return
+    if (USE_MOCK_API) {
+      // The demo client's lessons come from the mock booking store.
+      await seedMockClientBooking()
+      setAttendees(mockAttendees())
+      return
+    }
     try {
       const { data } = await api.get<CheckClientResponse>('check-client', ssoArgs)
       setAttendees(data.appointment_attendees)
@@ -60,6 +73,13 @@ export function useAppointmentAuth(): AppointmentAuth {
   }, [refreshAttendees])
 
   const signin = useCallback(() => {
+    if (USE_MOCK_API) {
+      // Demo sign-in: no SSO popup, straight into the mock client's account.
+      const raw = JSON.stringify(MOCK_SSO_ARGS)
+      window.sessionStorage[LS_KEY] = raw
+      setState({ ssoArgs: MOCK_SSO_ARGS, session: JSON.parse(MOCK_SSO_ARGS.sso_data) as SessionData })
+      return
+    }
     const onMessage = (event: MessageEvent) => {
       let parsed: SsoArgs
       try {
@@ -85,6 +105,7 @@ export function useAppointmentAuth(): AppointmentAuth {
   }, [config.auth_url])
 
   const signout = useCallback(() => {
+    if (USE_MOCK_API) clearMockBookings()
     window.sessionStorage.removeItem(LS_KEY)
     setState(null)
     setAttendees(null)
