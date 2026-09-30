@@ -7,164 +7,11 @@
    same attribute. Structural changes (a theme with no boxes, say) target the
    `tcs-*` hook classes on the widget's building blocks: panel, rail, card,
    calendar, slot, chip, time, day, input, badge, button, stepper.
+   Themes: soft, bold, elegant, vivid. `classic` is the untouched default.
 
    These rules are deliberately unlayered so they win over the layered
    utilities and the scoped reset without specificity games.
    ============================================================ */
-
-/* ------------------------------------------------------------
-   minimal: editorial. No boxes anywhere: content sits flush on the host page
-   with thin rules between sections, the host's own font, near-black ink,
-   underline inputs, square black buttons and small uppercase labels.
-   ------------------------------------------------------------ */
-[data-tcs-theme='minimal'] {
-  --tw-color-primary: #111827;
-  --tw-color-heading: #111827;
-  --tw-color-link: #111827;
-  --tw-color-muted: #9ca3af;
-  --tw-color-muted-dark: #6b7280;
-  --tw-background-color-primary: #111827;
-  --tw-background-color-content: transparent;
-  --tw-background-color-hover: #f3f4f6;
-  --tw-border-color-default: #e5e7eb;
-  --tw-background-color-info: #f3f4f6;
-  --tw-border-color-info: #e5e7eb;
-  --tw-text-color-info: #111827;
-  --tw-background-color-success: transparent;
-  --tw-border-color-success: #15803d;
-  --tw-text-color-success: #15803d;
-  --tw-radius-md: 0;
-  --tw-radius-lg: 0;
-  --tw-radius-xl: 0;
-}
-
-/* Type: the host's font, tighter headings. */
-[data-tcs-theme='minimal'] .tcs-root,
-[data-tcs-theme='minimal'].tcs-root,
-[data-tcs-theme='minimal'] .tw\:font-body,
-[data-tcs-theme='minimal'] .tw\:font-heading,
-[data-tcs-theme='minimal'] :is(h1, h2, h3, h4) {
-  font-family: inherit;
-}
-[data-tcs-theme='minimal'] :is(h1, h2, h3, h4) {
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-[data-tcs-theme='minimal'] .tw\:shadow-sm {
-  box-shadow: none;
-}
-
-/* Boxes become sections divided by rules. */
-[data-tcs-theme='minimal'] .tcs-panel,
-[data-tcs-theme='minimal'] .tcs-card,
-[data-tcs-theme='minimal'] .tcs-calendar,
-[data-tcs-theme='minimal'] .tcs-rail {
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-}
-[data-tcs-theme='minimal'] .tcs-panel {
-  border-top: 2px solid #111827;
-  padding-top: 1.5rem;
-}
-[data-tcs-theme='minimal'] .tcs-rail {
-  border-top: 1px solid var(--tw-border-color-default);
-  padding-top: 1.25rem;
-}
-[data-tcs-theme='minimal'] .tcs-card {
-  max-width: 28rem;
-}
-
-/* Lesson rows: a list with hairlines, not cards. */
-[data-tcs-theme='minimal'] .tcs-slot {
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--tw-border-color-default);
-  border-radius: 0;
-  padding: 1rem 0;
-}
-[data-tcs-theme='minimal'] .tcs-slot:last-child {
-  border-bottom: 1px solid var(--tw-border-color-default);
-}
-
-/* Search context: plain words separated by dots, not pills. */
-[data-tcs-theme='minimal'] .tcs-chip {
-  background: transparent;
-  border: 0;
-  padding: 0;
-  font-weight: 500;
-}
-[data-tcs-theme='minimal'] .tcs-chip + .tcs-chip::before {
-  content: '·';
-  margin-right: 0.5rem;
-  color: var(--tw-color-muted);
-}
-
-/* Controls: square, black on black. */
-[data-tcs-theme='minimal'] .tcs-btn,
-[data-tcs-theme='minimal'] .tcs-time,
-[data-tcs-theme='minimal'] .tcs-day {
-  border-radius: 0;
-}
-[data-tcs-theme='minimal'] .tcs-time {
-  border-color: #111827;
-}
-
-/* Inputs: an underline, nothing more. */
-[data-tcs-theme='minimal'] .tcs-input {
-  background: transparent;
-  border-width: 0 0 1px;
-  border-color: #111827;
-  border-radius: 0;
-  box-shadow: none;
-  padding-left: 0;
-  padding-right: 0;
-}
-[data-tcs-theme='minimal'] .tcs-input-icon {
-  padding-left: 1.5rem;
-}
-/* The icon that decorates such an input moves flush left with it. */
-[data-tcs-theme='minimal'] :has(> .tcs-input-icon) > svg {
-  left: 0;
-}
-[data-tcs-theme='minimal'] .tcs-input:focus {
-  outline: none;
-  border-bottom-width: 2px;
-}
-
-/* Status: small caps text, no pill. */
-[data-tcs-theme='minimal'] .tcs-badge {
-  background: transparent;
-  padding: 0;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-/* Stepper: numbered squares with no connecting line. */
-[data-tcs-theme='minimal'] .tcs-stepper-line {
-  display: none;
-}
-[data-tcs-theme='minimal'] .tcs-stepper-dot {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 0;
-  font-size: 0.75rem;
-  outline: none;
-}
-
-/* Links read as links again now they are not blue. Toggle cards (aria-pressed)
-   use the link colour as a selected state, not as a link. */
-[data-tcs-theme='minimal'] .tw\:text-link:not([aria-pressed]):not(.tcs-btn) {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: #9ca3af;
-}
-[data-tcs-theme='minimal'] .tw\:text-link:hover {
-  text-decoration-color: currentColor;
-}
 
 /* ------------------------------------------------------------
    soft: friendly consumer look. Large radii, pill buttons, tinted lavender
@@ -380,4 +227,105 @@
 }
 [data-tcs-theme='elegant'] .tcs-stepper-line {
   border-color: #d8c9b4;
+}
+
+/* ------------------------------------------------------------
+   vivid: saturated cyan-to-indigo gradients on actions, selected states and
+   panel edges, white panels with coloured glow, gradient headings, bright
+   badges. The modern SaaS register.
+   ------------------------------------------------------------ */
+[data-tcs-theme='vivid'] {
+  --tcs-grad: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+  --tw-font-heading: var(--tw-font-body);
+  --tw-color-primary: #1e1b4b;
+  --tw-color-heading: #1e1b4b;
+  --tw-color-link: #4f46e5;
+  --tw-color-muted: #94a3b8;
+  --tw-color-muted-dark: #64748b;
+  --tw-background-color-primary: #4f46e5;
+  --tw-background-color-content: #f0f9ff;
+  --tw-background-color-hover: #e0f2fe;
+  --tw-border-color-default: #dbeafe;
+  --tw-background-color-info: #e0e7ff;
+  --tw-border-color-info: #a5b4fc;
+  --tw-text-color-info: #3730a3;
+  --tw-background-color-success: #ccfbf1;
+  --tw-border-color-success: #14b8a6;
+  --tw-text-color-success: #0f766e;
+  --tw-radius-md: 0.625rem;
+  --tw-radius-lg: 0.875rem;
+  --tw-radius-xl: 1.25rem;
+}
+[data-tcs-theme='vivid'] :is(h1, h2, h3, h4) {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+[data-tcs-theme='vivid'] .tcs-panel > header h2,
+[data-tcs-theme='vivid'] .tcs-card h2 {
+  background: var(--tcs-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: fit-content;
+}
+/* Gradient edges: a transparent border painted by a second background layer. */
+[data-tcs-theme='vivid'] .tcs-panel,
+[data-tcs-theme='vivid'] .tcs-card,
+[data-tcs-theme='vivid'] .tcs-rail {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    var(--tcs-grad) border-box;
+  box-shadow: 0 24px 48px -24px rgb(79 70 229 / 0.35);
+}
+[data-tcs-theme='vivid'] .tcs-calendar,
+[data-tcs-theme='vivid'] .tcs-slot {
+  box-shadow: 0 10px 30px -14px rgb(6 182 212 / 0.35);
+}
+[data-tcs-theme='vivid'] .tcs-slot {
+  border-color: transparent;
+  box-shadow:
+    inset 4px 0 0 #06b6d4,
+    0 10px 30px -14px rgb(6 182 212 / 0.35);
+}
+[data-tcs-theme='vivid'] .tcs-btn.tw\:bg-primary,
+[data-tcs-theme='vivid'] .tcs-time[aria-pressed='true'],
+[data-tcs-theme='vivid'] .tcs-day[aria-pressed='true'],
+[data-tcs-theme='vivid'] .tcs-stepper-dot.tw\:bg-primary,
+[data-tcs-theme='vivid'] .tcs-stepper-line.tw\:bg-primary {
+  background: var(--tcs-grad);
+  color: #ffffff;
+  border-color: transparent;
+}
+[data-tcs-theme='vivid'] .tcs-btn.tw\:bg-primary {
+  box-shadow: 0 8px 20px -8px rgb(99 102 241 / 0.6);
+}
+[data-tcs-theme='vivid'] .tcs-btn.tw\:bg-primary:hover {
+  filter: brightness(1.06);
+}
+[data-tcs-theme='vivid'] .tcs-btn,
+[data-tcs-theme='vivid'] .tcs-time,
+[data-tcs-theme='vivid'] .tcs-chip {
+  border-radius: 999px;
+}
+[data-tcs-theme='vivid'] .tcs-time {
+  border-color: #a5f3fc;
+  font-weight: 600;
+}
+[data-tcs-theme='vivid'] .tcs-chip {
+  background: #e0f2fe;
+  border-color: transparent;
+  color: #0e7490;
+  font-weight: 600;
+}
+[data-tcs-theme='vivid'] .tcs-input {
+  border-color: #c7d2fe;
+  box-shadow: none;
+}
+[data-tcs-theme='vivid'] .tcs-badge {
+  font-weight: 600;
+}
+[data-tcs-theme='vivid'] .tcs-stepper-dot {
+  outline: none;
+  font-weight: 700;
 }
