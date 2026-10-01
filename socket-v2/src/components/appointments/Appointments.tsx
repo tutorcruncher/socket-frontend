@@ -14,7 +14,8 @@ import { AccountLine } from './AccountLine'
 import { SearchForm, type AppointmentSearch } from './SearchForm'
 import { CalendarStep, isBookable } from './CalendarStep'
 import { BookingPanel } from './BookingPanel'
-import { FlowLayout } from './FlowLayout'
+import { FlowLayout } from '@/components/shared/FlowLayout'
+import { useBookingSteps } from './steps'
 import { MyBookings } from './MyBookings'
 import { getMockBookings } from '@/api/mock'
 import { serviceIdsFor, subjectOf } from '@/lib/services'
@@ -47,6 +48,7 @@ export function Appointments() {
   const [month, setMonth] = useState<string | null>(null)
   const [selectedDay, setSelectedDay] = useState<string | null>(null)
 
+  const bookingSteps = useBookingSteps()
   const { data: services = [] } = useServices()
   const NO_FILTERS = { serviceIds: null, delivery: null, location: null, radius: null }
   // Unfiltered window backs deep links (a booked slot may be outside the search).
@@ -218,6 +220,7 @@ export function Appointments() {
     <div className="tcs-root tw:font-body tw:text-primary tw:flex tw:flex-col tw:gap-4">
       {topRow}
       <FlowLayout
+        steps={bookingSteps}
         stepId="time"
         intro={config.get_text('apt_step_time_intro')}
         headerAside={searchChips}

@@ -4,8 +4,8 @@ import type { Appointment, DeliveryMode, Service } from '@/api/types'
 import { deliveryLabelKey } from '@/lib/delivery'
 import { Markdown } from '@/components/ui/Markdown'
 import { CheckIcon } from '@/components/ui/Icons'
-import { cx } from '@/lib/utils'
 import { Photo } from '@/components/shared/Photo'
+import { SummaryList, type SummaryRow } from '@/components/shared/SummaryList'
 
 /**
  * Left-hand booking summary. Starts as a service card (photo, blurb, key facts)
@@ -179,7 +179,7 @@ export function BookingSummary({
   const aptLocation =
     apt && apt.delivery !== 'online' ? (apt.address?.pretty ?? apt.location ?? null) : null
 
-  const rows: Array<{ label: string; value: string; onChange?: () => void }> = []
+  const rows: SummaryRow[] = []
   if (lesson) rows.push({ label: config.get_text('apt_summary_lesson'), value: lesson })
   if (apt) {
     rows.push({
@@ -202,34 +202,15 @@ export function BookingSummary({
     rows.push({ label: config.get_text('apt_summary_price'), value: config.format_money(apt.price) })
 
   return (
-    <dl className={cx('tw:flex tw:flex-col tw:gap-2 tw:text-sm', className)}>
-      {rows.map((r) => (
-        <div key={r.label} className="tw:flex tw:justify-between tw:gap-3">
-          <dt className="tw:text-muted-dark tw:shrink-0">{r.label}</dt>
-          <dd className="tw:text-right tw:min-w-0">
-            {r.value}
-            {r.onChange && (
-              <>
-                {' '}
-                <button
-                  type="button"
-                  onClick={r.onChange}
-                  className="tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
-                >
-                  {config.get_text('apt_change_search')}
-                </button>
-              </>
-            )}
-          </dd>
-        </div>
-      ))}
-      {amount != null && (
-        <div className="tw:flex tw:justify-between tw:gap-3 tw:pt-2 tw:border-t tw:border-default">
-          <dt className="tw:font-medium">{config.get_text('apt_total_due')}</dt>
-          <dd className="tw:font-semibold">{config.format_money(amount)}</dd>
-        </div>
-      )}
-    </dl>
+    <SummaryList
+      rows={rows}
+      total={
+        amount != null
+          ? { label: config.get_text('apt_total_due'), value: config.format_money(amount) }
+          : null
+      }
+      className={className}
+    />
   )
 }
 

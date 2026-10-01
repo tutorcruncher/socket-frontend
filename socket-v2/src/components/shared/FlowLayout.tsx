@@ -1,23 +1,20 @@
 import type { ReactNode } from 'react'
-import { useConfig } from '@/config/context'
 import { cx } from '@/lib/utils'
 import { CheckIcon, ChevronLeftIcon } from '@/components/ui/Icons'
 
-export type FlowStepId = 'time' | 'details' | 'review' | 'payment' | 'confirmed'
-
-interface FlowStep {
-  id: FlowStepId
+export interface FlowStep {
+  id: string
   label: string
 }
 
 /**
- * Booking flow shell: the current step under a numbered stepper, with an optional
- * summary rail on the left that fills in as choices are made. The calendar step
- * renders without a rail (the calendar needs the width); once a slot is chosen the
- * checkout steps carry the rail. Shared across the routed boundary
- * (`#/appointment/:id`) so the stepper stays continuous.
+ * Shell for a multi-step flow (booking, buying a package, requesting a lesson): the
+ * current step under a numbered stepper, with an optional summary rail on the left
+ * that fills in as choices are made. Each flow passes its own `steps`; a step that
+ * needs the full width (the booking calendar) simply omits the rail.
  */
 export function FlowLayout({
+  steps,
   stepId,
   title,
   intro,
@@ -25,10 +22,10 @@ export function FlowLayout({
   back,
   rail,
   railOnMobile = true,
-  includePayment,
   children,
 }: {
-  stepId: FlowStepId
+  steps: FlowStep[]
+  stepId: string
   /** Replaces the step label as the heading, e.g. "Your lesson is booked". */
   title?: string
   /** A way back out of the flow, shown inside the card above the stepper. */
@@ -40,21 +37,8 @@ export function FlowLayout({
   rail?: ReactNode
   /** False hides the rail below `lg`, for steps that carry their own summary. */
   railOnMobile?: boolean
-  /** Whether a payment step exists for this booking; defaults to the tenant config. */
-  includePayment?: boolean
   children: ReactNode
 }) {
-  const config = useConfig()
-  const withPayment = includePayment ?? !!config.payment?.required
-  const steps: FlowStep[] = [
-    { id: 'time', label: config.get_text('apt_step_time') },
-    { id: 'details', label: config.get_text('apt_step_details') },
-    { id: 'review', label: config.get_text('apt_step_review') },
-    ...(withPayment
-      ? [{ id: 'payment' as const, label: config.get_text('apt_step_payment') }]
-      : []),
-    { id: 'confirmed', label: config.get_text('apt_step_confirmed') },
-  ]
   const idx = Math.max(
     0,
     steps.findIndex((s) => s.id === stepId),

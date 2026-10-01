@@ -12,7 +12,8 @@ import type { ApiError } from '@/api/client'
 import { recordMockBooking } from '@/api/mock'
 import { useServices } from '@/api/queries'
 import { Alert } from '@/components/ui/Alert'
-import { FlowLayout } from './FlowLayout'
+import { FlowLayout } from '@/components/shared/FlowLayout'
+import { useBookingSteps } from './steps'
 import { BookingSummary, SummaryRail } from './SummaryRail'
 import { GuestBookingForm, type GuestDetails } from './GuestBookingForm'
 import { ReviewStep } from './ReviewStep'
@@ -59,6 +60,8 @@ export function BookingPanel({
     config.payment?.mode === 'deposit'
       ? (config.payment.deposit_amount ?? 0)
       : (apt.price ?? 0)
+
+  const steps = useBookingSteps(paymentRequired && amount > 0)
 
   const [step, setStep] = useState<Step>('details')
   const [submitting, setSubmitting] = useState(false)
@@ -178,6 +181,7 @@ export function BookingPanel({
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
       <FlowLayout
+        steps={steps}
         stepId={step}
         back={
           step !== 'confirmed'
@@ -186,7 +190,6 @@ export function BookingPanel({
         }
         title={step === 'confirmed' ? config.get_text('apt_confirmed_title') : undefined}
         intro={intros[step]}
-        includePayment={paymentRequired && amount > 0}
         // The confirmation is the record of the booking; a rail beside it would
         // repeat it and show stale "spaces available".
         rail={
