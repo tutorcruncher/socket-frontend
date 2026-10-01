@@ -48,7 +48,12 @@ export function get_text(
 
 export function format_money(this: FormatContext, amount: number): string {
   const symbol = this.currency ? this.currency.symbol : ''
-  return amount % 1 === 0 ? symbol + amount : symbol + amount.toFixed(2)
+  // Grouped thousands (a year's package runs to four figures); pence only when present.
+  const digits = amount % 1 === 0 ? 0 : 2
+  return (
+    symbol +
+    amount.toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits })
+  )
 }
 
 export function format_dt(this: FormatContext, ts: string, fmt: DateFormat): string {

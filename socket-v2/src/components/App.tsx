@@ -3,6 +3,7 @@ import { Contractors } from './contractors/Contractors'
 import { PlainEnquiry } from './enquiry/PlainEnquiry'
 import { EnquiryButton } from './enquiry/EnquiryButton'
 import { Appointments } from './appointments/Appointments'
+import { Packages } from './packages/Packages'
 import { PoweredBy } from './shared/PoweredBy'
 
 function Section() {
@@ -14,6 +15,8 @@ function Section() {
       return <EnquiryButton />
     case 'appointments':
       return <Appointments />
+    case 'packages':
+      return <Packages />
     case 'tutors':
     default:
       return <Contractors />

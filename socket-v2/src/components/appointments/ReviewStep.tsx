@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { useConfig } from '@/config/context'
 import { Button } from '@/components/ui/Button'
+import { TermsCheckbox } from '@/components/shared/TermsCheckbox'
 
 /**
  * Review + consent, shown before payment. Taking money without showing the
@@ -31,7 +32,6 @@ export function ReviewStep({
   const [error, setError] = useState<string | null>(null)
   const policy = config.payment?.cancellation_policy
   const policyUrl = config.payment?.cancellation_policy_url
-  const termsLink = config.terms_link
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,37 +71,14 @@ export function ReviewStep({
 
       {note && <p className="tw:text-sm tw:font-medium">{note}</p>}
 
-      <label className="tw:flex tw:items-start tw:gap-2.5 tw:text-sm tw:cursor-pointer tw:select-none">
-        <input
-          type="checkbox"
-          checked={accepted}
-          aria-invalid={!!error}
-          aria-describedby={error ? `tcs-${config.random_id}-terms-err` : undefined}
-          onChange={(e) => {
-            setAccepted(e.target.checked)
-            if (e.target.checked) setError(null)
-          }}
-          className="tw:mt-0.5"
-        />
-        <span>
-          {termsLink ? (
-            <>
-              {config.get_text('apt_accept_terms_before')}{' '}
-              <a href={termsLink} target="_blank" rel="noreferrer" className="tw:underline">
-                {config.get_text('terms_link')}
-              </a>{' '}
-              {config.get_text('apt_accept_terms_after')}
-            </>
-          ) : (
-            config.get_text('apt_accept_terms_plain')
-          )}
-        </span>
-      </label>
-      {error && (
-        <p id={`tcs-${config.random_id}-terms-err`} className="tw:text-xs tw:text-error tw:-mt-2">
-          {error}
-        </p>
-      )}
+      <TermsCheckbox
+        accepted={accepted}
+        onChange={(v) => {
+          setAccepted(v)
+          if (v) setError(null)
+        }}
+        error={error}
+      />
 
       <div className="tw:flex tw:gap-2 tw:pt-2 tw:border-t tw:border-default">
         <Button

@@ -9,6 +9,7 @@ import {
   isMockBusyService,
   loadMockTutors,
   mockBusyAppointments,
+  mockPackages,
   mockReviews,
   USE_MOCK_API,
 } from './mock'
@@ -20,6 +21,7 @@ import type {
   ContractorListResponse,
   DeliveryMode,
   EnquiryFormInfo,
+  PackageListResponse,
   SearchedLocation,
   ServiceListResponse,
   Subject,
@@ -316,6 +318,20 @@ export function useEnquiryForm(enabled = true) {
       const { data } = await api.get<EnquiryFormInfo>('enquiry')
       emit('get_enquiry_data', data)
       return data
+    },
+  })
+}
+
+/** GET /{key}/packages: the credit packages the tenant sells. Mocked until served. */
+export function usePackages() {
+  const api = useApi()
+  return useQuery({
+    queryKey: ['packages'],
+    staleTime: 5 * 60_000,
+    queryFn: async ({ signal }) => {
+      if (USE_MOCK_API) return mockPackages()
+      const { data } = await api.get<PackageListResponse>('packages', undefined, { signal })
+      return data.results
     },
   })
 }

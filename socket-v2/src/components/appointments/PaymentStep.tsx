@@ -4,6 +4,7 @@ import type { SavedCard } from '@/api/types'
 import { Button } from '@/components/ui/Button'
 import { Alert } from '@/components/ui/Alert'
 import { LockIcon } from '@/components/ui/Icons'
+import { TermsCheckbox } from '@/components/shared/TermsCheckbox'
 import { cx } from '@/lib/utils'
 import { FIELD_BASE, FIELD_BORDER, FIELD_LABEL } from '@/components/ui/fieldStyles'
 
@@ -39,6 +40,8 @@ export function PaymentStep({
   savedCards,
   submitting,
   error,
+  submitLabel,
+  requireTerms = false,
   onBack,
   onPay,
 }: {
@@ -46,6 +49,10 @@ export function PaymentStep({
   savedCards: SavedCard[]
   submitting: boolean
   error: string | null
+  /** Defaults to "Pay {amount} and confirm". */
+  submitLabel?: string
+  /** Ask for the terms here, for flows with no review step before payment. */
+  requireTerms?: boolean
   onBack: () => void
   onPay: (details: PaymentDetails) => void
 }) {
@@ -59,10 +66,16 @@ export function PaymentStep({
   // Opt-in: storing a card is the client's choice, never a default.
   const [saveCard, setSaveCard] = useState(false)
   const [localError, setLocalError] = useState<string | null>(null)
+  const [accepted, setAccepted] = useState(false)
+  const [termsError, setTermsError] = useState<string | null>(null)
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     setLocalError(null)
+    if (requireTerms && !accepted) {
+      setTermsError(config.get_text('apt_must_accept_terms'))
+      return
+    }
     if (useSaved) {
       onPay({ saved_card_id: savedId })
       return
@@ -230,6 +243,18 @@ export function PaymentStep({
         </div>
       )}
 
+      {requireTerms && (
+        <TermsCheckbox
+          accepted={accepted}
+          onChange={(v) => {
+            setAccepted(v)
+            if (v) setTermsError(null)
+          }}
+          error={termsError}
+          withPolicy={false}
+        />
+      )}
+
       <div className="tw:flex tw:gap-2 tw:pt-2 tw:border-t tw:border-default">
         <Button
           type="button"
@@ -246,7 +271,7 @@ export function PaymentStep({
           icon={<LockIcon className="tw:w-3 tw:h-3" />}
           className="tw:flex-1 tw:py-2.5"
         >
-          {config.get_text('apt_pay_now', { amount: config.format_money(amount) })}
+          {submitLabel ?? config.get_text('apt_pay_now', { amount: config.format_money(amount) })}
         </Button>
       </div>
     </form>

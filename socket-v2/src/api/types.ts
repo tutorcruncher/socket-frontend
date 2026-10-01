@@ -251,6 +251,47 @@ export interface ClientBooking {
   contractor?: { id: number; name: string; photo?: string | null } | null
 }
 
+/**
+ * A package a client can buy: prepaid account credit, as TutorCruncher's `Package`
+ * model has it. The client pays `cost` and receives `cost + bonus_credit` to spend
+ * on lessons. **V2 contract: mocked** (TC only sells these to signed-in clients).
+ */
+export interface CreditPackage {
+  id: number
+  name: string
+  /** Markdown, written by the agency for clients browsing packages. */
+  description?: string | null
+  /** Total the client pays, tax inclusive. */
+  cost: number
+  bonus_credit: number
+  /** Font Awesome name in TC; the widget has no icon font and shows a coloured tile. */
+  icon?: string | null
+  icon_colour?: string | null
+}
+
+export interface PackageListResponse {
+  results: CreditPackage[]
+}
+
+/** Response to POST /{key}/package-intent. The amount is the server's, never the client's. */
+export interface PackageIntent {
+  purchase_id: string
+  amount: number
+  client_secret?: string
+  saved_cards?: SavedCard[]
+}
+
+/** Response to POST /{key}/package-confirm. */
+export interface PackageConfirmation {
+  purchase_id: string
+  status: 'paid'
+  package: number
+  amount_paid: number
+  credit_added: number
+  account_created?: boolean
+  receipt_url?: string
+}
+
 export type EnquiryFieldType =
   | 'text'
   | 'email'

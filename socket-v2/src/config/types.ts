@@ -1,7 +1,7 @@
 import type { PaymentConfig } from '@/api/types'
 
 /** Public configuration for the Socket widget: the second argument to window.socket(). */
-export type SocketMode = 'tutors' | 'enquiry' | 'enquiry-modal' | 'appointments'
+export type SocketMode = 'tutors' | 'enquiry' | 'enquiry-modal' | 'appointments' | 'packages'
 export type RouterMode = 'hash' | 'memory'
 /** Visual variant. `classic` is the TutorCruncher look; the others adapt to the host page. */
 export type SocketTheme = 'classic' | 'soft' | 'bold' | 'elegant' | 'vivid'

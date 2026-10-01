@@ -28,6 +28,13 @@ const TABS: Record<string, UserConfig> = {
   enquiry: { mode: 'enquiry', terms_link: 'https://www.example.com' },
   'enquiry-modal': { mode: 'enquiry-modal' },
   appointments: { mode: 'appointments' },
+  packages: {
+    mode: 'packages',
+    // "Book a lesson" after a purchase: a real host would link to its booking page.
+    event_callback: (name) => {
+      if (name === 'package_book_lesson') showTab('appointments')
+    },
+  },
 }
 
 const initialised = new Set<string>()

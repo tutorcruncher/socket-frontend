@@ -19,6 +19,7 @@ import type {
   Appointment,
   AppointmentListResponse,
   ClientBooking,
+  CreditPackage,
   ContractorListResponse,
   ContractorSummary,
   DeliveryMode,
@@ -194,6 +195,59 @@ export function setMockPaymentVariant(variant: MockPaymentVariant): void {
   paymentVariant = variant
 }
 
+/** Packages the mock tenant sells: prepaid credit, some with a bonus. */
+const MOCK_PACKAGES: CreditPackage[] = [
+  {
+    id: 1,
+    name: 'Starter',
+    description: 'Enough for around **three lessons**. A simple way to try us out.',
+    cost: 150,
+    bonus_credit: 0,
+    icon: 'fa-seedling',
+    icon_colour: '#0891b2',
+  },
+  {
+    id: 2,
+    name: 'Term',
+    description: 'Covers most of a term of **weekly lessons**, with a little extra on us.',
+    cost: 400,
+    bonus_credit: 30,
+    icon: 'fa-book-open',
+    icon_colour: '#4f46e5',
+  },
+  {
+    id: 3,
+    name: 'Year',
+    description: 'For families planning ahead: a **full year** of weekly lessons at our best value.',
+    cost: 1000,
+    bonus_credit: 120,
+    icon: 'fa-graduation-cap',
+    icon_colour: '#15803d',
+  },
+]
+
+/** GET /{key}/packages, which the backend does not serve yet. */
+export function mockPackages(): Promise<CreditPackage[]> {
+  return new Promise((resolve) => setTimeout(() => resolve(MOCK_PACKAGES), 400))
+}
+
+/** Stripe's canonical decline-test card, so the failure path is testable. */
+function declinedCard(body: Record<string, unknown>, url: string): Promise<never> | null {
+  const card = String(body.card_number ?? '').replace(/\s/g, '')
+  if (card !== '4000000000000002') return null
+  return new Promise((_, reject) =>
+    setTimeout(
+      () =>
+        reject({
+          msg: 'Your card was declined. Please try a different payment method.',
+          url,
+          status: 402,
+        }),
+      900,
+    ),
+  )
+}
+
 /** Cards a returning client has on file. */
 const MOCK_SAVED_CARDS: SavedCard[] = [
   { id: 'pm_mock_visa', brand: 'Visa', last4: '4242', exp_month: 4, exp_year: 2029 },
@@ -318,21 +372,8 @@ export function mockPost<T>(
 
   if (path === 'booking-confirm') {
     console.debug('[socket:mock] booking-confirm', data)
-    // Stripe's canonical decline-test card, so the failure path is testable.
-    const card = String(body.card_number ?? '').replace(/\s/g, '')
-    if (card === '4000000000000002') {
-      return new Promise((_, reject) =>
-        setTimeout(
-          () =>
-            reject({
-              msg: 'Your card was declined. Please try a different payment method.',
-              url: 'booking-confirm',
-              status: 402,
-            }),
-          900,
-        ),
-      )
-    }
+    const declined = declinedCard(body, path)
+    if (declined) return declined
     return delay(
       {
         booking_id: String(body.booking_id ?? ''),
@@ -345,6 +386,42 @@ export function mockPost<T>(
         ...(Number(body.amount ?? 0) > 0
           ? { receipt_url: 'https://example.com/receipt/mock' }
           : {}),
+      } as T,
+      900,
+    )
+  }
+
+  if (path === 'package-intent') {
+    // Open a PaymentIntent for a package. The amount comes from the package on the
+    // server; the client only ever names which package it wants.
+    console.debug('[socket:mock] package-intent', data)
+    const pkg = MOCK_PACKAGES.find((p) => p.id === Number(body.package))
+    if (!pkg) return Promise.reject({ msg: 'Package not found.', url: path, status: 404 })
+    return delay(
+      {
+        purchase_id: `pk_mock_${bookingSeq++}`,
+        amount: pkg.cost,
+        saved_cards: body.client_email ? [] : MOCK_SAVED_CARDS,
+      } as T,
+      600,
+    )
+  }
+
+  if (path === 'package-confirm') {
+    console.debug('[socket:mock] package-confirm', data)
+    const declined = declinedCard(body, path)
+    if (declined) return declined
+    const pkg = MOCK_PACKAGES.find((p) => p.id === Number(body.package))
+    if (!pkg) return Promise.reject({ msg: 'Package not found.', url: path, status: 404 })
+    return delay(
+      {
+        purchase_id: String(body.purchase_id ?? ''),
+        status: 'paid',
+        package: pkg.id,
+        amount_paid: pkg.cost,
+        credit_added: pkg.cost + pkg.bonus_credit,
+        account_created: Boolean(body.client_email),
+        receipt_url: 'https://example.com/receipt/mock',
       } as T,
       900,
     )

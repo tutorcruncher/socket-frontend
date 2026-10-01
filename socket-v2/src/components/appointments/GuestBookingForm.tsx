@@ -29,10 +29,13 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
  */
 export function GuestBookingForm({
   submitting,
+  withStudent = true,
   onSubmit,
   onUseSignIn,
 }: {
   submitting: boolean
+  /** False when there is no lesson to put a student on, e.g. buying credit. */
+  withStudent?: boolean
   onSubmit: (details: GuestDetails) => void
   onUseSignIn: () => void
 }) {
@@ -58,7 +61,7 @@ export function GuestBookingForm({
     if (!values.client_email.trim()) next.client_email = config.get_text('apt_field_required')
     else if (!EMAIL_RE.test(values.client_email.trim()))
       next.client_email = config.get_text('apt_email_invalid')
-    if (!values.student_name.trim()) next.student_name = config.get_text('apt_field_required')
+    if (withStudent && !values.student_name.trim()) next.student_name = config.get_text('apt_field_required')
     setErrors(next)
     if (Object.keys(next).length === 0) onSubmit(values)
   }
@@ -99,15 +102,17 @@ export function GuestBookingForm({
         autoComplete="tel"
         optional
       />
-      <Field
-        id={`tcs-${uid}-gb-student`}
-        label={config.get_text('apt_student_name')}
-        help={config.get_text('apt_student_help')}
-        value={values.student_name}
-        onChange={(v) => set('student_name', v)}
-        error={errors.student_name}
-        required
-      />
+      {withStudent && (
+        <Field
+          id={`tcs-${uid}-gb-student`}
+          label={config.get_text('apt_student_name')}
+          help={config.get_text('apt_student_help')}
+          value={values.student_name}
+          onChange={(v) => set('student_name', v)}
+          error={errors.student_name}
+          required
+        />
+      )}
 
       {/* Review and payment still follow, so this must not read as the final step. */}
       <Button type="submit" disabled={submitting} className="tw:py-2.5 tw:mt-1">

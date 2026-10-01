@@ -186,6 +186,29 @@ export const STRINGS: Messages = {
   apt_summary_location: 'Location',
   apt_summary_student: 'Student',
   apt_summary_price: 'Price',
+  // Packages: prepaid credit
+  pkg_step_package: 'Package',
+  pkg_title: 'Choose a package',
+  pkg_intro: 'Buy lesson credit in advance. Credit pays for lessons as you book them.',
+  pkg_choose: 'Choose',
+  pkg_bonus: '+ {amount} bonus credit',
+  pkg_you_get: 'You get {amount} of credit',
+  pkg_none: 'No packages available',
+  pkg_none_desc: 'Please check back soon.',
+  pkg_back: 'Back to packages',
+  pkg_details_intro: 'Tell us who is buying. We will set up your account from these details.',
+  pkg_details_signed_in: 'The credit will be added to your account.',
+  pkg_payment_intro: 'Pay securely to add the credit to your account.',
+  pkg_summary_pay: 'You pay',
+  pkg_summary_bonus: 'Bonus credit',
+  pkg_summary_credit: 'Credit added',
+  pkg_pay: 'Pay {amount}',
+  pkg_accept_terms_plain: 'I accept the terms of purchase',
+  pkg_confirmed_title: 'Credit added',
+  pkg_confirmed_desc: '{amount} of credit has been added to your account.',
+  pkg_account_created: "We've created your account and emailed you a link to it.",
+  pkg_buy_another: 'Buy another package',
+  pkg_book_lesson: 'Book a lesson',
   // Checkout: terms, payment, confirmation
   apt_step_details: 'Your details',
   apt_step_review: 'Review',
@@ -243,7 +266,7 @@ export const STRINGS: Messages = {
   nav_my_bookings: 'My bookings',
 }
 
-export const MODES = ['tutors', 'enquiry', 'enquiry-modal', 'appointments'] as const
+export const MODES = ['tutors', 'enquiry', 'enquiry-modal', 'appointments', 'packages'] as const
 // `history` was removed in v2: it only works on hosts with an SPA catch-all (a
 // drop-in widget can't assume that), so it 404s on refresh. `hash` is safe on any
 // host; `memory` touches the URL not at all (no deep-linking).
