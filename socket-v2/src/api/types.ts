@@ -3,6 +3,13 @@
 export interface Subject {
   id: number
   name: string
+  category?: string
+}
+
+/** A level tutors teach at, from GET /{key}/qual-levels. */
+export interface QualLevel {
+  id: number
+  name: string
 }
 
 export interface Skill {

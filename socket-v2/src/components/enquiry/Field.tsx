@@ -1,10 +1,10 @@
 import { useConfig } from '@/config/context'
 import type { EnquiryField } from '@/api/types'
 import { cx } from '@/lib/utils'
+import { FIELD_BASE, FIELD_BORDER } from '@/components/ui/fieldStyles'
 
-const INPUT_CLASS =
-  'tw:w-full tw:px-3 tw:py-2 tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:text-sm ' +
-  'tw:bg-white tw:placeholder:text-muted-dark tw:focus:outline-2 tw:focus:outline-link'
+// The checkout's field styling, so enquiry inputs match it and pick up themes.
+const INPUT_CLASS = `tw:w-full ${FIELD_BASE} ${FIELD_BORDER}`
 
 export interface FieldProps {
   field: EnquiryField

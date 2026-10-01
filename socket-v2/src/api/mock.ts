@@ -391,6 +391,14 @@ export function mockPost<T>(
     )
   }
 
+  if (path === 'subject-enquiry') {
+    // A lesson request: the enquiry's contact fields plus subject, delivery and a
+    // weekly grid of preferred times. Deliberately its own path, so nothing in the
+    // demo reaches the real `enquiry` endpoint.
+    console.debug('[socket:mock] subject-enquiry', data)
+    return delay({ status: 'ok' } as T, 700)
+  }
+
   if (path === 'package-intent') {
     // Open a PaymentIntent for a package. The amount comes from the package on the
     // server; the client only ever names which package it wants.

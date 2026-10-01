@@ -14,7 +14,8 @@ import {
   deliveryLabelKey,
   formatDistanceShort,
 } from '@/lib/delivery'
-import { LocationIcon, SearchIcon, VideoIcon } from '@/components/ui/Icons'
+import { SearchIcon } from '@/components/ui/Icons'
+import { DeliveryToggle, MODE_ICONS } from '@/components/shared/DeliveryToggle'
 import { groupBySubject, serviceIdsFor } from '@/lib/services'
 
 export interface AppointmentSearch {
@@ -28,8 +29,6 @@ export interface AppointmentSearch {
   radius: number | null
 }
 
-const MODE_ICONS = { online: VideoIcon, in_person: LocationIcon }
-
 /** Sentinel for the explicit "all lesson types" choice in the subject box. */
 const ALL_SUBJECTS = '__all__'
 
@@ -41,10 +40,13 @@ export function SearchForm({
   services,
   initial,
   onSearch,
+  onRequest,
 }: {
   services: Service[]
   initial: AppointmentSearch | null
   onSearch: (search: AppointmentSearch) => void
+  /** Offered when there is nothing to book: ask for a lesson instead. */
+  onRequest?: (search: Pick<AppointmentSearch, 'subject' | 'delivery' | 'location'>) => void
 }) {
   const config = useConfig()
   const [subject, setSubject] = useState<string | null>(
@@ -162,6 +164,24 @@ export function SearchForm({
             {searchSubject
               ? config.get_text('apt_no_service_lessons', { service: searchSubject })
               : config.get_text('apt_no_lessons_any')}
+            {onRequest && (
+              <>
+                {' '}
+                <button
+                  type="button"
+                  onClick={() =>
+                    onRequest({
+                      subject: searchSubject,
+                      delivery: effectiveDelivery,
+                      location: location.trim() || null,
+                    })
+                  }
+                  className="tw:underline tw:font-medium tw:cursor-pointer"
+                >
+                  {config.get_text('req_request_instead')}
+                </button>
+              </>
+            )}
           </Alert>
         )}
 
@@ -183,50 +203,12 @@ export function SearchForm({
             <legend className="tw:text-sm tw:font-medium tw:mb-2">
               {config.get_text('delivery_label')}
             </legend>
-            <div
-              className={cx(
-                'tw:grid tw:gap-2',
-                availableModes.length === 2 ? 'tw:grid-cols-2' : 'tw:grid-cols-3',
-              )}
-            >
-              {availableModes.map((mode) => {
-                const Icon = MODE_ICONS[mode]
-                const active = chosenDelivery === mode
-                const unavailable = modeCounts?.[mode] === 0
-                return (
-                  <button
-                    key={mode}
-                    type="button"
-                    aria-pressed={active}
-                    disabled={unavailable}
-                    onClick={() => setDelivery(active ? null : mode)}
-                    className={cx(
-                      'tw:flex tw:flex-col tw:items-center tw:gap-1.5 tw:px-2 tw:py-3 tw:rounded-lg tw:border tw:text-center tw:transition-colors tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link',
-                      unavailable
-                        ? 'tw:border-default tw:bg-content tw:text-muted-dark tw:cursor-not-allowed'
-                        : active
-                          ? 'tw:border-link tw:bg-info tw:text-link tw:cursor-pointer'
-                          : 'tw:border-default tw:bg-white tw:hover:bg-hover tw:cursor-pointer',
-                    )}
-                  >
-                    <Icon className="tw:w-4 tw:h-4" />
-                    <span className="tw:text-xs tw:font-medium tw:leading-tight">
-                      {config.get_text(deliveryLabelKey(mode))}
-                    </span>
-                    {unavailable && (
-                      <span className="tw:text-xs tw:leading-tight">
-                        {config.get_text('apt_mode_unavailable')}
-                      </span>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-            {chosenDelivery && (
-              <p className="tw:text-xs tw:text-muted-dark">
-                {config.get_text(deliveryHelpKey(chosenDelivery))}
-              </p>
-            )}
+            <DeliveryToggle
+              modes={availableModes}
+              value={chosenDelivery}
+              onChange={setDelivery}
+              unavailable={availableModes.filter((m) => modeCounts?.[m] === 0)}
+            />
           </fieldset>
         )}
 

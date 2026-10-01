@@ -19,6 +19,7 @@ import { useBookingSteps } from './steps'
 import { MyBookings } from './MyBookings'
 import { getMockBookings } from '@/api/mock'
 import { serviceIdsFor, subjectOf } from '@/lib/services'
+import { SubjectEnquiryFlow, type SubjectEnquiryInitial } from '@/components/enquiry/SubjectEnquiry'
 
 /**
  * Appointments: search-first booking flow:
@@ -44,6 +45,8 @@ export function Appointments() {
   const [search, setSearch] = useState<AppointmentSearch | null>(null)
   // "Change" reopens the search form pre-filled rather than discarding the search.
   const [editingSearch, setEditingSearch] = useState(false)
+  // Set when the visitor asks for a lesson instead of booking one: what they searched.
+  const [requestInitial, setRequestInitial] = useState<SubjectEnquiryInitial | null>(null)
   // Both null until the visitor navigates; derived defaults are used meanwhile.
   const [month, setMonth] = useState<string | null>(null)
   const [selectedDay, setSelectedDay] = useState<string | null>(null)
@@ -130,6 +133,15 @@ export function Appointments() {
     )
   }
 
+  // --- Lesson request, when nothing bookable suits ---
+  if (requestInitial) {
+    return (
+      <div className="tcs-root tw:font-body tw:text-primary">
+        <SubjectEnquiryFlow initial={requestInitial} onExit={() => setRequestInitial(null)} />
+      </div>
+    )
+  }
+
   // Kept visible while on the bookings tab, even after the last one is cancelled.
   const nav = (
     <BookingsNav
@@ -169,6 +181,9 @@ export function Appointments() {
             setSelectedDay(null)
             setMonth(null)
           }}
+          onRequest={(s) =>
+            setRequestInitial({ subjectName: s.subject, delivery: s.delivery, location: s.location })
+          }
         />
         {/* Under the narrow search card, centred with it. */}
         <AccountLine auth={auth} className="tw:justify-center" />
@@ -260,6 +275,24 @@ export function Appointments() {
             }}
           />
         )}
+
+        {/* Covers an empty search, an empty month, and times that exist but do not suit. */}
+        <p className="tw:text-sm tw:text-muted-dark tw:pt-3 tw:border-t tw:border-default">
+          {config.get_text('req_cant_find')}{' '}
+          <button
+            type="button"
+            onClick={() =>
+              setRequestInitial({
+                subjectName: search.subject,
+                delivery: search.delivery,
+                location: search.location,
+              })
+            }
+            className="tw:text-link tw:hover:underline tw:rounded tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link"
+          >
+            {config.get_text('req_request_link')}
+          </button>
+        </p>
       </FlowLayout>
     </div>
   )

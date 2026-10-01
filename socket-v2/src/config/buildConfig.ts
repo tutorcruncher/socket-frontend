@@ -69,7 +69,8 @@ export async function buildConfig(
   // embeds keep working but stop 404-ing on refresh.
   const requested = u.router_mode as string | undefined
   // Modes that never navigate keep routing in memory, adding nothing to the host URL.
-  let routerMode: RouterMode = mode === 'enquiry' || mode === 'packages' ? 'memory' : 'hash'
+  const inMemory = mode === 'enquiry' || mode === 'subject-enquiry' || mode === 'packages'
+  let routerMode: RouterMode = inMemory ? 'memory' : 'hash'
   if (requested === 'history') {
     console.warn(
       'SOCKET: router_mode "history" is no longer supported (it 404s on a host-page refresh); using "hash".',

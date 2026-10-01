@@ -186,6 +186,40 @@ export const STRINGS: Messages = {
   apt_summary_location: 'Location',
   apt_summary_student: 'Student',
   apt_summary_price: 'Price',
+  // Lesson request: a subject and preferred times, when no fixed lesson suits
+  req_step_subject: 'Subject',
+  req_step_times: 'Preferred times',
+  req_step_sent: 'Sent',
+  req_subject_title: 'What would you like help with?',
+  req_subject_intro: 'Tell us the subject and how you would like lessons. We will find a tutor and times to suit.',
+  req_subject_label: 'Subject',
+  req_subject_required: 'Choose a subject so we know what you need.',
+  req_level_label: 'Level (optional)',
+  req_level_any: 'Not sure',
+  req_delivery_label: 'How would you like lessons? (optional)',
+  req_times_title: 'When are you usually free?',
+  req_times_intro: 'Tick every time that could work. Leave it blank if any time suits.',
+  req_times_label: 'Preferred times',
+  req_morning_hours: 'before 12',
+  req_afternoon_hours: '12 to 5',
+  req_evening_hours: 'after 5',
+  req_time_notes_label: 'Anything we should know about these times? (optional)',
+  req_any_time: 'Any time',
+  req_details_intro: 'Tell us how to reach you about this request.',
+  req_send: 'Send request',
+  req_sent_title: 'Request sent',
+  req_sent_desc: "Thanks. We'll be in touch to arrange lessons that fit.",
+  req_rail_title: 'Your request',
+  req_rail_empty: 'Your choices will appear here.',
+  req_summary_subject: 'Subject',
+  req_summary_level: 'Level',
+  req_summary_delivery: 'Lessons',
+  req_summary_times: 'Times',
+  req_another: 'Send another request',
+  req_back_to_booking: 'Back to booking',
+  req_cant_find: "Can't find a time that suits?",
+  req_request_link: 'Request a lesson',
+  req_request_instead: 'Request a lesson instead.',
   // Packages: prepaid credit
   pkg_step_package: 'Package',
   pkg_title: 'Choose a package',
@@ -266,7 +300,14 @@ export const STRINGS: Messages = {
   nav_my_bookings: 'My bookings',
 }
 
-export const MODES = ['tutors', 'enquiry', 'enquiry-modal', 'appointments', 'packages'] as const
+export const MODES = [
+  'tutors',
+  'enquiry',
+  'enquiry-modal',
+  'subject-enquiry',
+  'appointments',
+  'packages',
+] as const
 // `history` was removed in v2: it only works on hosts with an SPA catch-all (a
 // drop-in widget can't assume that), so it 404s on refresh. `hash` is safe on any
 // host; `memory` touches the URL not at all (no deep-linking).

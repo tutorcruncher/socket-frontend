@@ -2,6 +2,7 @@ import { useConfig } from '@/config/context'
 import { Contractors } from './contractors/Contractors'
 import { PlainEnquiry } from './enquiry/PlainEnquiry'
 import { EnquiryButton } from './enquiry/EnquiryButton'
+import { SubjectEnquiry } from './enquiry/SubjectEnquiry'
 import { Appointments } from './appointments/Appointments'
 import { Packages } from './packages/Packages'
 import { PoweredBy } from './shared/PoweredBy'
@@ -13,6 +14,8 @@ function Section() {
       return <PlainEnquiry />
     case 'enquiry-modal':
       return <EnquiryButton />
+    case 'subject-enquiry':
+      return <SubjectEnquiry />
     case 'appointments':
       return <Appointments />
     case 'packages':

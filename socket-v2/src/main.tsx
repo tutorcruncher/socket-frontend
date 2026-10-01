@@ -27,6 +27,7 @@ const TABS: Record<string, UserConfig> = {
   },
   enquiry: { mode: 'enquiry', terms_link: 'https://www.example.com' },
   'enquiry-modal': { mode: 'enquiry-modal' },
+  'subject-enquiry': { mode: 'subject-enquiry' },
   appointments: { mode: 'appointments' },
   packages: {
     mode: 'packages',

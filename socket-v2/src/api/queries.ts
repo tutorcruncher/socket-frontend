@@ -22,6 +22,7 @@ import type {
   DeliveryMode,
   EnquiryFormInfo,
   PackageListResponse,
+  QualLevel,
   SearchedLocation,
   ServiceListResponse,
   Subject,
@@ -332,6 +333,19 @@ export function usePackages() {
       if (USE_MOCK_API) return mockPackages()
       const { data } = await api.get<PackageListResponse>('packages', undefined, { signal })
       return data.results
+    },
+  })
+}
+
+/** GET /{key}/qual-levels: the levels tutors teach at, for the lesson request. */
+export function useQualLevels() {
+  const api = useApi()
+  return useQuery({
+    queryKey: ['qual-levels'],
+    staleTime: 5 * 60_000,
+    queryFn: async ({ signal }) => {
+      const { data } = await api.get<QualLevel[]>('qual-levels', undefined, { signal })
+      return data
     },
   })
 }
