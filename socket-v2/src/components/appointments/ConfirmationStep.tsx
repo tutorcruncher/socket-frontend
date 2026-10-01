@@ -8,11 +8,14 @@ import { downloadIcs } from '@/lib/ics'
 export function ConfirmationStep({
   apt,
   confirmation,
+  dueLater = 0,
   email,
   onDone,
 }: {
   apt: Appointment
   confirmation: BookingConfirmation
+  /** Still to be invoiced after the lesson (pay later, or the rest after a deposit). */
+  dueLater?: number
   /** Where the confirmation went, when we know it. */
   email: string | null
   onDone: () => void
@@ -44,10 +47,17 @@ export function ConfirmationStep({
         </div>
       )}
 
+      {dueLater > 0 && (
+        <p className="tw:text-sm tw:font-medium">
+          {config.get_text('apt_invoiced_later', { amount: config.format_money(dueLater) })}
+        </p>
+      )}
+
       <p className="tw:text-sm tw:text-muted-dark">
-        {email
-          ? config.get_text('apt_confirmed_email_to', { email })
-          : config.get_text('apt_confirmed_email')}
+        {config.get_text(
+          `apt_confirmed_email${confirmation.receipt_url ? '' : '_plain'}${email ? '_to' : ''}`,
+          { email },
+        )}
       </p>
       {confirmation.account_created && (
         <p className="tw:text-sm tw:text-muted-dark">{config.get_text('apt_account_created')}</p>

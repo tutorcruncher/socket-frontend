@@ -11,6 +11,7 @@ import type { AppointmentAuth } from '@/lib/useAppointmentAuth'
 import type { ApiError } from '@/api/client'
 import { recordMockBooking } from '@/api/mock'
 import { useServices } from '@/api/queries'
+import { bookingCharge } from '@/lib/payment'
 import { Alert } from '@/components/ui/Alert'
 import { FlowLayout } from '@/components/shared/FlowLayout'
 import { useBookingSteps } from './steps'
@@ -34,11 +35,13 @@ function holdMinutes(intent: BookingIntent | null): number {
  *
  *   details  → who is booking (guest account creation, or a signed-in client's student)
  *   review   → summary + cancellation policy + terms acceptance
- *   payment  → card details (skipped entirely when the tenant doesn't take payment)
- *   confirmed→ receipt + calendar invite
+ *   payment  → card details (skipped when nothing is due at booking)
+ *   confirmed→ receipt or invoice note + calendar invite
  *
- * Payment is pay-to-confirm: the seat is reserved by `booking-intent` and only
- * becomes a real booking once `booking-confirm` succeeds (ROADMAP §3.5).
+ * The seat is reserved by `booking-intent` and only becomes a real booking once
+ * `booking-confirm` succeeds (ROADMAP §3.5). When the tenant invoices after the
+ * lesson, or the lesson is free, the same two calls run with an amount of zero and
+ * the review step confirms the booking directly.
  */
 export function BookingPanel({
   apt,
@@ -55,13 +58,9 @@ export function BookingPanel({
   const { data: services = [] } = useServices()
   const service = services.find((s) => s.id === apt.service_id) ?? null
 
-  const paymentRequired = !!config.payment?.required
-  const amount =
-    config.payment?.mode === 'deposit'
-      ? (config.payment.deposit_amount ?? 0)
-      : (apt.price ?? 0)
-
-  const steps = useBookingSteps(paymentRequired && amount > 0)
+  const { dueNow, dueLater } = bookingCharge(config.payment, apt.price)
+  const takesPayment = dueNow > 0
+  const steps = useBookingSteps(takesPayment)
 
   const [step, setStep] = useState<Step>('details')
   const [submitting, setSubmitting] = useState(false)
@@ -96,7 +95,7 @@ export function BookingPanel({
     try {
       const { data } = await api.post<BookingIntent>('booking-intent', {
         appointment: apt.id,
-        amount,
+        amount: dueNow,
         student_name: opts.studentName,
         student_id: opts.studentId,
         ...(opts.guest
@@ -126,7 +125,7 @@ export function BookingPanel({
       const { data } = await api.post<BookingConfirmation>('booking-confirm', {
         booking_id: intentRef.current?.booking_id,
         appointment: apt.id,
-        amount,
+        amount: dueNow,
         student_name: studentName,
         student_id: studentIdRef.current ?? undefined,
         client_email: guestRef.current?.client_email,
@@ -158,8 +157,13 @@ export function BookingPanel({
       void auth.refreshAttendees()
     } catch (e) {
       const err = e as ApiError
-      setError(err.msg || 'Payment could not be completed. Please try again.')
-      // Stay on the payment step so the card can be corrected.
+      setError(
+        err.msg ||
+          (takesPayment
+            ? 'Payment could not be completed. Please try again.'
+            : 'We could not confirm this booking. Please try again.'),
+      )
+      // Stay on the current step so the card can be corrected or the booking retried.
     } finally {
       setSubmitting(false)
     }
@@ -198,7 +202,7 @@ export function BookingPanel({
               service={service}
               apt={apt}
               studentName={summaryStarted ? studentName : null}
-              amount={amount}
+              amount={dueNow}
               showTotal={summaryStarted}
               onChangeStudent={onChangeStudent}
               onChangeTime={onChangeTime}
@@ -233,14 +237,22 @@ export function BookingPanel({
                 apt={apt}
                 lesson={service?.name ?? apt.service_name}
                 studentName={studentName}
-                amount={amount}
+                amount={dueNow}
                 onChangeStudent={onChangeStudent}
                 onChangeTime={onChangeTime}
               />
             }
+            // With nothing to pay now, review is the last step before the booking.
+            submitLabel={takesPayment ? undefined : config.get_text('apt_confirm_booking')}
+            note={
+              takesPayment
+                ? undefined
+                : config.get_text(dueLater > 0 ? 'apt_pay_later_note' : 'apt_free_note')
+            }
+            submitting={submitting}
             onBack={() => setStep('details')}
             onContinue={() => {
-              if (paymentRequired && amount > 0) setStep('payment')
+              if (takesPayment) setStep('payment')
               else void confirmBooking()
             }}
           />
@@ -252,7 +264,7 @@ export function BookingPanel({
               {config.get_text('apt_seat_held', { minutes: holdMinutes(intentRef.current) })}
             </p>
             <PaymentStep
-              amount={amount}
+              amount={dueNow}
               savedCards={savedCards}
               submitting={submitting}
               error={error}
@@ -269,6 +281,7 @@ export function BookingPanel({
           <ConfirmationStep
             apt={apt}
             confirmation={confirmation}
+            dueLater={dueLater}
             email={guestRef.current?.client_email ?? null}
             onDone={onBack}
           />

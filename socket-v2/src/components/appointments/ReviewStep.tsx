@@ -11,10 +11,18 @@ import { Button } from '@/components/ui/Button'
  */
 export function ReviewStep({
   summary,
+  submitLabel,
+  note,
+  submitting = false,
   onBack,
   onContinue,
 }: {
   summary?: ReactNode
+  /** Defaults to "Continue to payment"; the last step before booking says so instead. */
+  submitLabel?: string
+  /** What happens about payment when no payment step follows. */
+  note?: string
+  submitting?: boolean
   onBack: () => void
   onContinue: () => void
 }) {
@@ -61,6 +69,8 @@ export function ReviewStep({
         </div>
       )}
 
+      {note && <p className="tw:text-sm tw:font-medium">{note}</p>}
+
       <label className="tw:flex tw:items-start tw:gap-2.5 tw:text-sm tw:cursor-pointer tw:select-none">
         <input
           type="checkbox"
@@ -94,11 +104,17 @@ export function ReviewStep({
       )}
 
       <div className="tw:flex tw:gap-2 tw:pt-2 tw:border-t tw:border-default">
-        <Button type="button" variant="secondary" onClick={onBack} className="tw:py-2.5">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onBack}
+          disabled={submitting}
+          className="tw:py-2.5"
+        >
           {config.get_text('apt_back')}
         </Button>
-        <Button type="submit" className="tw:flex-1 tw:py-2.5">
-          {config.get_text('apt_continue_to_payment')}
+        <Button type="submit" disabled={submitting} className="tw:flex-1 tw:py-2.5">
+          {submitLabel ?? config.get_text('apt_continue_to_payment')}
         </Button>
       </div>
     </form>

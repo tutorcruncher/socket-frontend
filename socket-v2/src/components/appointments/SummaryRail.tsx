@@ -206,7 +206,13 @@ export function BookingSummary({
       rows={rows}
       total={
         amount != null
-          ? { label: config.get_text('apt_total_due'), value: config.format_money(amount) }
+          ? {
+              // Less than the price is due now (deposit, or invoiced later): say so.
+              label: config.get_text(
+                apt && apt.price !== null && amount !== apt.price ? 'apt_due_today' : 'apt_total_due',
+              ),
+              value: config.format_money(amount),
+            }
           : null
       }
       className={className}

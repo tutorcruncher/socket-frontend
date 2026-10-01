@@ -11,6 +11,7 @@
  */
 import './embed'
 import type { SocketTheme, UserConfig } from './config/types'
+import { setMockPaymentVariant, type MockPaymentVariant } from './api/mock'
 
 const env = import.meta.env
 const publicKey = env.VITE_DEMO_PUBLIC_KEY ?? '9c79f14df986a1ec693c'
@@ -33,6 +34,9 @@ const initialised = new Set<string>()
 let currentTab = 'tutors'
 // Remembered across reloads so a theme can be reviewed page by page.
 let theme: SocketTheme = (localStorage.getItem('tcs-demo-theme') as SocketTheme) || 'classic'
+// Whether the mock tenant charges at booking or invoices afterwards.
+let payment: MockPaymentVariant =
+  (localStorage.getItem('tcs-demo-payment') as MockPaymentVariant) || 'now'
 
 function showTab(id: string) {
   currentTab = id
@@ -56,16 +60,11 @@ function showTab(id: string) {
 }
 
 /**
- * Switch theme: every mounted widget is torn down (a fresh panel element, so
- * preact's render tree goes with it) and the visible tab mounts again with the
- * new theme.
+ * Tear down every mounted widget (a fresh panel element, so preact's render tree
+ * goes with it) and mount the visible tab again, picking up the current demo
+ * settings.
  */
-function setTheme(next: SocketTheme) {
-  theme = next
-  localStorage.setItem('tcs-demo-theme', next)
-  for (const btn of document.querySelectorAll<HTMLButtonElement>('#themes button')) {
-    btn.setAttribute('aria-selected', String(btn.dataset.theme === next))
-  }
+function remountAll() {
   for (const id of initialised) {
     const panel = document.getElementById(`panel-${id}`)
     panel?.replaceWith(panel.cloneNode(false))
@@ -73,6 +72,32 @@ function setTheme(next: SocketTheme) {
   initialised.clear()
   showTab(currentTab)
 }
+
+function markSelected(list: string, key: 'theme' | 'payment', value: string) {
+  for (const btn of document.querySelectorAll<HTMLButtonElement>(`${list} button`)) {
+    btn.setAttribute('aria-selected', String(btn.dataset[key] === value))
+  }
+}
+
+function setTheme(next: SocketTheme) {
+  theme = next
+  localStorage.setItem('tcs-demo-theme', next)
+  markSelected('#themes', 'theme', next)
+  remountAll()
+}
+
+/** Payment is the tenant's setting, read when a widget mounts, hence the remount. */
+function setPayment(next: MockPaymentVariant) {
+  payment = next
+  localStorage.setItem('tcs-demo-payment', next)
+  setMockPaymentVariant(next)
+  markSelected('#payments', 'payment', next)
+  remountAll()
+}
+
+document.querySelectorAll<HTMLButtonElement>('#payments button').forEach((btn) => {
+  btn.addEventListener('click', () => setPayment(btn.dataset.payment as MockPaymentVariant))
+})
 
 document.querySelectorAll<HTMLButtonElement>('#themes button').forEach((btn) => {
   btn.addEventListener('click', () => setTheme(btn.dataset.theme as SocketTheme))
@@ -82,4 +107,6 @@ document.querySelectorAll<HTMLButtonElement>('#tabs button').forEach((btn) => {
   btn.addEventListener('click', () => showTab(btn.dataset.tab!))
 })
 
+setMockPaymentVariant(payment)
+markSelected('#payments', 'payment', payment)
 setTheme(theme)

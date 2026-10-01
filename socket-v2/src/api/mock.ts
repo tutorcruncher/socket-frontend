@@ -170,16 +170,29 @@ export function applyMockFilters(
  * deliberately absent so the payment step falls back to its simulated card form
  * rather than trying to load real Stripe Elements.
  */
-export const MOCK_PAYMENT_CONFIG: PaymentConfig | undefined = USE_MOCK_API
-  ? {
-      required: true,
-      provider: 'stripe',
-      mode: 'full',
-      cancellation_policy:
-        'Lessons can be cancelled free of charge up to 24 hours before the start time. ' +
-        'Cancellations inside 24 hours are charged in full.',
-    }
-  : undefined
+export function mockPaymentConfig(): PaymentConfig | undefined {
+  if (!USE_MOCK_API) return undefined
+  return {
+    // `provider` stays in both variants: buying a package always takes a card.
+    required: paymentVariant === 'now',
+    provider: 'stripe',
+    mode: 'full',
+    cancellation_policy:
+      'Lessons can be cancelled free of charge up to 24 hours before the start time. ' +
+      'Cancellations inside 24 hours are charged in full.',
+  }
+}
+
+/**
+ * Whether the mock tenant charges at booking (`now`) or invoices after the lesson
+ * (`later`, what TutorCruncher does today). Set by the demo page before a widget
+ * mounts; a real tenant's setting arrives with /options and is not the host's to choose.
+ */
+export type MockPaymentVariant = 'now' | 'later'
+let paymentVariant: MockPaymentVariant = 'now'
+export function setMockPaymentVariant(variant: MockPaymentVariant): void {
+  paymentVariant = variant
+}
 
 /** Cards a returning client has on file. */
 const MOCK_SAVED_CARDS: SavedCard[] = [
@@ -328,7 +341,10 @@ export function mockPost<T>(
         student_name: String(body.student_name ?? ''),
         amount_paid: Number(body.amount ?? 0),
         account_created: Boolean(body.client_email),
-        receipt_url: 'https://example.com/receipt/mock',
+        // Nothing charged, nothing to receipt.
+        ...(Number(body.amount ?? 0) > 0
+          ? { receipt_url: 'https://example.com/receipt/mock' }
+          : {}),
       } as T,
       900,
     )

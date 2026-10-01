@@ -16,7 +16,7 @@ import {
   type FormatContext,
 } from '@/lib/formatting'
 import { autoUrlRoot } from '@/lib/utils'
-import { MOCK_PAYMENT_CONFIG } from '@/api/mock'
+import { mockPaymentConfig } from '@/api/mock'
 
 const env = import.meta.env
 
@@ -125,7 +125,7 @@ export async function buildConfig(
     distance_units: company.distance_units,
     name: company.name,
     name_display: company.name_display,
-    payment: company.payment ?? MOCK_PAYMENT_CONFIG,
+    payment: company.payment ?? mockPaymentConfig(),
     messages,
     contractor_filter: contractorFilter,
     event_callback: u.event_callback ?? (() => null),
