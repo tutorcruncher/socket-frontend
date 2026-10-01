@@ -17,6 +17,9 @@ website. Its job is turning visitors into **enquiries and bookings**. Prioritise
 | Contractors (`tutors` mode, in-widget grid/list toggle, subject + location filters, pagination, profile modal, stars) | ✅ verified vs live API |
 | Reviews, rates, availability + online/price filters (§3.1, §3.2) | 🔨 UI built, on mock: awaiting backend |
 | Enquiry (dynamic schema form, plain + modal + contractor-prefilled) | ✅ (captcha not wired: see 2.1) |
+| Subject enquiry with preferred times (§3.9) | 🔨 UI built, on mock: awaiting backend |
+| Packages: buy prepaid credit (§3.8) | 🔨 UI built, on mock: awaiting backend |
+| Pay at booking or pay later (§3.5) | 🔨 UI built, on mock: awaiting backend |
 | Appointments (search-first flow: lesson-type + venue search → month calendar with next-available jump → inline booking panel) | ✅ rebuilt & verified vs live API; flow past SSO sign-in untested (needs real credentials) |
 | Routing (`hash` default, `memory` for plain enquiry; `history` removed) | ✅ |
 | Bundle size | ✅ 243 → **~72 kB gzip** (preact/compat, custom Combobox, no Sentry SDK) |
@@ -316,6 +319,15 @@ accounting"*. Taking money at the point of booking is new work.
 - `saved_cards` only for an authenticated client; never expose one client's cards to
   another.
 
+**Pay later.** A tenant that does not charge at booking sets `payment.required: false`
+(this is what TutorCruncher does today: the lesson is invoiced after it happens). The
+widget then drops the payment step, ends review with "Confirm booking", shows "Due
+today £0" beside the price and tells the client they will be invoiced. The same two
+calls run with `amount: 0`, and `booking-confirm` returns no `receipt_url`.
+`lib/payment.ts` (`bookingCharge`) is the one place that splits a price into what is
+due now and what is invoiced later; it also covers deposits and free lessons. The demo
+page has a Payment switch (At booking / Pay later) to show both.
+
 **Also needed:** reCAPTCHA on `booking-intent` (unauthenticated: see §2.1) and
 per-email/IP rate limiting.
 
@@ -384,6 +396,78 @@ the month itself: correct, but wasteful for big tenants. Adding the two filters 
 `appointment_list` in socket-server (it only filters on `service` and `start > today`
 now) makes each month one small request. At 100+ tutors even a month is too much,
 and the calendar should switch to per-day counts plus a per-day lesson fetch.
+
+### 3.8 Packages: buy prepaid credit  🔨 UI BUILT, AWAITING BACKEND
+
+**What a package is.** TutorCruncher's `Package` (accounting/models.py) is prepaid
+account credit, not a block of lessons: `name`, `description` (markdown), `cost` (what
+the client pays, tax inclusive), `bonus_credit`, `icon`, `icon_colour`, `sort_index`,
+per branch. The client ends up with `cost + bonus_credit` to spend on lessons. Today
+only a logged-in client with a saved Stripe card can buy one, inside TutorCruncher.
+
+**UI: built** (`packages` mode, `components/packages/`)
+- [x] Package cards: name, description, price, bonus, credit received
+- [x] Guest purchase with account creation, or a signed-in client with a saved card
+- [x] Terms accepted on the payment step; declined cards keep the client there
+- [x] Confirmation with credit added, receipt and a "Book a lesson" hand-off (an
+  `event_callback` event, `package_book_lesson`; a host links it to its booking page)
+
+**API needed**
+```jsonc
+// GET /{key}/packages -> active packages for the branch, highest sort_index first
+{ "results": [{ "id": 1, "name": "Term", "description": "md", "cost": 400,
+                "bonus_credit": 30, "icon": "fa-book-open", "icon_colour": "#4f46e5" }] }
+
+// POST /{key}/package-intent   (guest fields, or SSO args for a signed-in client)
+{ "package": 1, "client_name": "…", "client_email": "…", "client_phone": "…" }
+-> { "purchase_id": "pk_…", "amount": 400, "client_secret": "pi_…_secret_…",
+     "saved_cards": [] }
+
+// POST /{key}/package-confirm
+{ "purchase_id": "pk_…", "package": 1, "payment_intent": "pi_…", "save_card": false }
+-> { "purchase_id": "pk_…", "status": "paid", "package": 1, "amount_paid": 400,
+     "credit_added": 430, "account_created": true, "receipt_url": "https://…" }
+```
+The amount always comes from the package on the server; the client only names the
+package. Packages always take payment, whatever `payment.required` says about lessons.
+
+**Not built:** paying for a lesson from credit. A signed-in client with a balance could
+book with nothing due at the card step; that needs the balance in the SSO payload or a
+balance endpoint, and a rule for part-covered lessons.
+
+---
+
+### 3.9 Subject enquiry with preferred times  🔨 UI BUILT, AWAITING BACKEND
+
+**Problem.** A parent who finds no lesson that suits has nowhere to go except the
+general enquiry form, which asks nothing about when they are free.
+
+**UI: built** (`subject-enquiry` mode, `components/enquiry/SubjectEnquiry.tsx`)
+- [x] Subject (from `/subjects`), optional level (from `/qual-levels`), online or in
+  person, postcode
+- [x] Preferred times as a weekly grid: days against morning / afternoon / evening
+- [x] Contact step reusing the tenant's enquiry schema: contact fields plus any custom
+  field the tenant made required; email is required so there is a way to reply
+- [x] Offered from the booking flow when nothing suits, prefilled with the search
+
+**API needed**
+```jsonc
+// POST /{key}/subject-enquiry -> 201   (the enquiry contract plus the fields below)
+{ "client_name": "…", "client_email": "…", "attributes": { … },
+  "subject": 86, "subject_name": "Mathematics", "qual_level": 110950,
+  "delivery": "online" | "in_person" | null, "location": "N6 6BS",
+  "preferred_times": [{ "day": "mon", "period": "evening" }],
+  "time_notes": "…", "timezone": "Europe/London", "upstream_http_referrer": "…" }
+```
+- TutorCruncher's `/api/enquiry/` already accepts `subject` and `qual_level`;
+  socket-server has them commented out in its enquiry model, so that part is small.
+- **Preferred times exist nowhere in TutorCruncher.** They need a home: a structured
+  field on the enquiry's Service, or at minimum a formatted note on it.
+- `subject` is null when the subject came from a booking search by name and is not in
+  the tenant's subject list; `subject_name` is always sent.
+- reCAPTCHA applies here as it does to the enquiry form (§2.1).
+
+---
 
 ## 4. Backlog (buildable now, no backend)
 

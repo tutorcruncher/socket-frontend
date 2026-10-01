@@ -205,6 +205,8 @@ export const STRINGS: Messages = {
   req_evening_hours: 'after 5',
   req_time_notes_label: 'Anything we should know about these times? (optional)',
   req_any_time: 'Any time',
+  req_all_day: 'All day',
+  req_day_range: '{from} to {to}',
   req_details_intro: 'Tell us how to reach you about this request.',
   req_send: 'Send request',
   req_sent_title: 'Request sent',

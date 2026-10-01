@@ -25,10 +25,13 @@ src/
   components/
     ui/                  # Design-system primitives (Button, Modal, Card, Badge,
                          #   Alert, Spinner, EmptyState, Markdown, Stars, Icons)
-    shared/              # Photo, ErrorView
+    shared/              # Photo, ErrorView, and the pieces flows share: FlowLayout
+                         #   (stepper + rail), SummaryList, TermsCheckbox, DeliveryToggle
     contractors/         # Contractors list/grid, filters, pagination, detail modal
-    enquiry/             # Dynamic schema-driven form + plain/modal entry points
-    appointments/        # (stub: next to build)
+    enquiry/             # Dynamic schema-driven form + plain/modal entry points, and
+                         #   the subject enquiry (lesson request with preferred times)
+    appointments/        # Search, calendar, checkout (pay at booking or later), bookings
+    packages/            # Buy prepaid credit: cards, checkout, confirmation
     App.tsx              # Mode router
 ```
 
@@ -58,7 +61,7 @@ two safe `router_mode`s, and **no `history` mode** (it would 404 on a host refre
   `abc.com/#/2418960-amala-h`. The `#` is never sent to the server, so direct visits
   and refreshes always load `abc.com/` and the widget re-opens the view client-side.
   No host config required, and links are shareable.
-- **`memory`** (default for the plain `enquiry` form, which never navigates): keeps all
+- **`memory`** (default for `enquiry`, `subject-enquiry` and `packages`, which never navigate): keeps all
   routing in memory and **never touches the host URL**: no `#/` is appended. Trade-off:
   no deep-linking and the back button won't close a modal. Opt into it for any mode if
   you want zero URL impact.
@@ -114,7 +117,9 @@ proxy. Demo key: `9c79f14df986a1ec693c` (Dino Tutors).
 | Core embed + config + design system | ✅ Done |
 | Contractors (`tutors` mode, in-widget grid/list toggle, subject + location filters, pagination, profile modal, stars) | ✅ Done, verified against live API |
 | Enquiry (dynamic form, plain page, modal button, contractor-prefilled) | ✅ Done (reCAPTCHA wiring is a TODO) |
-| Appointments (month/day list, SSO popup auth, booking modal) | ✅ Done, list + booking UI verified against live API |
+| Appointments (search, calendar, inline checkout, pay at booking or later, my bookings) | 🔨 UI built on a mock layer: see ROADMAP §3.3 to §3.7 |
+| Subject enquiry (`subject-enquiry` mode: subject, weekly preferred times, contact) | 🔨 UI built on mock: ROADMAP §3.9 |
+| Packages (`packages` mode: buy prepaid credit) | 🔨 UI built on mock: ROADMAP §3.8 |
 | Bundle optimisation (preact, custom combobox, no Sentry) | ✅ Done: 243 → 71 kB gzip |
 | UX polish (skeletons, photo fallbacks, modal focus-trap, reduced-motion) | ✅ Done |
 

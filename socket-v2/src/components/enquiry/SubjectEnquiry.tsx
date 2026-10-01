@@ -30,17 +30,48 @@ export interface SubjectEnquiryInitial {
  */
 const contactFields = (field: EnquiryField) => !field.prefix || field.required
 
-/** "Mon morning, evening · Sat morning", or "Any time" when nothing is ticked. */
-function describeTimes(selected: Set<string>, anyTime: string, periodLabel: (p: string) => string) {
-  if (selected.size === 0 || selected.size === DAYS.length * PERIODS.length) return anyTime
-  return DAYS.map((day, i) => {
-    const periods = PERIODS.filter((p) => selected.has(timeKey(day, p)))
-    return periods.length
-      ? `${dayName(i, 'short')} ${periods.map((p) => periodLabel(p).toLowerCase()).join(', ')}`
-      : null
+/** Consecutive day indices as "Mon to Wed"; anything shorter is listed. */
+function dayRange(indices: number[], range: (from: string, to: string) => string): string {
+  const parts: string[] = []
+  for (let i = 0; i < indices.length; ) {
+    let j = i
+    while (j + 1 < indices.length && indices[j + 1] === indices[j] + 1) j++
+    if (j - i >= 2) parts.push(range(dayName(indices[i], 'short'), dayName(indices[j], 'short')))
+    else for (let k = i; k <= j; k++) parts.push(dayName(indices[k], 'short'))
+    i = j + 1
+  }
+  return parts.join(', ')
+}
+
+/**
+ * The ticked times as a short breakdown: days that share the same periods are
+ * grouped onto one line ("Mon to Wed · All day"), in week order. Null when nothing
+ * is ticked, or everything is, which both mean "any time".
+ */
+function groupTimes(
+  selected: Set<string>,
+  text: { period: (p: string) => string; allDay: string; range: (from: string, to: string) => string },
+): Array<{ label: string; value: string }> | null {
+  if (selected.size === 0 || selected.size === DAYS.length * PERIODS.length) return null
+  const groups = new Map<string, number[]>()
+  DAYS.forEach((day, i) => {
+    const key = PERIODS.filter((p) => selected.has(timeKey(day, p))).join(',')
+    if (!key) return
+    const days = groups.get(key)
+    if (days) days.push(i)
+    else groups.set(key, [i])
   })
-    .filter(Boolean)
-    .join(' · ')
+  return [...groups].map(([key, days]) => {
+    const periods = key.split(',')
+    const names = periods.map((p) => text.period(p))
+    return {
+      label: dayRange(days, text.range),
+      value:
+        periods.length === PERIODS.length
+          ? text.allDay
+          : names.map((n, i) => (i === 0 ? n : n.toLowerCase())).join(', '),
+    }
+  })
 }
 
 /** Mode root for `subject-enquiry`. */
@@ -111,9 +142,11 @@ export function SubjectEnquiryFlow({
   const levelName = levels.find((l) => l.id === level)?.name ?? null
   const needsLocation = delivery !== 'online'
   const locationMissing = delivery === 'in_person' && !location.trim()
-  const timesText = describeTimes(times, config.get_text('req_any_time'), (p) =>
-    config.get_text(`apt_${p}`),
-  )
+  const timesDetail = groupTimes(times, {
+    period: (p) => config.get_text(`apt_${p}`),
+    allDay: config.get_text('req_all_day'),
+    range: (from, to) => config.get_text('req_day_range', { from, to }),
+  })
 
   const steps: FlowStep[] = [
     { id: 'subject', label: config.get_text('req_step_subject') },
@@ -153,7 +186,8 @@ export function SubjectEnquiryFlow({
   if (step !== 'subject')
     rows.push({
       label: config.get_text('req_summary_times'),
-      value: timesText,
+      value: config.get_text('req_any_time'),
+      detail: timesDetail ?? undefined,
       onChange: editable && step !== 'times' ? () => setStep('times') : undefined,
     })
 
