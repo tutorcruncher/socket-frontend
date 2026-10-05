@@ -11,6 +11,7 @@ import {
   mockBusyAppointments,
   mockPackages,
   mockReviews,
+  mockTutorProfile,
   USE_MOCK_API,
 } from './mock'
 import { addMonths, dayKey, monthKey } from '@/lib/calendar'
@@ -295,6 +296,9 @@ export function useContractor(id: number) {
   return useQuery({
     queryKey: ['contractor', id],
     queryFn: async ({ signal }) => {
+      // The mock's generated tutors have no record on the real API.
+      const generated = USE_MOCK_API ? mockTutorProfile(id) : null
+      if (generated) return generated
       const { status, data } = await api.get<Contractor>(`contractors/${id}`, undefined, {
         expectedStatuses: [200, 404],
         signal,

@@ -19,6 +19,7 @@ import type {
   Appointment,
   AppointmentListResponse,
   ClientBooking,
+  Contractor,
   CreditPackage,
   ContractorListResponse,
   ContractorSummary,
@@ -315,7 +316,7 @@ export async function seedMockClientBooking(): Promise<void> {
     address: enriched.address,
     price: apt.price,
     can_cancel: true,
-    contractor: busyServices(tutors).find((svc) => svc.id === apt.service_id)?.contractor ?? null,
+    contractor: syntheticServices(tutors).find((svc) => svc.id === apt.service_id)?.contractor ?? null,
   })
 }
 
@@ -610,7 +611,7 @@ export function enrichServices(services: Service[], tutors: ContractorSummary[])
       description: s.description ?? SERVICE_BLURBS[hash(s.id) % SERVICE_BLURBS.length],
       ...splitServiceName(s, tutors),
     }
-  }).concat(busyServices(tutors))
+  }).concat(syntheticServices(tutors))
 }
 
 /** Stable numeric id for a subject name, so services sharing a subject share an id. */
@@ -636,8 +637,7 @@ function splitServiceName(
   const tutor = first ? tutors.find((t) => t.name.split(/\s+/)[0].toLowerCase() === first) : undefined
   return {
     subject: s.subject ?? { id: nameId(subject), name: subject },
-    contractor:
-      s.contractor ?? (tutor ? { id: tutor.id, name: tutor.name, photo: tutor.photo } : null),
+    contractor: s.contractor ?? (tutor ? serviceTutor(tutor) : null),
   }
 }
 
@@ -666,17 +666,103 @@ function busyServices(tutors: ContractorSummary[]): Service[] {
       photo: null,
       description: SERVICE_BLURBS[i % SERVICE_BLURBS.length],
       subject: BUSY_SUBJECT,
-      contractor: tutor ? { id: tutor.id, name: tutor.name, photo: tutor.photo } : null,
+      contractor: tutor ? serviceTutor(tutor) : null,
     }
   })
 }
 
-export const isMockBusyService = (id: number) =>
-  id > BUSY_SUBJECT.id && id <= BUSY_SUBJECT.id + BUSY_TUTORS.length
+/** A real contractor as the tutor on a lesson type, with the rating a parent compares on. */
+function serviceTutor(tutor: ContractorSummary) {
+  return {
+    id: tutor.id,
+    name: tutor.name,
+    photo: tutor.photo,
+    review_rating: tutor.review_rating,
+    review_count: mockReviews(tutor.id, tutor.review_rating).length,
+  }
+}
 
-/** Next 120 days of lessons for the busy subject, deterministic per tutor and day. */
+/*
+ * Large subject. Eight tutors show a busy day; an agency with a hundred tutors has
+ * a different problem, twenty of them free at the same time. This adds a second
+ * synthetic subject taught by a hundred generated tutors, to exercise ranking and
+ * capping the list of tutors at one time. They are not real contractors, so their
+ * profiles are generated too (`mockTutorProfile`).
+ */
+const BIG_SUBJECT = { id: 980000, name: 'GCSE English' }
+const BIG_TUTOR_BASE = 970000
+const FIRST_NAMES = [
+  'Aisha', 'Ben', 'Carmen', 'Daniel', 'Elena', 'Farid', 'Grace', 'Hugo', 'Imani', 'Jack',
+  'Keira', 'Liam', 'Maya', 'Noah', 'Olivia', 'Priya', 'Quinn', 'Rosa', 'Sam', 'Tara',
+  'Umar', 'Vera', 'Will', 'Yasmin', 'Zoe',
+]
+const SURNAME_INITIALS = ['A', 'K', 'M', 'S']
+
+const BIG_TUTORS = Array.from({ length: FIRST_NAMES.length * SURNAME_INITIALS.length }, (_, i) => {
+  const id = BIG_TUTOR_BASE + i
+  const h = hash(id)
+  return {
+    id,
+    name: `${FIRST_NAMES[i % FIRST_NAMES.length]} ${SURNAME_INITIALS[Math.floor(i / FIRST_NAMES.length)]}`,
+    // Stock avatars; `Photo` falls back to initials if they cannot be loaded.
+    photo: `https://i.pravatar.cc/96?img=${(i % 70) + 1}`,
+    review_rating: 4 + (h % 11) / 10,
+    review_count: 2 + ((h >>> 8) % 40),
+  }
+})
+
+const BIG_SERVICES: Service[] = BIG_TUTORS.map((tutor, i) => ({
+  id: BIG_SUBJECT.id + i + 1,
+  name: `${BIG_SUBJECT.name} with ${tutor.name}`,
+  colour: BUSY_COLOURS[i % BUSY_COLOURS.length],
+  delivery_modes: ['online', 'in_person'] as DeliveryMode[],
+  photo: null,
+  description: SERVICE_BLURBS[i % SERVICE_BLURBS.length],
+  subject: BIG_SUBJECT,
+  contractor: tutor,
+}))
+
+/** Both synthetic subjects' lesson types. */
+function syntheticServices(tutors: ContractorSummary[]): Service[] {
+  return [...busyServices(tutors), ...BIG_SERVICES]
+}
+
+export const isMockBusyService = (id: number) =>
+  (id > BUSY_SUBJECT.id && id <= BUSY_SUBJECT.id + BUSY_TUTORS.length) ||
+  (id > BIG_SUBJECT.id && id <= BIG_SUBJECT.id + BIG_TUTORS.length)
+
+/** Profile for a generated tutor, who has no record on the real API. */
+export function mockTutorProfile(id: number): Contractor | null {
+  const tutor = BIG_TUTORS[id - BIG_TUTOR_BASE]
+  if (!tutor) return null
+  const h = hash(id)
+  return {
+    ...tutor,
+    town: 'London',
+    distance: null,
+    tag_line: `${BIG_SUBJECT.name} tutor, ${3 + (h % 15)} years teaching.`,
+    primary_description:
+      'I teach GCSE English Language and Literature, with a focus on exam technique and ' +
+      'building confidence in essay writing.',
+    link: `${id}-${tutor.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    url: '',
+    review_duration: 3600 * (20 + (h % 200)),
+    rate_from: RATE_POINTS[h % RATE_POINTS.length],
+    remote: true,
+    next_available: null,
+    skills: [{ subject: 'English Language and Literature', qual_levels: ['GCSE', 'A Level'] }],
+    extra_attributes: [],
+    reviews: mockReviews(id, tutor.review_rating),
+  }
+}
+
+// Tens of thousands of lessons: built once per tutor list, not once per query.
+let busyCache: { tutors: ContractorSummary[]; appointments: Appointment[] } | null = null
+
+/** Next 120 days of lessons for the synthetic subjects, deterministic per tutor and day. */
 export function mockBusyAppointments(tutors: ContractorSummary[]): Appointment[] {
-  const services = busyServices(tutors)
+  if (busyCache?.tutors === tutors) return busyCache.appointments
+  const services = syntheticServices(tutors)
   const out: Appointment[] = []
   const start = new Date(MOCK_NOW)
   start.setUTCHours(0, 0, 0, 0)
@@ -699,10 +785,10 @@ export function mockBusyAppointments(tutors: ContractorSummary[]): Appointment[]
         out.push({
           id,
           link: `${id}-${svc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-          topic: `${BUSY_SUBJECT.name} lesson`,
+          topic: `${svc.subject?.name ?? svc.name} lesson`,
           start: from.toISOString().replace('Z', ''),
           finish: to.toISOString().replace('Z', ''),
-          price: 50 + (t % 3) * 5,
+          price: 40 + (hash(svc.id) % 6) * 5,
           attendees_max: 4,
           attendees_count: hash(id) % 5,
           location: null,
@@ -714,5 +800,7 @@ export function mockBusyAppointments(tutors: ContractorSummary[]): Appointment[]
       }
     })
   }
-  return out.sort((a, b) => a.start.localeCompare(b.start))
+  out.sort((a, b) => a.start.localeCompare(b.start))
+  busyCache = { tutors, appointments: out }
+  return out
 }

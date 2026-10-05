@@ -375,12 +375,19 @@ of lessons.
   Evening; picking a time shows the tutors free then. Quiet days keep the plain list
 - [x] Calendar dots show how busy a day is (1 to 3) rather than service colours
 - [x] Slot rows are titled with the tutor when a search spans several tutors
+- [x] Many tutors free at one time: the list is ranked (nearest when a location was
+  searched, then rating, then price), shows the best five with "Show all", and has a
+  Sort by control (Recommended, Nearest, Highest rated, Lowest price). Rows show the
+  tutor's rating. Exercised by a second synthetic subject, "GCSE English", with a
+  hundred generated tutors
 
 **API needed**
 ```
 GET /{key}/services
   results[].subject:    { id, name }          // shared across tutors' services
-  results[].contractor: { id, name } | null   // the tutor, when there is one
+  results[].contractor: { id, name, photo, review_rating, review_count } | null
+                                              // the tutor, when there is one; the
+                                              // rating is what the list ranks on
 
 GET /{key}/appointments
   ?services=1,2,3                // several services at once (today: one `service`)

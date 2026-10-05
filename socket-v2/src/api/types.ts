@@ -164,7 +164,19 @@ export interface Service {
    * Tutor who teaches this lesson type, when it belongs to one. `photo` puts a face
    * on each bookable lesson. V2 contract.
    */
-  contractor?: { id: number; name: string; photo?: string | null } | null
+  contractor?: ServiceTutor | null
+}
+
+/**
+ * The tutor on a lesson type. Rating and review count let a parent choose between
+ * many tutors free at the same time. V2 contract.
+ */
+export interface ServiceTutor {
+  id: number
+  name: string
+  photo?: string | null
+  review_rating?: number | null
+  review_count?: number | null
 }
 
 export interface ServiceListResponse {

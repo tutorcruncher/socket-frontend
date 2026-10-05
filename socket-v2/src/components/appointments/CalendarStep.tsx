@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useConfig } from '@/config/context'
-import type { Appointment } from '@/api/types'
+import type { Appointment, ServiceTutor } from '@/api/types'
 import { cx } from '@/lib/utils'
 import {
   addMonths,
@@ -14,7 +14,13 @@ import {
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { ChevronLeftIcon, ChevronRightIcon, CalendarPlusIcon, LocationIcon } from '@/components/ui/Icons'
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CalendarPlusIcon,
+  LocationIcon,
+  StarIcon,
+} from '@/components/ui/Icons'
 import { DeliveryBadge } from './DeliveryBadge'
 import { formatDistance } from '@/lib/delivery'
 import { ContractorModal } from '@/components/contractors/ContractorModal'
@@ -24,7 +30,7 @@ import { Photo } from '@/components/shared/Photo'
  * search covers several subjects, which subject it is. */
 export interface SlotDescription {
   subject: string | null
-  tutor: { id: number; name: string; photo?: string | null } | null
+  tutor: ServiceTutor | null
 }
 
 /** Spaces left on a lesson, or null when unlimited. */
@@ -257,6 +263,19 @@ function MonthGrid({
 /** Above this many lessons a day, list times first rather than every lesson. */
 const BUSY_DAY = 6
 
+/** How many lessons at one time are shown before "Show all". */
+const TOP_AT_TIME = 5
+/** Hiding only a row or two is not worth a click, so the cap needs this many more. */
+const MIN_HIDDEN = 3
+
+type SortKey = 'recommended' | 'nearest' | 'rating' | 'price'
+type Compare = (a: Appointment, b: Appointment) => number
+
+// Lessons with no distance (online, or no location searched) sort after those with one.
+const FAR = Number.MAX_SAFE_INTEGER
+const byDistance: Compare = (a, b) => (a.distance ?? FAR) - (b.distance ?? FAR)
+const byPrice: Compare = (a, b) => (a.price ?? 0) - (b.price ?? 0)
+
 type Period = 'morning' | 'afternoon' | 'evening'
 const PERIODS: Period[] = ['morning', 'afternoon', 'evening']
 
@@ -281,6 +300,8 @@ function DaySlots({
 }) {
   const config = useConfig()
   const [time, setTime] = useState<string | null>(null)
+  const [sort, setSort] = useState<SortKey>('recommended')
+  const [showAll, setShowAll] = useState(false)
 
   // Lessons sharing a start time, grouped into parts of the day. Hours come from
   // the tenant timezone so the grouping matches the times shown.
@@ -331,7 +352,39 @@ function DaySlots({
   }
 
   const busy = slots.length > BUSY_DAY
-  const shown = busy ? slots.filter((a) => a.start === time) : slots
+  const atTime = busy ? slots.filter((a) => a.start === time) : slots
+
+  // With many tutors free at once, a parent needs the best few first, not a wall of
+  // rows: rank them (nearest when a location was searched, then rating, then price)
+  // and show the top of the list until asked for the rest.
+  const rating = (a: Appointment) => describe(a).tutor?.review_rating ?? 0
+  const byRating: Compare = (a, b) => rating(b) - rating(a)
+  const hasDistance = atTime.some((a) => typeof a.distance === 'number')
+  const hasRating = atTime.some((a) => rating(a) > 0)
+  const orders: Record<SortKey, Compare[]> = {
+    recommended: hasDistance ? [byDistance, byRating, byPrice] : [byRating, byPrice],
+    nearest: [byDistance, byRating, byPrice],
+    rating: [byRating, byPrice],
+    price: [byPrice, byRating],
+  }
+  const ranked =
+    busy && atTime.length > 1
+      ? [...atTime].sort((a, b) => {
+          for (const compare of orders[sort]) {
+            const diff = compare(a, b)
+            if (diff) return diff
+          }
+          return 0
+        })
+      : atTime
+  const capped = busy && !showAll && ranked.length >= TOP_AT_TIME + MIN_HIDDEN
+  const shown = capped ? ranked.slice(0, TOP_AT_TIME) : ranked
+  const sortKeys: SortKey[] = [
+    'recommended',
+    ...(hasDistance ? (['nearest'] as const) : []),
+    ...(hasRating ? (['rating'] as const) : []),
+    'price',
+  ]
 
   return (
     <div className="tw:flex tw:flex-col tw:gap-3 tw:min-w-0">
@@ -364,7 +417,10 @@ function DaySlots({
                     key={g.start}
                     type="button"
                     aria-pressed={active}
-                    onClick={() => setTime(active ? null : g.start)}
+                    onClick={() => {
+                      setTime(active ? null : g.start)
+                      setShowAll(false)
+                    }}
                     className={cx(
                       'tcs-time tw:inline-flex tw:items-baseline tw:gap-1.5 tw:px-3 tw:py-1.5 tw:rounded-lg tw:border tw:text-sm tw:tabular-nums tw:whitespace-nowrap tw:transition-colors tw:outline-none tw:focus-visible:outline-2 tw:focus-visible:outline-link',
                       active
@@ -393,6 +449,33 @@ function DaySlots({
         <p className="tw:text-sm tw:text-muted-dark">{config.get_text('apt_pick_time')}</p>
       )}
 
+      {busy && atTime.length > 1 && (
+        <div className="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-x-3 tw:gap-y-1 tw:pt-1">
+          <span className="tw:text-sm tw:font-medium">
+            {config.get_text('apt_available_at', {
+              count: atTime.length,
+              time: config.format_dt(atTime[0].start, 'time'),
+            })}
+          </span>
+          {atTime.length > 2 && (
+            <label className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:text-muted-dark">
+              {config.get_text('apt_sort_label')}
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+                className="tcs-input tw:px-2 tw:py-1 tw:text-sm tw:text-primary tw:bg-white tw:border tw:border-default tw:rounded-lg"
+              >
+                {sortKeys.map((key) => (
+                  <option key={key} value={key}>
+                    {config.get_text(`apt_sort_${key}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+        </div>
+      )}
+
       {shown.length > 0 && (
         // A container, so rows lay out by the column's width rather than the screen's:
         // the column is narrow on tablets as well as phones.
@@ -408,6 +491,17 @@ function DaySlots({
             />
           ))}
         </div>
+      )}
+
+      {capped && (
+        <Button
+          variant="secondary"
+          size="small"
+          className="tw:self-center"
+          onClick={() => setShowAll(true)}
+        >
+          {config.get_text('apt_show_all', { count: ranked.length })}
+        </Button>
       )}
     </div>
   )
@@ -479,6 +573,15 @@ function SlotRow({
               >
                 {tutor.name}
               </button>
+              {typeof tutor.review_rating === 'number' && (
+                <span className="tw:inline-flex tw:items-center tw:gap-0.5 tw:ml-2 tw:text-xs tw:font-normal tw:text-muted-dark tw:align-middle">
+                  <StarIcon className="tw:w-3 tw:h-3 tw:text-star" />
+                  <span className="tw:font-medium tw:text-heading">
+                    {tutor.review_rating.toFixed(1)}
+                  </span>
+                  {!!tutor.review_count && <span>({tutor.review_count})</span>}
+                </span>
+              )}
             </>
           ) : (
             apt.service_name
