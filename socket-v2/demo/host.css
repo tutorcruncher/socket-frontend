@@ -137,7 +137,9 @@ body {
   text-underline-offset: 0.18em;
 }
 
-.hp :focus-visible {
+/* Not inside the embedded widget: it draws its own focus ring, and this rule's
+   radius would reshape its controls. */
+.hp :focus-visible:not(.tcs-root *) {
   outline: 2px solid var(--hp-focus);
   outline-offset: 2px;
   border-radius: 4px;

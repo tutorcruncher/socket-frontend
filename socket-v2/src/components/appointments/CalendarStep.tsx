@@ -41,6 +41,7 @@ export const isBookable = (a: Appointment) => spacesLeft(a) !== 0
  */
 export function CalendarStep({
   appointments,
+  loading = false,
   nextAvailable,
   month,
   onMonthChange,
@@ -51,6 +52,8 @@ export function CalendarStep({
   describe,
 }: {
   appointments: Appointment[]
+  /** The visible month's lessons are still on their way. */
+  loading?: boolean
   nextAvailable: Appointment | null
   month: string
   onMonthChange: (month: string) => void
@@ -123,6 +126,7 @@ export function CalendarStep({
           key={selectedDay ?? ''}
           day={selectedDay}
           month={month}
+          loading={loading}
           slots={daySlots}
           onBook={onBook}
           attendees={attendees}
@@ -264,9 +268,11 @@ function DaySlots({
   describe,
   onTutor,
   month,
+  loading,
 }: {
   day: string | null
   month: string
+  loading: boolean
   slots: Appointment[]
   onBook: (apt: Appointment) => void
   attendees: Record<number, number[]> | null
@@ -304,6 +310,17 @@ function DaySlots({
     }
     return groups
   }, [slots, config.timezone])
+
+  if (loading) {
+    return (
+      <div className="tw:flex tw:flex-col tw:gap-2" aria-busy="true">
+        <span className="tw:sr-only">{config.get_text('loading')}</span>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="tw:h-16 tw:rounded-lg tw:bg-hover tw:animate-pulse" />
+        ))}
+      </div>
+    )
+  }
 
   if (!day) {
     return (

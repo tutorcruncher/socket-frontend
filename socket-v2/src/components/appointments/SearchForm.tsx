@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/Button'
 import { cx } from '@/lib/utils'
 import {
   DELIVERY_MODES,
-  RADIUS_OPTIONS,
+  defaultRadius,
+  radiusOptions,
   deliveryHelpKey,
   deliveryLabelKey,
   formatDistanceShort,
@@ -54,7 +55,7 @@ export function SearchForm({
   )
   const [delivery, setDelivery] = useState<DeliveryMode | null>(initial?.delivery ?? null)
   const [location, setLocation] = useState(initial?.location ?? '')
-  const [radius, setRadius] = useState<number>(initial?.radius ?? 25000)
+  const [radius, setRadius] = useState<number>(initial?.radius ?? defaultRadius(config))
   const [submitted, setSubmitted] = useState(false)
 
   const subjects = useMemo(() => groupBySubject(services), [services])
@@ -253,7 +254,7 @@ export function SearchForm({
                   onChange={(e) => setRadius(Number(e.target.value))}
                   className="tw:px-3 tw:py-1.5 tw:text-sm tw:bg-white tw:border tw:border-default tw:rounded-lg tw:shadow-sm tw:focus:outline-2 tw:focus:outline-link"
                 >
-                  {RADIUS_OPTIONS.map((r) => (
+                  {radiusOptions(config).map((r) => (
                     <option key={r} value={r}>
                       {formatDistanceShort(config, r)}
                     </option>

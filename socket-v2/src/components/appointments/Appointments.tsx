@@ -21,6 +21,8 @@ import { getMockBookings } from '@/api/mock'
 import { serviceIdsFor, subjectOf } from '@/lib/services'
 import { SubjectEnquiryFlow, type SubjectEnquiryInitial } from '@/components/enquiry/SubjectEnquiry'
 
+const NO_LESSONS: Appointment[] = []
+
 /**
  * Appointments: search-first booking flow:
  *   1. SearchForm:   pick lesson type (+ venue)
@@ -82,7 +84,11 @@ export function Appointments() {
   const activeMonth =
     month ?? (nextAvailable ? monthKey(dayKey(nextAvailable.start)) : monthKey(todayKey()))
   const monthQuery = useAppointmentsMonth(searchFilters, search ? activeMonth : null)
-  const monthAppointments: Appointment[] = monthQuery.data ?? []
+  // While the next month loads, the query still holds the previous month's lessons
+  // (so the calendar frame does not flash to a skeleton). They must not be shown as
+  // this month's, so the day list waits instead.
+  const monthLoading = monthQuery.isPlaceholderData
+  const monthAppointments: Appointment[] = monthLoading ? NO_LESSONS : (monthQuery.data ?? NO_LESSONS)
   // The chosen day while it's in view; otherwise the month's first bookable day, so
   // paging to a new month always shows something to book.
   const activeDay = useMemo(() => {
@@ -255,6 +261,7 @@ export function Appointments() {
         ) : (
           <CalendarStep
             appointments={monthAppointments}
+            loading={monthLoading}
             nextAvailable={nextAvailable}
             month={activeMonth}
             onMonthChange={setMonth}

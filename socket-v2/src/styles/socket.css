@@ -21,6 +21,13 @@
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(tw);
 @import './themes.css';
 
+/* Host pages often style `:focus-visible` globally, and any unlayered host rule beats
+   the layered utilities below, so the host's ring ended up on the widget's controls.
+   This is unlayered on purpose: the widget draws its own ring in its own link colour. */
+.tcs-root :focus-visible {
+  outline: 2px solid var(--tw-color-link);
+}
+
 /* ============================================================
    DESIGN TOKENS: copied 1:1 from TutorCruncher2 ui2.0 @theme
    ============================================================ */
