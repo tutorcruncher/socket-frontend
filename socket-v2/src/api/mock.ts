@@ -131,6 +131,8 @@ export function enrichAppointment(apt: Appointment): Appointment {
     address: delivery === 'in_person' ? VENUES[h % VENUES.length] : delivery === 'home_visit' ? base : null,
     travel_radius: delivery === 'home_visit' ? 5000 + ((h >>> 3) % 11) * 1000 : null,
     distance: null,
+    // A home visit is one to one.
+    ...(delivery === 'home_visit' ? { attendees_max: 1, attendees_count: 0 } : {}),
   }
 }
 

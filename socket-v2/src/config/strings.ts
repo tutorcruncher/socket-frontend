@@ -95,7 +95,7 @@ export const STRINGS: Messages = {
   location: 'Location',
   not_you_sign_out: 'Not you? sign out',
   added: 'Added',
-  assuming_timezone: 'Times are shown in your timezone ({timezone})',
+  assuming_timezone: 'Times are shown in {timezone}',
   terms_title: 'Terms and Conditions',
   terms_help: 'I have read and agree to the',
   terms_link: 'terms and conditions',

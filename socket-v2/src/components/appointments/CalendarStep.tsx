@@ -608,7 +608,7 @@ function SlotRow({
           {apt.delivery === 'home_visit' && typeof apt.travel_radius === 'number' && (
             <span className="tw:text-xs tw:text-muted-dark tw:whitespace-nowrap">
               {config.get_text('apt_travels_up_to', {
-                distance: formatDistanceShort(config, apt.travel_radius),
+                distance: formatDistanceShort(config, apt.travel_radius, { whole: true }),
               })}
             </span>
           )}

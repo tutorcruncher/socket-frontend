@@ -24,12 +24,21 @@ export function formatDistance(config: ResolvedConfig, metres: number): string {
   return config.get_text('distance_away', { distance: km })
 }
 
-/** Bare distance (no "away" suffix), for compact contexts like "Travels up to 10km". */
-export function formatDistanceShort(config: ResolvedConfig, metres: number): string {
+/**
+ * Bare distance (no "away" suffix), for compact contexts like "Travels up to 10km".
+ * `whole` rounds to the nearest unit, for figures that are a limit rather than a
+ * measurement.
+ */
+export function formatDistanceShort(
+  config: ResolvedConfig,
+  metres: number,
+  { whole = false } = {},
+): string {
+  const places = whole ? 1 : 10
   if (config.distance_units === 'miles') {
-    return `${Math.round((metres / METRES_PER_MILE) * 10) / 10} miles`
+    return `${Math.round((metres / METRES_PER_MILE) * places) / places} miles`
   }
-  return `${Math.round((metres / 1000) * 10) / 10}km`
+  return `${Math.round((metres / 1000) * places) / places}km`
 }
 
 const METRES_PER_MILE = 1609.34
