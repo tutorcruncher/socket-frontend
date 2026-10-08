@@ -192,6 +192,15 @@ Verified against the live API:
 per-service delivery modes, delivery badges and distances on slots, and delivery-aware
 booking context ("No travel needed" / venue address / "Travels up to 10km").
 
+
+**Home visits (team feedback, issue TC2 #18102).** `delivery` has three values:
+`online`, `in_person` (one of the agency's centres) and `home_visit` (the tutor comes
+to the client). For a home visit the appointment carries `travel_radius` (metres) and
+`address` is the tutor's base as an area, never a street address; the widget shows
+"Travels up to 8 miles" and the distance to the client, calls the venue "Your home",
+and matches a home visit when the client is within the tutor's travel radius rather
+than the search radius. Centres and home visits both require the client's postcode.
+
 ---
 
 ### 3.4 Inline account creation (guest booking)  🔨 UI BUILT, AWAITING BACKEND
@@ -375,6 +384,8 @@ of lessons.
   Evening; picking a time shows the tutors free then. Quiet days keep the plain list
 - [x] Calendar dots show how busy a day is (1 to 3) rather than service colours
 - [x] Slot rows are titled with the tutor when a search spans several tutors
+- [x] Optional tutor filter on the calendar ("Any tutor" chip): parents start from a
+  subject, but can narrow to one tutor's lessons once they are looking at times
 - [x] Many tutors free at one time: the list is ranked (nearest when a location was
   searched, then rating, then price), shows the best five with "Show all", and has a
   Sort by control (Recommended, Nearest, Highest rated, Lowest price). Rows show the
@@ -437,6 +448,10 @@ only a logged-in client with a saved Stripe card can buy one, inside TutorCrunch
 ```
 The amount always comes from the package on the server; the client only names the
 package. Packages always take payment, whatever `payment.required` says about lessons.
+
+**`summary`.** The card shows a one-line `summary` with the full markdown `description`
+behind "More about this package". TC's Package has only `description`; either add a
+short field, or the API sends the first line as `summary`.
 
 **Not built:** paying for a lesson from credit. A signed-in client with a balance could
 book with nothing due at the card step; that needs the balance in the SSO payload or a

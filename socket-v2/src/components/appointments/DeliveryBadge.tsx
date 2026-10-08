@@ -2,16 +2,18 @@ import { useConfig } from '@/config/context'
 import type { DeliveryMode } from '@/api/types'
 import { cx } from '@/lib/utils'
 import { deliveryLabelKey } from '@/lib/delivery'
-import { LocationIcon, VideoIcon } from '@/components/ui/Icons'
+import { HomeIcon, LocationIcon, VideoIcon } from '@/components/ui/Icons'
 
 const ICONS: Record<DeliveryMode, typeof LocationIcon> = {
   online: VideoIcon,
   in_person: LocationIcon,
+  home_visit: HomeIcon,
 }
 
 const STYLES: Record<DeliveryMode, string> = {
   online: 'tw:bg-info tw:text-info',
   in_person: 'tw:bg-hover tw:text-muted-dark',
+  home_visit: 'tw:bg-success tw:text-success',
 }
 
 /** Compact pill showing how a lesson is delivered. */

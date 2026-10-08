@@ -82,10 +82,12 @@ export function MyBookings({ auth }: { auth: AppointmentAuth }) {
             <div className="tw:text-sm tw:text-muted-dark tw:mt-0.5">
               {config.format_dt(b.start, 'full')} · {b.student_name}
             </div>
-            {b.delivery === 'in_person' && b.address?.pretty && (
+            {((b.delivery === 'in_person' && b.address?.pretty) || b.delivery === 'home_visit') && (
               <div className="tw:inline-flex tw:items-center tw:gap-1 tw:text-xs tw:text-muted-dark tw:mt-1">
                 <LocationIcon className="tw:w-3 tw:h-3 tw:shrink-0" />
-                <span className="tw:truncate">{b.address.pretty}</span>
+                <span className="tw:truncate">
+                  {b.delivery === 'home_visit' ? config.get_text('apt_your_home') : b.address?.pretty}
+                </span>
               </div>
             )}
             {confirming === b.booking_id ? (

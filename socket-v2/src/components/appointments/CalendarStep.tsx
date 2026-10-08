@@ -22,7 +22,8 @@ import {
   StarIcon,
 } from '@/components/ui/Icons'
 import { DeliveryBadge } from './DeliveryBadge'
-import { formatDistance } from '@/lib/delivery'
+import { formatDistance, formatDistanceShort } from '@/lib/delivery'
+import { describeTimezone } from '@/lib/formatting'
 import { ContractorModal } from '@/components/contractors/ContractorModal'
 import { Photo } from '@/components/shared/Photo'
 
@@ -140,6 +141,12 @@ export function CalendarStep({
           onTutor={setProfileId}
         />
       </div>
+
+      {/* Parents booking from abroad, or for a child who is, need to know whose
+          clock the times are on. */}
+      <p className="tw:text-xs tw:text-muted-dark">
+        {config.get_text('assuming_timezone', { timezone: describeTimezone(config.timezone) })}
+      </p>
       {profileId !== null && (
         <ContractorModal id={profileId} onClose={() => setProfileId(null)} profileOnly />
       )}
@@ -596,6 +603,13 @@ function SlotRow({
             <span className="tw:inline-flex tw:items-center tw:gap-1 tw:text-xs tw:text-muted-dark tw:min-w-0">
               <LocationIcon className="tw:w-3 tw:h-3 tw:shrink-0" />
               <span className="tw:truncate">{apt.address?.pretty ?? apt.location}</span>
+            </span>
+          )}
+          {apt.delivery === 'home_visit' && typeof apt.travel_radius === 'number' && (
+            <span className="tw:text-xs tw:text-muted-dark tw:whitespace-nowrap">
+              {config.get_text('apt_travels_up_to', {
+                distance: formatDistanceShort(config, apt.travel_radius),
+              })}
             </span>
           )}
           {typeof apt.distance === 'number' && (

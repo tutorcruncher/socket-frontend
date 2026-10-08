@@ -90,7 +90,8 @@ export interface ContractorListResponse {
  * How a lesson is delivered. **V2 contract: not yet served by the live API.**
  * See ROADMAP §3.3; until the backend ships it, the mock API supplies these.
  */
-export type DeliveryMode = 'online' | 'in_person'
+/** Online, at one of the agency's centres, or the tutor travelling to the client's home. */
+export type DeliveryMode = 'online' | 'in_person' | 'home_visit'
 
 /** A geocoded place. Present on in-person lessons; absent for online. */
 export interface Address {
@@ -130,10 +131,15 @@ export interface Appointment {
   // --- V2 contract (mocked until the backend ships it) ---
   /** How the lesson is delivered. Absent on legacy payloads → treated as in_person. */
   delivery?: DeliveryMode
-  /** Geocoded venue. Present when delivery === 'in_person'. */
+  /**
+   * Geocoded place. The venue for `in_person`; for `home_visit`, where the tutor
+   * travels from (an area, not a street address), used only to work out distance.
+   */
   address?: Address | null
   /** Metres from the searched location; null when no location was searched. */
   distance?: number | null
+  /** How far the tutor will travel, in metres. `home_visit` only. */
+  travel_radius?: number | null
 }
 
 export interface AppointmentListResponse {
@@ -278,7 +284,9 @@ export interface ClientBooking {
 export interface CreditPackage {
   id: number
   name: string
-  /** Markdown, written by the agency for clients browsing packages. */
+  /** One plain sentence for the card. V2 contract: TC has only `description`. */
+  summary?: string | null
+  /** The full description, markdown, for a client who wants to know more. */
   description?: string | null
   /** Total the client pays, tax inclusive. */
   cost: number

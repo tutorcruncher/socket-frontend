@@ -5,6 +5,7 @@ import { deliveryLabelKey } from '@/lib/delivery'
 import { Markdown } from '@/components/ui/Markdown'
 import { CheckIcon } from '@/components/ui/Icons'
 import { Photo } from '@/components/shared/Photo'
+import { describeTimezone } from '@/lib/formatting'
 import { SummaryList, type SummaryRow } from '@/components/shared/SummaryList'
 
 /**
@@ -57,6 +58,7 @@ export function SummaryRail({
   if (activeDelivery) {
     facts.push(config.get_text(deliveryLabelKey(activeDelivery)))
     if (activeDelivery === 'online') facts.push(config.get_text('apt_online_no_travel'))
+    if (activeDelivery === 'home_visit') facts.push(config.get_text('apt_home_visit_fact'))
   } else if (service?.delivery_modes?.length) {
     for (const mode of service.delivery_modes) facts.push(config.get_text(deliveryLabelKey(mode)))
   }
@@ -132,7 +134,7 @@ export function SummaryRail({
 
       {apt && (
         <p className="tw:text-xs tw:text-muted-dark">
-          {config.get_text('assuming_timezone', { timezone: config.timezone })}
+          {config.get_text('assuming_timezone', { timezone: describeTimezone(config.timezone) })}
         </p>
       )}
 
@@ -176,8 +178,14 @@ export function BookingSummary({
 }) {
   const config = useConfig()
   const sameDay = apt ? apt.start.substring(0, 10) === apt.finish.substring(0, 10) : true
-  const aptLocation =
-    apt && apt.delivery !== 'online' ? (apt.address?.pretty ?? apt.location ?? null) : null
+  // A home visit's address is the tutor's base, which is not where the lesson is.
+  const aptLocation = !apt
+    ? null
+    : apt.delivery === 'home_visit'
+      ? config.get_text('apt_your_home')
+      : apt.delivery !== 'online'
+        ? (apt.address?.pretty ?? apt.location ?? null)
+        : null
 
   const rows: SummaryRow[] = []
   if (lesson) rows.push({ label: config.get_text('apt_summary_lesson'), value: lesson })

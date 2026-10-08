@@ -1,10 +1,10 @@
 import { useConfig } from '@/config/context'
 import type { DeliveryMode } from '@/api/types'
 import { deliveryHelpKey, deliveryLabelKey } from '@/lib/delivery'
-import { LocationIcon, VideoIcon } from '@/components/ui/Icons'
+import { HomeIcon, LocationIcon, VideoIcon } from '@/components/ui/Icons'
 import { cx } from '@/lib/utils'
 
-export const MODE_ICONS = { online: VideoIcon, in_person: LocationIcon }
+export const MODE_ICONS = { online: VideoIcon, in_person: LocationIcon, home_visit: HomeIcon }
 
 /**
  * Online / in person choice as a row of toggle cards. Pressing the chosen one

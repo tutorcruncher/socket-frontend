@@ -4,6 +4,18 @@ const intlOptions = Intl.DateTimeFormat().resolvedOptions()
 const locale = intlOptions.locale || 'en-US'
 export const browserTimezone = intlOptions.timeZone || 'UTC'
 
+/** "Europe/London (BST)": the zone's name with what it is called right now. */
+export function describeTimezone(timezone: string): string {
+  try {
+    const abbr = new Intl.DateTimeFormat('en-GB', { timeZone: timezone, timeZoneName: 'short' })
+      .formatToParts(new Date())
+      .find((p) => p.type === 'timeZoneName')?.value
+    return abbr ? `${timezone.replace(/_/g, ' ')} (${abbr})` : timezone
+  } catch {
+    return timezone
+  }
+}
+
 const FORMAT_OPTIONS: Record<DateFormat, Intl.DateTimeFormatOptions> = {
   // Weekday included: for a lesson it is the first thing a parent checks.
   full: { weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric' },

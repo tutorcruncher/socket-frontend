@@ -47,6 +47,9 @@ export function Appointments() {
   const [search, setSearch] = useState<AppointmentSearch | null>(null)
   // "Change" reopens the search form pre-filled rather than discarding the search.
   const [editingSearch, setEditingSearch] = useState(false)
+  // Narrow the calendar to one tutor's lessons. Optional, and offered only once the
+  // visitor is looking at the calendar: parents start from a subject, not a tutor.
+  const [tutorId, setTutorId] = useState<number | null>(null)
   // Set when the visitor asks for a lesson instead of booking one: what they searched.
   const [requestInitial, setRequestInitial] = useState<SubjectEnquiryInitial | null>(null)
   // Both null until the visitor navigates; derived defaults are used meanwhile.
@@ -58,9 +61,16 @@ export function Appointments() {
   const NO_FILTERS = { serviceIds: null, delivery: null, location: null, radius: null }
   // Unfiltered window backs deep links (a booked slot may be outside the search).
   const allWindow = useAppointmentsWindow(NO_FILTERS)
+  const subjectServiceIds = search ? serviceIdsFor(services, search.subject) : null
+  const tutorServiceIds =
+    tutorId === null
+      ? subjectServiceIds
+      : services
+          .filter((s) => s.contractor?.id === tutorId && (!subjectServiceIds || subjectServiceIds.includes(s.id)))
+          .map((s) => s.id)
   const searchFilters = search
     ? {
-        serviceIds: serviceIdsFor(services, search.subject),
+        serviceIds: tutorServiceIds,
         delivery: search.delivery,
         location: search.location,
         radius: search.radius,
@@ -183,6 +193,7 @@ export function Appointments() {
           initial={search}
           onSearch={(s) => {
             setSearch(s)
+            setTutorId(null)
             setEditingSearch(false)
             setSelectedDay(null)
             setMonth(null)
@@ -199,6 +210,12 @@ export function Appointments() {
 
   // --- Step 2: calendar ---
   const subjectServices = services.filter((s) => subjectOf(s) === search.subject)
+  // Tutors who teach what was searched, one entry each, by name.
+  const tutors = [...new Map(
+    (search.subject ? subjectServices : services)
+      .filter((s) => s.contractor)
+      .map((s) => [s.contractor!.id, s.contractor!]),
+  ).values()].sort((a, b) => a.name.localeCompare(b.name))
   // One colour dot when the subject is one service; across tutors there are many.
   const chipColour = subjectServices.length === 1 ? subjectServices[0].colour : null
 
@@ -226,6 +243,24 @@ export function Appointments() {
           {searchedLocation?.pretty ?? search.location}
           {search.radius ? ` · ${formatDistanceShort(config, search.radius)}` : ''}
         </span>
+      )}
+      {tutors.length > 1 && (
+        <select
+          aria-label={config.get_text('apt_tutor_label')}
+          value={tutorId ?? ''}
+          onChange={(e) => {
+            setTutorId(e.target.value ? Number(e.target.value) : null)
+            setSelectedDay(null)
+          }}
+          className="tcs-chip tcs-input tw:px-3 tw:py-1.5 tw:bg-white tw:border tw:border-default tw:rounded-full tw:text-sm tw:text-primary tw:cursor-pointer"
+        >
+          <option value="">{config.get_text('apt_any_tutor')}</option>
+          {tutors.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
       )}
       <button
         type="button"

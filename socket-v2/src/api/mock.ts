@@ -51,9 +51,19 @@ const VENUES: Address[] = [
   { pretty: 'Stratford Annexe, 3 Great Eastern Rd, London E15 1BB', line1: '3 Great Eastern Rd', city: 'London', postcode: 'E15 1BB', lat: 51.5423, lng: -0.0022 },
 ]
 
-/** Distribution: ~55% online, ~45% in-person. */
+/** Where home-visit tutors are based: areas, not addresses, since parents never see them. */
+const TUTOR_BASES: Address[] = [
+  { pretty: 'Islington', city: 'London', lat: 51.5362, lng: -0.1033 },
+  { pretty: 'Highgate', city: 'London', lat: 51.5716, lng: -0.1478 },
+  { pretty: 'Clapham', city: 'London', lat: 51.4626, lng: -0.1379 },
+  { pretty: 'Stratford', city: 'London', lat: 51.5423, lng: -0.0022 },
+  { pretty: 'Ealing', city: 'London', lat: 51.5130, lng: -0.3089 },
+]
+
+/** Distribution: ~45% online, ~30% at a centre, ~25% at the client's home. */
 function mockDelivery(id: number): DeliveryMode {
-  return hash(id) % 100 < 55 ? 'online' : 'in_person'
+  const n = hash(id) % 100
+  return n < 45 ? 'online' : n < 75 ? 'in_person' : 'home_visit'
 }
 
 /** Great-circle distance in metres. */
@@ -111,12 +121,15 @@ export function geocode(query: string): SearchedLocation {
 /** Layer the V2 fields onto a real appointment, deterministically. */
 export function enrichAppointment(apt: Appointment): Appointment {
   const delivery = mockDelivery(apt.id)
-  const address = delivery === 'in_person' ? VENUES[hash(apt.id) % VENUES.length] : null
+  const h = hash(apt.id)
+  // A home-visit tutor's base follows the tutor (service), so one tutor's lessons
+  // all come from the same place; they travel 5 to 15 km from it.
+  const base = TUTOR_BASES[hash(apt.service_id) % TUTOR_BASES.length]
   return {
     ...apt,
     delivery,
-    address,
-    // Home-visit tutors travel 5–15km.
+    address: delivery === 'in_person' ? VENUES[h % VENUES.length] : delivery === 'home_visit' ? base : null,
+    travel_radius: delivery === 'home_visit' ? 5000 + ((h >>> 3) % 11) * 1000 : null,
     distance: null,
   }
 }
@@ -134,6 +147,8 @@ export interface MockFilters {
  *
  * Online lessons always match a location search: they have no geography, and
  * excluding them would be wrong (a parent searching "near me" still wants them).
+ * A centre matches when it is within the search radius; a home visit when the
+ * client is within the tutor's travel radius, however far the parent said.
  */
 export function applyMockFilters(
   response: AppointmentListResponse,
@@ -157,7 +172,11 @@ export function applyMockFilters(
           const point = a.address ?? VENUES[hash(a.id) % VENUES.length]
           return { ...a, distance: haversine(origin, point) }
         })
-        .filter((a) => a.delivery === 'online' || (a.distance ?? Infinity) <= radius)
+        .filter((a) => {
+          if (a.delivery === 'online') return true
+          const reach = a.delivery === 'home_visit' ? (a.travel_radius ?? 0) : radius
+          return (a.distance ?? Infinity) <= reach
+        })
     } else {
       // Geocoding failed: return nothing, matching how /contractors behaves.
       results = []
@@ -201,7 +220,13 @@ const MOCK_PACKAGES: CreditPackage[] = [
   {
     id: 1,
     name: 'Starter',
-    description: 'Enough for around **three lessons**. A simple way to try us out.',
+    summary: 'Enough for around three lessons. A simple way to try us out.',
+    description:
+      'Credit for roughly three one-hour lessons, so you can meet a tutor and see how your ' +
+      'child gets on before committing to more.\n\n' +
+      '- Use it on any subject and any tutor\n' +
+      '- Online, at a centre or at home\n' +
+      '- Never expires',
     cost: 150,
     bonus_credit: 0,
     icon: 'fa-seedling',
@@ -210,7 +235,13 @@ const MOCK_PACKAGES: CreditPackage[] = [
   {
     id: 2,
     name: 'Term',
-    description: 'Covers most of a term of **weekly lessons**, with a little extra on us.',
+    summary: 'Covers most of a term of weekly lessons, with a little extra on us.',
+    description:
+      'Our most popular package. Enough for a weekly lesson across most of a term, with ' +
+      '**£30 of bonus credit** added when you buy.\n\n' +
+      '- Use it on any subject and any tutor\n' +
+      '- Change tutor or subject at any time\n' +
+      '- Unused credit carries over',
     cost: 400,
     bonus_credit: 30,
     icon: 'fa-book-open',
@@ -219,7 +250,13 @@ const MOCK_PACKAGES: CreditPackage[] = [
   {
     id: 3,
     name: 'Year',
-    description: 'For families planning ahead: a **full year** of weekly lessons at our best value.',
+    summary: 'A full year of weekly lessons at our best value.',
+    description:
+      'For families planning ahead: a weekly lesson for the whole school year, with ' +
+      '**£120 of bonus credit** added when you buy.\n\n' +
+      '- Use it on any subject and any tutor\n' +
+      '- Split it between brothers and sisters\n' +
+      '- Unused credit carries over to next year',
     cost: 1000,
     bonus_credit: 120,
     icon: 'fa-graduation-cap',
@@ -601,7 +638,7 @@ export function enrichServices(services: Service[], tutors: ContractorSummary[])
   return services.map((s): Service => {
     // Some services are online-only; the rest offer both.
     const delivery_modes: DeliveryMode[] =
-      hash(s.id) % 3 === 0 ? ['online'] : ['online', 'in_person']
+      hash(s.id) % 3 === 0 ? ['online'] : ['online', 'in_person', 'home_visit']
     return {
       ...s,
       delivery_modes,
@@ -662,7 +699,7 @@ function busyServices(tutors: ContractorSummary[]): Service[] {
       id: BUSY_SUBJECT.id + i + 1,
       name: `${BUSY_SUBJECT.name} with ${name}`,
       colour: BUSY_COLOURS[i],
-      delivery_modes: ['online', 'in_person'] as DeliveryMode[],
+      delivery_modes: ['online', 'in_person', 'home_visit'] as DeliveryMode[],
       photo: null,
       description: SERVICE_BLURBS[i % SERVICE_BLURBS.length],
       subject: BUSY_SUBJECT,
@@ -715,7 +752,7 @@ const BIG_SERVICES: Service[] = BIG_TUTORS.map((tutor, i) => ({
   id: BIG_SUBJECT.id + i + 1,
   name: `${BIG_SUBJECT.name} with ${tutor.name}`,
   colour: BUSY_COLOURS[i % BUSY_COLOURS.length],
-  delivery_modes: ['online', 'in_person'] as DeliveryMode[],
+  delivery_modes: ['online', 'in_person', 'home_visit'] as DeliveryMode[],
   photo: null,
   description: SERVICE_BLURBS[i % SERVICE_BLURBS.length],
   subject: BIG_SUBJECT,

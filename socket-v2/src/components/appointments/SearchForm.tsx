@@ -10,6 +10,7 @@ import { cx } from '@/lib/utils'
 import {
   DELIVERY_MODES,
   defaultRadius,
+  needsPostcode,
   radiusOptions,
   deliveryHelpKey,
   deliveryLabelKey,
@@ -74,14 +75,15 @@ export function SearchForm({
   const modeCounts = useMemo(() => {
     if (!availability.data) return null
     const today = todayKey()
-    const counts: Record<DeliveryMode, number> = { online: 0, in_person: 0 }
+    const counts: Record<DeliveryMode, number> = { online: 0, in_person: 0, home_visit: 0 }
     for (const a of availability.data.appointments) {
       const full = a.attendees_max !== null && a.attendees_max - a.attendees_count <= 0
       if (dayKey(a.start) >= today && !full) counts[a.delivery ?? 'in_person'] += 1
     }
     return counts
   }, [availability.data])
-  const noLessons = !!modeCounts && modeCounts.online + modeCounts.in_person === 0
+  const noLessons =
+    !!modeCounts && modeCounts.online + modeCounts.in_person + modeCounts.home_visit === 0
 
   // "All lesson types" is a real choice, listed first, so the box never reads as
   // if something has been picked when it hasn't. Choosing it stores ALL_SUBJECTS;
@@ -115,8 +117,9 @@ export function SearchForm({
   // can only be online, since there is nothing to search against.
   const needsLocation =
     effectiveDelivery !== 'online' && !(onlyMode === 'online')
-  // In person means travelling to a venue, so we need to know where from.
-  const locationRequired = effectiveDelivery === 'in_person'
+  // A centre means travelling there and a home visit means the tutor travelling
+  // here, so both need to know where the client is.
+  const locationRequired = needsPostcode(effectiveDelivery)
   const locationMissing = locationRequired && !location.trim()
 
   return (

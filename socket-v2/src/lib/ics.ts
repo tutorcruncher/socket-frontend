@@ -15,7 +15,9 @@ export function buildIcs(apt: Appointment, organiser?: string): string {
   const where =
     apt.delivery === 'online'
       ? 'Online'
-      : (apt.address?.pretty ?? apt.location ?? '')
+      : apt.delivery === 'home_visit'
+        ? 'Your home'
+        : (apt.address?.pretty ?? apt.location ?? '')
 
   return [
     'BEGIN:VCALENDAR',

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useConfig } from '@/config/context'
 import { useQualLevels, useSubjects } from '@/api/queries'
 import type { DeliveryMode, EnquiryField } from '@/api/types'
-import { DELIVERY_MODES, deliveryLabelKey } from '@/lib/delivery'
+import { DELIVERY_MODES, deliveryLabelKey, needsPostcode } from '@/lib/delivery'
 import { cx } from '@/lib/utils'
 import { FlowLayout, type FlowStep } from '@/components/shared/FlowLayout'
 import { SummaryList, type SummaryRow } from '@/components/shared/SummaryList'
@@ -141,7 +141,7 @@ export function SubjectEnquiryFlow({
 
   const levelName = levels.find((l) => l.id === level)?.name ?? null
   const needsLocation = delivery !== 'online'
-  const locationMissing = delivery === 'in_person' && !location.trim()
+  const locationMissing = needsPostcode(delivery) && !location.trim()
   const timesDetail = groupTimes(times, {
     period: (p) => config.get_text(`apt_${p}`),
     allDay: config.get_text('req_all_day'),
@@ -287,7 +287,7 @@ export function SubjectEnquiryFlow({
             <div className="tw:flex tw:flex-col tw:gap-1">
               <label htmlFor={`tcs-${uid}-req-loc`} className={FIELD_LABEL}>
                 {config.get_text('apt_address_label')}
-                {delivery !== 'in_person' && config.get_text('apt_optional')}
+                {!needsPostcode(delivery) && config.get_text('apt_optional')}
               </label>
               <input
                 id={`tcs-${uid}-req-loc`}

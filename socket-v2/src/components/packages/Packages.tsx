@@ -143,9 +143,9 @@ export function Packages() {
                 <PackageTile pkg={chosen} />
                 <div className="tw:min-w-0">
                   <h2 className="tw:text-xl tw:font-medium tw:font-heading">{chosen.name}</h2>
-                  {chosen.description && (
+                  {(chosen.summary || chosen.description) && (
                     <div className="tw:text-sm tw:text-muted-dark tw:mt-1.5">
-                      <Markdown content={chosen.description} />
+                      {chosen.summary ?? <Markdown content={chosen.description!} />}
                     </div>
                   )}
                 </div>

@@ -1,7 +1,10 @@
 import type { DeliveryMode } from '@/api/types'
 import type { ResolvedConfig } from '@/config/types'
 
-export const DELIVERY_MODES: DeliveryMode[] = ['online', 'in_person']
+export const DELIVERY_MODES: DeliveryMode[] = ['online', 'in_person', 'home_visit']
+
+/** Modes where where the client is matters, so a search needs their postcode. */
+export const needsPostcode = (m: DeliveryMode | null) => m === 'in_person' || m === 'home_visit'
 
 /** Message key for a delivery mode's label / help text. */
 export const deliveryLabelKey = (m: DeliveryMode) => `delivery_${m}` as const
