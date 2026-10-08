@@ -1,0 +1,331 @@
+/* ============================================================
+   THEMES: visual variants selected with `theme` in the embed config.
+
+   Tailwind v4 compiles utilities to `var(--tw-…)` references, so a theme is
+   partly a block of variable overrides on the mount element (`data-tcs-theme`),
+   which every `.tcs-root` inside it inherits. The modal portal carries the
+   same attribute. Structural changes (a theme with no boxes, say) target the
+   `tcs-*` hook classes on the widget's building blocks: panel, rail, card,
+   calendar, slot, chip, time, day, input, badge, button, stepper.
+   Themes: soft, bold, elegant, vivid. `classic` is the untouched default.
+
+   These rules are deliberately unlayered so they win over the layered
+   utilities and the scoped reset without specificity games.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   soft: friendly consumer look. Large radii, pill buttons, tinted lavender
+   surfaces instead of borders, bolder sans headings, wide soft shadows.
+   ------------------------------------------------------------ */
+[data-tcs-theme='soft'] {
+  --tw-font-heading: var(--tw-font-body);
+  --tw-color-primary: #1f2937;
+  --tw-color-heading: #111827;
+  --tw-color-link: #4338ca;
+  --tw-background-color-primary: #4f46e5;
+  --tw-background-color-content: #f5f4fb;
+  --tw-background-color-hover: #ece9f8;
+  --tw-border-color-default: #ebe9f5;
+  --tw-background-color-info: #eef2ff;
+  --tw-border-color-info: #c7d2fe;
+  --tw-text-color-info: #3730a3;
+  --tw-radius-md: 0.75rem;
+  --tw-radius-lg: 1rem;
+  --tw-radius-xl: 1.5rem;
+}
+[data-tcs-theme='soft'] :is(h1, h2, h3, h4) {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+[data-tcs-theme='soft'] .tw\:shadow-sm {
+  box-shadow: 0 6px 20px -6px rgb(30 27 75 / 0.1);
+}
+/* Buttons and chips go pill; inputs keep the (already large) radius. */
+[data-tcs-theme='soft'] .tcs-btn,
+[data-tcs-theme='soft'] .tcs-time {
+  border-radius: 999px;
+}
+
+/* ------------------------------------------------------------
+   bold: poster. Two-pixel black borders, hard offset shadows, square corners,
+   heavy uppercase headings, acid-yellow primary actions with black text.
+   ------------------------------------------------------------ */
+[data-tcs-theme='bold'] {
+  --tw-font-heading: var(--tw-font-body);
+  --tw-color-primary: #000000;
+  --tw-color-heading: #000000;
+  --tw-color-link: #000000;
+  --tw-color-muted: #737373;
+  --tw-color-muted-dark: #404040;
+  --tw-background-color-primary: #000000;
+  --tw-background-color-content: #fffbe6;
+  --tw-background-color-hover: #fff3a3;
+  --tw-border-color-default: #000000;
+  --tw-background-color-info: #fff3a3;
+  --tw-border-color-info: #000000;
+  --tw-text-color-info: #000000;
+  --tw-background-color-success: #d9f99d;
+  --tw-border-color-success: #000000;
+  --tw-text-color-success: #000000;
+  --tw-background-color-error: #fecaca;
+  --tw-border-color-error: #000000;
+  --tw-text-color-error: #000000;
+  --tw-background-color-warning: #fed7aa;
+  --tw-border-color-warning: #000000;
+  --tw-text-color-warning: #000000;
+  --tw-radius-md: 0;
+  --tw-radius-lg: 0;
+  --tw-radius-xl: 0;
+}
+[data-tcs-theme='bold'] :is(h1, h2, h3, h4) {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+[data-tcs-theme='bold'] .tw\:border {
+  border-width: 2px;
+}
+[data-tcs-theme='bold'] .tw\:shadow-sm,
+[data-tcs-theme='bold'] .tcs-rail,
+[data-tcs-theme='bold'] .tcs-btn {
+  box-shadow: 4px 4px 0 #000000;
+}
+[data-tcs-theme='bold'] .tcs-rail {
+  background: #ffffff;
+  border-width: 2px;
+}
+[data-tcs-theme='bold'] .tcs-btn {
+  border: 2px solid #000000;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+[data-tcs-theme='bold'] .tcs-btn.tw\:bg-primary {
+  background: #ffe600;
+  color: #000000;
+}
+[data-tcs-theme='bold'] .tcs-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #000000;
+}
+[data-tcs-theme='bold'] .tcs-btn:active,
+[data-tcs-theme='bold'] .tcs-btn:disabled {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000000;
+}
+[data-tcs-theme='bold'] .tcs-time,
+[data-tcs-theme='bold'] .tcs-chip {
+  border-width: 2px;
+  font-weight: 700;
+}
+[data-tcs-theme='bold'] .tcs-time[aria-pressed='true'] {
+  background: #ffe600;
+  color: #000000;
+  border-color: #000000;
+}
+[data-tcs-theme='bold'] .tcs-day[aria-pressed='true'] {
+  background: #ffe600;
+  color: #000000;
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+}
+[data-tcs-theme='bold'] .tcs-input {
+  border-width: 2px;
+  box-shadow: none;
+}
+[data-tcs-theme='bold'] .tcs-badge {
+  border: 2px solid #000000;
+  border-radius: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+[data-tcs-theme='bold'] .tcs-stepper-dot {
+  border: 2px solid #000000;
+  border-radius: 0;
+  font-weight: 800;
+  outline: none;
+}
+[data-tcs-theme='bold'] .tcs-stepper-line {
+  height: 2px;
+  background: #000000;
+  border: 0;
+}
+
+/* ------------------------------------------------------------
+   elegant: warm luxury. Serif headings, cream surfaces, thin warm borders,
+   letterspaced uppercase labels and buttons, gold-brown links.
+   ------------------------------------------------------------ */
+[data-tcs-theme='elegant'] {
+  --tw-font-heading: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino,
+    'Times New Roman', serif;
+  --tw-color-primary: #2b2118;
+  --tw-color-heading: #1f1712;
+  --tw-color-link: #8a6d3b;
+  --tw-color-muted: #b3a493;
+  --tw-color-muted-dark: #7d6f60;
+  --tw-background-color-primary: #2b2118;
+  --tw-background-color-content: #f6f1ea;
+  --tw-background-color-hover: #efe7dc;
+  --tw-border-color-default: #e4dbcf;
+  --tw-background-color-info: #f6f1ea;
+  --tw-border-color-info: #d8c9b4;
+  --tw-text-color-info: #5c4a2f;
+  --tw-background-color-success: #eef3e6;
+  --tw-border-color-success: #8a9c6a;
+  --tw-text-color-success: #4f6b2b;
+  --tw-radius-md: 0.125rem;
+  --tw-radius-lg: 0.125rem;
+  --tw-radius-xl: 0.25rem;
+}
+[data-tcs-theme='elegant'] :is(h1, h2, h3, h4) {
+  font-weight: 400;
+  letter-spacing: 0;
+}
+[data-tcs-theme='elegant'] .tcs-panel h2 {
+  font-size: 1.875rem;
+}
+[data-tcs-theme='elegant'] .tw\:shadow-sm {
+  box-shadow: none;
+}
+[data-tcs-theme='elegant'] .tcs-panel,
+[data-tcs-theme='elegant'] .tcs-card,
+[data-tcs-theme='elegant'] .tcs-calendar,
+[data-tcs-theme='elegant'] .tcs-slot,
+[data-tcs-theme='elegant'] .tcs-input {
+  background: #fffdf9;
+}
+[data-tcs-theme='elegant'] .tcs-btn {
+  border-radius: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+[data-tcs-theme='elegant'] .tcs-btn.tw\:bg-primary:hover {
+  background: #8a6d3b;
+}
+[data-tcs-theme='elegant'] .tcs-chip,
+[data-tcs-theme='elegant'] .tcs-badge {
+  background: transparent;
+  border: 1px solid #d8c9b4;
+  border-radius: 0;
+  color: #5c4a2f;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+[data-tcs-theme='elegant'] .tcs-time {
+  border-color: #d8c9b4;
+  font-weight: 500;
+}
+[data-tcs-theme='elegant'] .tcs-stepper-dot {
+  border: 1px solid #b89a6a;
+  font-weight: 400;
+  outline: none;
+}
+[data-tcs-theme='elegant'] .tcs-stepper-line {
+  border-color: #d8c9b4;
+}
+
+/* ------------------------------------------------------------
+   vivid: saturated cyan-to-indigo gradients on actions, selected states and
+   panel edges, white panels with coloured glow, gradient headings, bright
+   badges. The modern SaaS register.
+   ------------------------------------------------------------ */
+[data-tcs-theme='vivid'] {
+  --tcs-grad: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+  --tw-font-heading: var(--tw-font-body);
+  --tw-color-primary: #1e1b4b;
+  --tw-color-heading: #1e1b4b;
+  --tw-color-link: #4f46e5;
+  --tw-color-muted: #94a3b8;
+  --tw-color-muted-dark: #64748b;
+  --tw-background-color-primary: #4f46e5;
+  --tw-background-color-content: #f0f9ff;
+  --tw-background-color-hover: #e0f2fe;
+  --tw-border-color-default: #dbeafe;
+  --tw-background-color-info: #e0e7ff;
+  --tw-border-color-info: #a5b4fc;
+  --tw-text-color-info: #3730a3;
+  --tw-background-color-success: #ccfbf1;
+  --tw-border-color-success: #14b8a6;
+  --tw-text-color-success: #0f766e;
+  --tw-radius-md: 0.625rem;
+  --tw-radius-lg: 0.875rem;
+  --tw-radius-xl: 1.25rem;
+}
+[data-tcs-theme='vivid'] :is(h1, h2, h3, h4) {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+[data-tcs-theme='vivid'] .tcs-panel > header h2,
+[data-tcs-theme='vivid'] .tcs-card h2 {
+  background: var(--tcs-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: fit-content;
+}
+/* Gradient edges: a transparent border painted by a second background layer. */
+[data-tcs-theme='vivid'] .tcs-panel,
+[data-tcs-theme='vivid'] .tcs-card,
+[data-tcs-theme='vivid'] .tcs-rail {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    var(--tcs-grad) border-box;
+  box-shadow: 0 24px 48px -24px rgb(79 70 229 / 0.35);
+}
+[data-tcs-theme='vivid'] .tcs-calendar,
+[data-tcs-theme='vivid'] .tcs-slot {
+  box-shadow: 0 10px 30px -14px rgb(6 182 212 / 0.35);
+}
+[data-tcs-theme='vivid'] .tcs-slot {
+  border-color: transparent;
+  box-shadow:
+    inset 4px 0 0 #06b6d4,
+    0 10px 30px -14px rgb(6 182 212 / 0.35);
+}
+[data-tcs-theme='vivid'] .tcs-btn.tw\:bg-primary,
+[data-tcs-theme='vivid'] .tcs-time[aria-pressed='true'],
+[data-tcs-theme='vivid'] .tcs-day[aria-pressed='true'],
+[data-tcs-theme='vivid'] .tcs-stepper-dot.tw\:bg-primary,
+[data-tcs-theme='vivid'] .tcs-stepper-line.tw\:bg-primary {
+  background: var(--tcs-grad);
+  color: #ffffff;
+  border-color: transparent;
+}
+[data-tcs-theme='vivid'] .tcs-btn.tw\:bg-primary {
+  box-shadow: 0 8px 20px -8px rgb(99 102 241 / 0.6);
+}
+[data-tcs-theme='vivid'] .tcs-btn.tw\:bg-primary:hover {
+  filter: brightness(1.06);
+}
+[data-tcs-theme='vivid'] .tcs-btn,
+[data-tcs-theme='vivid'] .tcs-time,
+[data-tcs-theme='vivid'] .tcs-chip {
+  border-radius: 999px;
+}
+[data-tcs-theme='vivid'] .tcs-time {
+  border-color: #a5f3fc;
+  font-weight: 600;
+}
+[data-tcs-theme='vivid'] .tcs-chip {
+  background: #e0f2fe;
+  border-color: transparent;
+  color: #0e7490;
+  font-weight: 600;
+}
+[data-tcs-theme='vivid'] .tcs-input {
+  border-color: #c7d2fe;
+  box-shadow: none;
+}
+[data-tcs-theme='vivid'] .tcs-badge {
+  font-weight: 600;
+}
+[data-tcs-theme='vivid'] .tcs-stepper-dot {
+  outline: none;
+  font-weight: 700;
+}

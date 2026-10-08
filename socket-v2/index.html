@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Bramble &amp; Finch Tutors | Socket demo</title>
+
+    <!--
+      DEMO HOST PAGE: not part of the shipped widget.
+
+      Socket is embedded on tutoring agencies' own websites, so this page
+      pretends to be one: a fictional agency called Bramble & Finch. Showing the
+      widget inside a realistic, current-looking site is the point: on a bare
+      dev harness you cannot tell whether Socket will look right on a customer's
+      page.
+
+      Everything here is scoped under `.hp` and uses `--hp-*` tokens so it can
+      never cascade into the widget (which mounts into `.tcs-root` and ships its
+      own reset). Different fonts to the widget on purpose: a real customer's
+      site would have its own.
+
+      Photography is from Unsplash (free licence, hotlinked via images.unsplash.com).
+    -->
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="stylesheet" href="/demo/host.css" />
+  </head>
+
+  <body>
+    <div class="hp">
+      <!-- N1b · Canonical three-section nav -->
+      <header class="hp-nav">
+        <div class="hp__shell hp-nav__inner">
+          <a class="hp-nav__brand" href="#top">
+            <span class="hp-nav__dot" aria-hidden="true"></span>
+            Bramble &amp; Finch
+          </a>
+
+          <ul class="hp-nav__links">
+            <li><a href="#tutors">Find a tutor</a></li>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#subjects">Subjects</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+
+          <div class="hp-nav__actions">
+            <a class="hp-btn hp-btn--ghost" href="#contact">Sign in</a>
+            <a class="hp-btn hp-btn--primary" href="#tutors">Find a tutor</a>
+          </div>
+        </div>
+      </header>
+
+      <main id="top">
+        <!-- Hero: split diptych, copy left / photo right -->
+        <section class="hp-hero">
+          <div class="hp__shell hp-hero__grid">
+            <div class="hp-reveal" style="--i: 0">
+              <p class="hp-hero__eyebrow">London &amp; online worldwide</p>
+              <h1 class="hp-hero__title">
+                Find a tutor who actually
+                <span class="hp-hero__accent">fits your child.</span>
+              </h1>
+              <p class="hp-hero__lede">
+                Every tutor here is someone we have met, referenced and taught alongside.
+                Browse them all below. No forms before you can see who is available.
+              </p>
+              <div class="hp-hero__cta">
+                <a class="hp-btn hp-btn--primary" href="#tutors">Browse tutors</a>
+                <a class="hp-btn hp-btn--ghost" href="#how">How it works</a>
+              </div>
+              <p class="hp-hero__note">
+                Free 20-minute intro call · No agency fees · Cancel any time
+              </p>
+            </div>
+
+            <figure class="hp-hero__figure hp-reveal" style="--i: 1">
+              <!-- LCP element: eager + high priority, never lazy. -->
+              <img
+                class="hp-hero__photo"
+                src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=1200&q=75&auto=format&fit=crop"
+                alt="A student smiling while working through notes at a desk"
+                width="1200"
+                height="960"
+                fetchpriority="high"
+                decoding="async"
+              />
+              <figcaption class="hp-hero__badge">
+                <span class="hp-hero__badge-mark" aria-hidden="true">★</span>
+                <span class="hp-hero__badge-text">
+                  Rated by parents
+                  <span class="hp-hero__badge-sub">Reviews on every profile</span>
+                </span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!--
+          Demo-only mode switcher. A real host page has no such control, so it is
+          styled as an obvious strip rather than as site furniture.
+        -->
+        <div class="hp-modes">
+          <div class="hp__shell hp-modes__inner">
+            <span class="hp-modes__label" id="hp-modes-label">Socket demo · mode</span>
+            <ul class="hp-modes__list" id="tabs" role="tablist" aria-labelledby="hp-modes-label">
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-tab="tutors" aria-selected="true">
+                  Tutors
+                </button>
+              </li>
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-tab="enquiry" aria-selected="false">
+                  Enquiry
+                </button>
+              </li>
+              <li role="presentation">
+                <button
+                  class="hp-modes__btn"
+                  role="tab"
+                  data-tab="enquiry-modal"
+                  aria-selected="false"
+                >
+                  Enquiry modal
+                </button>
+              </li>
+              <li role="presentation">
+                <button
+                  class="hp-modes__btn"
+                  role="tab"
+                  data-tab="subject-enquiry"
+                  aria-selected="false"
+                >
+                  Subject enquiry
+                </button>
+              </li>
+              <li role="presentation">
+                <button
+                  class="hp-modes__btn"
+                  role="tab"
+                  data-tab="appointments"
+                  aria-selected="false"
+                >
+                  Appointments
+                </button>
+              </li>
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-tab="packages" aria-selected="false">
+                  Packages
+                </button>
+              </li>
+            </ul>
+            <span class="hp-modes__label" id="hp-themes-label">Theme</span>
+            <ul class="hp-modes__list" id="themes" role="tablist" aria-labelledby="hp-themes-label">
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-theme="classic" aria-selected="true">
+                  Classic
+                </button>
+              </li>
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-theme="soft" aria-selected="false">
+                  Soft
+                </button>
+              </li>
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-theme="bold" aria-selected="false">
+                  Bold
+                </button>
+              </li>
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-theme="elegant" aria-selected="false">
+                  Elegant
+                </button>
+              </li>
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-theme="vivid" aria-selected="false">
+                  Vivid
+                </button>
+              </li>
+            </ul>
+            <span class="hp-modes__label" id="hp-payments-label">Payment</span>
+            <ul class="hp-modes__list" id="payments" role="tablist" aria-labelledby="hp-payments-label">
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-payment="now" aria-selected="true">
+                  At booking
+                </button>
+              </li>
+              <li role="presentation">
+                <button class="hp-modes__btn" role="tab" data-payment="later" aria-selected="false">
+                  Pay later
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- The widget band: Socket mounts here. No host-page heading above it:
+             the widget carries its own copy per mode, and a second title on top
+             either repeats it or contradicts it. -->
+        <section class="hp-band" id="tutors">
+          <div class="hp__shell">
+            <div class="hp-embed">
+              <div class="panel" id="panel-tutors"></div>
+              <div class="panel" id="panel-enquiry" hidden></div>
+              <div class="panel" id="panel-enquiry-modal" hidden></div>
+              <div class="panel" id="panel-subject-enquiry" hidden></div>
+              <div class="panel" id="panel-appointments" hidden></div>
+              <div class="panel" id="panel-packages" hidden></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Trust strip: uneven spans, one photo tile. Not an icon-tile grid. -->
+        <section class="hp-trust" id="subjects">
+          <div class="hp__shell hp-trust__grid">
+            <figure class="hp-tile hp-tile--photo">
+              <img
+                class="hp-tile__photo"
+                src="https://images.unsplash.com/photo-1610484826967-09c5720778c7?w=800&q=75&auto=format&fit=crop"
+                alt="A child in headphones following an online lesson on a laptop"
+                width="800"
+                height="600"
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption class="hp-tile__caption">Online lessons, same tutors</figcaption>
+            </figure>
+
+            <div class="hp-tile">
+              <h2 class="hp-tile__title">Primary through A-level</h2>
+              <p class="hp-tile__body">
+                Maths, sciences, English, languages and the admissions tests. If we do not
+                cover something, we will say so rather than guess.
+              </p>
+            </div>
+
+            <div class="hp-tile hp-tile--accent">
+              <h2 class="hp-tile__title">Checked, then met</h2>
+              <p class="hp-tile__body">
+                Every tutor is DBS checked and interviewed in person before they appear on
+                this page. That keeps the list shorter than it could be.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- How it works: photo left, ordinal steps right -->
+        <section class="hp-how" id="how">
+          <div class="hp__shell hp-how__grid">
+            <img
+              class="hp-how__photo"
+              src="https://images.unsplash.com/photo-1588072432836-e10032774350?w=900&q=75&auto=format&fit=crop"
+              alt="A young pupil working through an exercise book in class"
+              width="900"
+              height="675"
+              loading="lazy"
+              decoding="async"
+            />
+
+            <div>
+              <h2 class="hp-how__title">Three steps, then a lesson</h2>
+              <ol class="hp-steps">
+                <li>
+                  <div>
+                    <h3 class="hp-steps__title">Tell us what you need</h3>
+                    <p class="hp-steps__body">
+                      Subject, level, and whether you would rather meet in person or online.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <h3 class="hp-steps__title">Meet two or three tutors</h3>
+                    <p class="hp-steps__body">
+                      A free 20-minute call each, so your child picks who they click with.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <h3 class="hp-steps__title">Book the first lesson</h3>
+                    <p class="hp-steps__body">
+                      Most families start with one session before committing to anything longer.
+                    </p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Ft5 · Statement footer -->
+      <footer class="hp-foot" id="contact">
+        <div class="hp__shell">
+          <p class="hp-foot__statement">Tutoring, arranged properly.</p>
+
+          <div class="hp-foot__meta">
+            <span class="hp-foot__brand">
+              <span class="hp-nav__dot" aria-hidden="true"></span>
+              Bramble &amp; Finch
+            </span>
+            <p class="hp-foot__contact">
+              Rosebery Avenue, London EC1 · hello@bramblefinch.example · 020 7946 0000
+            </p>
+          </div>
+
+          <p class="hp-foot__note">
+            Bramble &amp; Finch is a fictional agency used to demonstrate the TutorCruncher
+            Socket widget. Tutor profiles, subjects and availability shown above are live
+            data from a Socket demo account. Photography from Unsplash.
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

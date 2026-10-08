@@ -1,0 +1,223 @@
+/*
+ * Socket widget stylesheet.
+ *
+ * This is an EMBEDDABLE widget that runs on third-party websites, so we must not
+ * leak styles into the host page:
+ *   - We import Tailwind's theme + utilities but NOT preflight (the global reset),
+ *     because preflight resets `*` globally and would clobber the host site.
+ *   - We ship our own reset, scoped under `.tcs-root`, so it only ever touches our
+ *     own subtree (including modals, which portal into a `.tcs-root` container).
+ *   - All utilities use the `tw:` prefix (matching TutorCruncher2's UI2 system) so
+ *     our class names can never collide with the host's classes.
+ */
+@layer theme, base, components, utilities;
+
+/* Fonts: Inter (body) from Google, Halyard Display (headings) from Adobe Typekit.
+   Must come before non-@layer rules per the CSS spec, hence kept at the top. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://use.typekit.net/rem7wyb.css');
+
+@import 'tailwindcss/theme.css' layer(theme) prefix(tw);
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(tw);
+@import './themes.css';
+
+/* Host pages often style `:focus-visible` globally, and any unlayered host rule beats
+   the layered utilities below, so the host's ring ended up on the widget's controls.
+   This is unlayered on purpose: the widget draws its own ring in its own link colour. */
+.tcs-root :focus-visible {
+  outline: 2px solid var(--tw-color-link);
+}
+
+/* ============================================================
+   DESIGN TOKENS: copied 1:1 from TutorCruncher2 ui2.0 @theme
+   ============================================================ */
+@theme {
+  --font-heading: 'halyard-display', -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-body: 'Inter', -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+
+  /* Reset the default Tailwind palette so only our named tokens exist. */
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-link: #2563eb;
+  --color-link-alt: #2563eb;
+  --color-primary: #1f374e;
+  --color-heading: #1f374e;
+  --color-muted: #9ca3af;
+  --color-muted-dark: #6b7280;
+  --color-star: #f8be15;
+
+  /* Backgrounds */
+  --background-color-primary: #362e83;
+  --background-color-navbar: #ffffff;
+  --background-color-page: #eff5ff;
+  --background-color-content: #f9fafc;
+  --background-color-hover: #f1f5f9;
+  --background-color-overlay: rgba(0, 0, 0, 0.4);
+  --background-color-overlay-light: rgba(255, 255, 255, 0.75);
+
+  /* Borders */
+  --border-color-default: #e5e7eb;
+
+  /* Alerts & notifications */
+  --background-color-success: #ecfdf5;
+  --border-color-success: #007a55;
+  --text-color-success: #007a55;
+
+  --background-color-error: #ffefef;
+  --border-color-error: #c60036;
+  --text-color-error: #c60036;
+
+  --background-color-warning: #fff7ed;
+  --border-color-warning: #422006;
+  --text-color-warning: #422006;
+
+  --background-color-info: #eff5ff;
+  --border-color-info: #3b82f6;
+  --text-color-info: #1e40af;
+
+  --color-placeholder: #94a3b8;
+
+  --z-index-modal-backdrop: 2147483000;
+  --z-index-modal: 2147483001;
+  --z-index-dropdown: 2147483002;
+}
+
+/* ============================================================
+   SCOPED RESET: only applies inside `.tcs-root`
+   ============================================================ */
+@layer base {
+  .tcs-root,
+  .tcs-root *,
+  .tcs-root *::before,
+  .tcs-root *::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--color-default, #e5e7eb);
+  }
+
+  /* Tailwind's `@theme` consumes these tokens to generate utilities and never emits
+     them as custom properties, so `var(--font-body)` / `var(--color-primary)` alone
+     resolve to nothing. Inline widget roots got away with it by also carrying the
+     `tw:font-body tw:text-primary` utilities; the modal portal (built in JS with just
+     `.tcs-root`) did not, and rendered in the host page's font: Times on an
+     unstyled host. Literal fallbacks make `.tcs-root` self-sufficient everywhere. */
+  .tcs-root {
+    font-family:
+      'Inter', -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+      'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    color: #1f374e;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-align: left;
+  }
+
+  /* Literal for the same reason as `.tcs-root` above. */
+  .tcs-root h1,
+  .tcs-root h2,
+  .tcs-root h3,
+  .tcs-root h4 {
+    font-family:
+      'halyard-display', -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+      'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .tcs-root p {
+    margin: 0;
+  }
+
+  /* Neutralise default list styling; .tcs-md re-enables it via `revert`. */
+  .tcs-root ul,
+  .tcs-root ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Browsers give fieldset/legend their own margin, padding, border and inline
+     indent: strip it so grouped controls align with the rest of the form. */
+  .tcs-root fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .tcs-root legend {
+    padding: 0;
+    display: block;
+    width: 100%;
+  }
+
+  .tcs-root a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+
+  .tcs-root img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .tcs-root button {
+    font-family: inherit;
+    cursor: pointer;
+    background: none;
+  }
+
+  .tcs-root input,
+  .tcs-root select,
+  .tcs-root textarea {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  /* Tint native checkboxes/radios to the widget's own palette: otherwise they
+     render in the browser's default blue, which clashes on themed embeds. The
+     explicit size stops them shrinking against our 14px label text.
+     The colour is literal, not `var(--background-color-primary)`: Tailwind's
+     `@theme` consumes namespaced tokens to build utilities and never emits them
+     as custom properties, so the var() would resolve to nothing (accent-color:auto). */
+  .tcs-root input[type='checkbox'],
+  .tcs-root input[type='radio'] {
+    accent-color: #362e83;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+}
+
+/* ============================================================
+   Markdown / prose rendered from the API (contractor bios etc.)
+   ============================================================ */
+/* Respect users who prefer reduced motion: kill our transitions/animations. */
+@media (prefers-reduced-motion: reduce) {
+  .tcs-root *,
+  .tcs-root *::before,
+  .tcs-root *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@layer components {
+  .tcs-md > * + * {
+    margin-top: 0.75rem;
+  }
+  .tcs-md ul,
+  .tcs-md ol {
+    padding-left: 1.25rem;
+    list-style: revert;
+  }
+  .tcs-md a {
+    text-decoration: underline;
+  }
+}
