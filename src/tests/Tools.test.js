@@ -1,7 +1,8 @@
 import React from 'react'
 import {DisplayExtraAttrs} from '../components/shared/Tools'
 
-// jest can't load utils.js's `import marked from 'marked'` (App.test.js fails on it too); links don't render Markdown
+// jest turns marked's main file, marked.cjs, into its file name, so utils.js can't load (App.test.js fails on it
+// too); links don't render Markdown
 jest.mock('../utils', () => ({to_markdown: t => t}))
 
 const url_attr = extra => ({name: 'Intro video', type: 'url', machine_name: 'intro_video', ...extra})
