@@ -66,7 +66,9 @@ const DatetimeInput = ({field, name, value, field_label, on_change}) => {
 
   const on_change_ = (event) => {
     render_values[event.target.getAttribute('type')] = event.target.value
-    on_change({target: {value: render_values.date + 'T' + render_values.time}})
+    const {date, time} = render_values
+    // both boxes cleared means not filled in, not "T"
+    on_change({target: {value: date || time ? date + 'T' + time : ''}})
   }
   const required = field.required || render_values.date !== '' || render_values.time !== ''
   return (
