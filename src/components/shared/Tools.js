@@ -55,7 +55,7 @@ export const DisplayExtraAttrs = ({extra_attributes}) => (
           <Markdown content={attr.value}/>
         {/*else*/}
           <IfElse v={attr.type === 'url' && /^https?:\/\//i.test(attr.value)}>
-            <p><a href={attr.value} target="_blank" rel="noopener noreferrer">{attr.value}</a></p>
+            <p><a href={attr.value} target="_blank" rel="noopener noreferrer">{attr.link_text || attr.value}</a></p>
           {/*else*/}
             <p>{attr.value}</p>
           </IfElse>
