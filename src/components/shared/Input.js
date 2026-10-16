@@ -94,6 +94,8 @@ const DatetimeInput = ({field, name, value, field_label, on_change}) => {
 const IntegerInput = ({field, name, value, field_label, on_change}) => (
   <input type="number"
          step="1"
+         min={field.min_value}
+         max={field.max_value}
          name={name}
          placeholder={field_label}
          required={field.required}
