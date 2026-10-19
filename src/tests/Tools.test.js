@@ -5,10 +5,10 @@ import {DisplayExtraAttrs} from '../components/shared/Tools'
 // too); links don't render Markdown
 jest.mock('../utils', () => ({to_markdown: t => t}))
 
-const url_attr = extra => ({name: 'Intro video', type: 'url', machine_name: 'intro_video', ...extra})
+const link_attr = extra => ({name: 'Intro video', type: 'text_short', machine_name: 'intro_video', ...extra})
 
 it('shows a link with its link text', () => {
-  const attrs = [url_attr({value: 'https://example.com/intro', link_text: 'Watch intro video'})]
+  const attrs = [link_attr({value: 'https://example.com/intro', link_text: 'Watch intro video'})]
   const wrapper = enz.mount(<DisplayExtraAttrs extra_attributes={attrs}/>)
   const a = wrapper.find('a')
   expect(a.text()).toBe('Watch intro video')
@@ -17,19 +17,23 @@ it('shows a link with its link text', () => {
   expect(a.prop('rel')).toBe('noopener noreferrer')
 })
 
-it('shows the address without link text', () => {
-  const attrs = [
-    url_attr({value: 'https://example.com/old'}),
-    url_attr({value: 'https://example.com/blank', link_text: ''}),
-  ]
+it('shows the address when the link text is blank', () => {
+  const attrs = [link_attr({value: 'https://example.com/blank', link_text: ''})]
   const wrapper = enz.mount(<DisplayExtraAttrs extra_attributes={attrs}/>)
-  expect(wrapper.find('a').map(a => a.text())).toEqual(['https://example.com/old', 'https://example.com/blank'])
+  expect(wrapper.find('a').map(a => a.text())).toEqual(['https://example.com/blank'])
+})
+
+it('shows a Short Textbox without link text as Markdown', () => {
+  const attrs = [link_attr({value: 'https://example.com/plain'})]
+  const wrapper = enz.mount(<DisplayExtraAttrs extra_attributes={attrs}/>)
+  expect(wrapper.find('a').length).toBe(0)
+  expect(wrapper.find('.tcs-md').html()).toContain('https://example.com/plain')
 })
 
 it('shows a value that is not a web address as text', () => {
   const value = 'javascript:alert(1)' // eslint-disable-line no-script-url
-  const attrs = [url_attr({value, link_text: 'Watch intro video'})]
+  const attrs = [link_attr({value, link_text: 'Watch intro video'})]
   const wrapper = enz.mount(<DisplayExtraAttrs extra_attributes={attrs}/>)
   expect(wrapper.find('a').length).toBe(0)
-  expect(wrapper.find('p').text()).toBe(value)
+  expect(wrapper.text()).not.toContain('Watch intro video')
 })

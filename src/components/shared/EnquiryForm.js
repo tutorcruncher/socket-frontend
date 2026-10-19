@@ -3,12 +3,32 @@ import {add_script} from '../../utils'
 import {IfElse, If, Markdown} from './Tools'
 import Input from './Input'
 
+// Messages from socket-server's 400 details: a list of pydantic errors, or TutorCruncher's errors keyed by field
+export const error_details = (details, labels) => {
+  const label = name => labels[name] || name
+  if (Array.isArray(details)) {
+    return details.map(d => `${label(d.loc[d.loc.length - 1])}: ${d.msg}`)
+  } else if (details && typeof details === 'object') {
+    return [].concat(...Object.entries(details).map(([name, value]) => {
+      if (Array.isArray(value)) {
+        return value.map(msg => `${label(name)}: ${msg}`)
+      } else if (value && typeof value === 'object') {
+        return error_details(value, labels)
+      } else {
+        return [`${label(name)}: ${value}`]
+      }
+    }))
+  } else {
+    return []
+  }
+}
+
 class EnquiryForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
       submitted: false,
-      error: false,
+      error: null,
       grecaptcha_missing: false,
       enquiry_data: {},
     }
@@ -50,14 +70,38 @@ class EnquiryForm extends Component {
       data.contractor = this.props.contractor.id
     }
 
-    const r = await this.props.root.requests.post('enquiry', data, {expected_statuses: [201, 400]})
+    const r = await this.props.root.requests.post('enquiry', data, {expected_statuses: [201, 400, 502]})
     if (r.status === 201) {
       this.props.root.ga_event('enquiry-form', 'submitted', this.props.mode)
       this.setState({submitted: true})
       this.props.config.event_callback('enquiry_submitted', {mode: this.props.mode, data})
     } else {
-      console.warn('Invalid form:', r)
-      this.setState({error: true})
+      console.warn('Enquiry not submitted:', r)
+      this.reset_grecaptcha()
+      this.setState({error: this.get_error(r)})
+    }
+  }
+
+  get_error (r) {
+    const get_text = this.props.config.get_text
+    if (r.status === 502) {
+      return {message: get_text('enquiry_not_submitted'), details: []}
+    } else if (r.data.status === 'invalid reCAPTCHA') {
+      return {message: get_text('grecaptcha_failed'), details: []}
+    } else {
+      const labels = {}
+      for (let field of this.props.root.get_enquiry().visible || []) {
+        labels[field.field] = field.label
+      }
+      return {message: get_text('enquiry_invalid'), details: error_details(r.data.details, labels)}
+    }
+  }
+
+  reset_grecaptcha () {
+    // a captcha response can only be checked once, so another submit needs a new one
+    if (this.grecaptcha_widget_id !== undefined) {
+      window.grecaptcha.reset(this.grecaptcha_widget_id)
+      this.set_enquiry_data('grecaptcha_response', null)
     }
   }
 
@@ -68,7 +112,7 @@ class EnquiryForm extends Component {
         console.debug(`${this.grecaptcha_container_id} already has a grecaptcha, not rendering`, el)
       } else {
         console.debug('rendering grecaptcha')
-        window.grecaptcha.render(this.grecaptcha_container_id, {
+        this.grecaptcha_widget_id = window.grecaptcha.render(this.grecaptcha_container_id, {
           sitekey: this.props.config.grecaptcha_key,
           callback: response => this.set_enquiry_data('grecaptcha_response', response)
         })
@@ -115,7 +159,14 @@ class EnquiryForm extends Component {
 
             <form className="tcs" onSubmit={this.submit}>
               <If v={this.state.error}>
-                <div className="error-msg">Enquiry form invalid</div>
+                <div className="error-msg">
+                  {this.state.error && this.state.error.message}
+                  <If v={this.state.error && this.state.error.details.length}>
+                    <ul>
+                      {this.state.error && this.state.error.details.map((msg, i) => <li key={i}>{msg}</li>)}
+                    </ul>
+                  </If>
+                </div>
               </If>
               {visible_fields.map((field, i) => (
                 <Input key={i}
