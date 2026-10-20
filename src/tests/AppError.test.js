@@ -2,7 +2,7 @@ import React from 'react'
 import {MemoryRouter} from 'react-router-dom'
 import App from '../components/App'
 
-jest.mock('marked', () => ({setOptions: () => null}))
+jest.mock('marked', () => ({marked: {setOptions: () => null}}))
 
 const config = {
   mode: 'appointments',
