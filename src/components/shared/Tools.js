@@ -51,15 +51,10 @@ export const DisplayExtraAttrs = ({extra_attributes}) => (
     {extra_attributes && extra_attributes.map((attr, i) => (
       <div key={i} className="tcs-attr">
         <h3 className="tcs-attr-title">{attr.name}</h3>
-        {/* TutorCruncher sends link_text only for a Short Textbox set to Show as Link */}
-        <IfElse v={typeof attr.link_text === 'string' && /^https?:\/\//i.test(attr.value)}>
-          <p><a href={attr.value} target="_blank" rel="noopener noreferrer">{attr.link_text || attr.value}</a></p>
+        <IfElse v={attr.type === 'text_short' || attr.type === 'text_extended'}>
+          <Markdown content={attr.value}/>
         {/*else*/}
-          <IfElse v={attr.type === 'text_short' || attr.type === 'text_extended'}>
-            <Markdown content={attr.value}/>
-          {/*else*/}
-            <p>{attr.value}</p>
-          </IfElse>
+          <p>{attr.value}</p>
         </IfElse>
       </div>
     ))}
