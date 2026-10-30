@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Widget preview</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        background: #fff;
+        font-family: system-ui, sans-serif;
+      }
+      .tc-preview-waiting {
+        color: #6b7280;
+        font-size: 14px;
+        text-align: center;
+        padding: 48px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- TutorCruncher's widget editor frames this page and posts it the widget's unsaved settings (src/preview.tsx). -->
+    <div id="preview"><p class="tc-preview-waiting">Waiting for the widget's settings…</p></div>
+    <script type="module" src="/src/preview.tsx"></script>
+  </body>
+</html>

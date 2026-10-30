@@ -10,6 +10,8 @@ interface ImportMetaEnv {
   readonly VITE_DEMO_API_ROOT?: string
   /** Mock the V2 appointments contract until the backend serves it ("false" to disable). */
   readonly VITE_USE_MOCK_API?: string
+  /** Comma-separated TutorCruncher origins whose widget editor may drive preview.html (any localhost when unset). */
+  readonly VITE_TC_ORIGINS?: string
 }
 
 interface ImportMeta {
